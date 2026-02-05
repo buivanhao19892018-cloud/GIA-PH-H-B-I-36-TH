@@ -95,6 +95,8 @@
     .treeBox{border:1px dashed rgba(255,255,255,.16); border-radius:16px; padding:10px; overflow:auto; background:rgba(0,0,0,.18)}
     svg{max-width:100%}
     .small{font-size:12px}
+    .hr{height:1px;background:rgba(255,255,255,.10);margin:10px 0}
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px}
   </style>
 </head>
 <body>
@@ -109,6 +111,7 @@
       </div>
       <div class="row">
         <span class="pill" id="pillUser">Chưa đăng nhập</span>
+        <button class="btn" id="btnCopyUid">Copy User ID</button>
         <button class="btn" id="btnLogout">Đăng xuất</button>
       </div>
     </div>
@@ -156,10 +159,16 @@
           </div>
           <div class="row" style="margin-top:10px">
             <button class="btn good" id="btnOpenFamily">Mở</button>
-            <button class="btn warn" id="btnInvite">Mời thành viên</button>
+            <button class="btn warn" id="btnInvite">Mời thành viên (user_id)</button>
+            <button class="btn primary" id="btnInviteQR">QR mời (quét là vào)</button>
           </div>
           <div class="muted small" style="margin-top:10px">
             Quyền: <b>Owner</b> có thể mời/xóa/đổi quyền. Editor được thêm/sửa. Viewer chỉ xem.
+          </div>
+          <div class="hr"></div>
+          <div class="muted small">
+            <b>QR mời</b>: người thân quét QR → mở app → đăng nhập xong sẽ tự tham gia gia phả.<br/>
+            Nếu muốn “quét là xem luôn không cần đăng nhập”, nói mình làm thêm chế độ share public (read-only).
           </div>
         </div>
 
@@ -291,11 +300,18 @@
 
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- QRCode (canvas) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
   <script>
     // ====== CONFIG (HÀO THAY 2 DÒNG NÀY) ======
     const SUPABASE_URL = "YOUR_SUPABASE_URL";
     const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ====== GITHUB PAGES REDIRECT (SỬA NẾU BẠN ĐỔI DOMAIN/FILE) ======
+    const APP_ORIGIN = "https://92018-cloud.github.io";
+    const APP_REDIRECT = APP_ORIGIN + "/"; // cố định cho magic link
 
     // ====== STATE ======
     let user = null;
@@ -317,33 +333,162 @@
     };
     const show = (id, on=true) => $(id).classList.toggle("hide", !on);
 
+    async function copyText(txt){
+      try{
+        await navigator.clipboard.writeText(txt);
+        toast("Đã copy");
+      }catch(e){
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = txt; document.body.appendChild(ta);
+        ta.select(); document.execCommand("copy");
+        document.body.removeChild(ta);
+        toast("Đã copy");
+      }
+    }
+
     // ====== AUTH ======
     async function refreshSession(){
       const { data } = await sb.auth.getSession();
       user = data.session?.user || null;
+
       $("#pillUser").textContent = user ? (user.email || user.id) : "Chưa đăng nhập";
       show("#secAuth", !user);
       show("#secFamily", !!user);
       show("#btnLogout", !!user);
-      if(user) await loadFamilies();
+      show("#btnCopyUid", !!user);
+
+      if(user){
+        await loadFamilies();
+        await tryJoinByInvite(); // ✅ auto join nếu mở từ QR
+      }
     }
 
     async function sendOtp(email){
-      const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+      if(!email) return toast("Nhập email");
+      const { error } = await sb.auth.signInWithOtp({
+        email,
+        options: { shouldCreateUser: true, emailRedirectTo: APP_REDIRECT }
+      });
       if(error) return toast("Lỗi gửi OTP: " + error.message);
       toast("Đã gửi OTP về email");
     }
+
     async function sendMagic(email){
-      const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.href } });
+      if(!email) return toast("Nhập email");
+      const { error } = await sb.auth.signInWithOtp({
+        email,
+        options: { shouldCreateUser: true, emailRedirectTo: APP_REDIRECT }
+      });
       if(error) return toast("Lỗi: " + error.message);
       toast("Đã gửi link đăng nhập");
     }
+
     async function verifyOtp(email, token){
-      // Supabase v2: verifyOtp
+      if(!email || !token) return toast("Nhập email + OTP");
       const { error } = await sb.auth.verifyOtp({ email, token, type: "email" });
       if(error) return toast("Sai OTP: " + error.message);
       toast("Đăng nhập OK");
       await refreshSession();
+    }
+
+    // ====== INVITE QR (NEW) ======
+    function randCode(len=10){
+      const s="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let out="";
+      for(let i=0;i<len;i++) out += s[Math.floor(Math.random()*s.length)];
+      return out;
+    }
+
+    async function createInvite(roleWanted){
+      if(role!=="owner") return toast("Chỉ owner tạo QR mời");
+      if(!familyId && $("#familySelect").value) familyId = $("#familySelect").value;
+      const fid = familyId || $("#familySelect").value;
+      if(!fid) return toast("Chọn gia phả trước");
+
+      const code = randCode(10);
+      const expires = new Date(Date.now() + 7*24*3600*1000).toISOString(); // 7 ngày
+      const { error } = await sb.from("invites").insert({
+        family_id: fid,
+        code,
+        role: roleWanted || "viewer",
+        expires_at: expires,
+        created_by: user.id
+      });
+      if(error) return toast("Lỗi tạo invite: " + error.message);
+
+      const url = `${APP_ORIGIN}/?invite=${encodeURIComponent(code)}`;
+      showModal("QR mời vào gia phả", `
+        <div class="muted small">
+          Người thân quét QR → mở app → đăng nhập xong sẽ tự tham gia.<br/>
+          Hết hạn: <b>${new Date(expires).toLocaleString()}</b>
+        </div>
+        <div style="display:grid;place-items:center;padding:12px">
+          <canvas id="qrCanvas"></canvas>
+        </div>
+        <div class="field">
+          <label>Link mời</label>
+          <input id="invLink" class="kbd" value="${url}" readonly />
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn good" id="btnCopyLink">Copy link</button>
+        </div>
+        <div class="muted small" style="margin-top:10px">
+          Tip: nếu người thân “không có mail”, nói mình làm thêm đăng nhập SĐT+PIN (không cần SMS).
+        </div>
+      `);
+
+      try{
+        await QRCode.toCanvas($("#qrCanvas"), url, { width: 260, margin: 1 });
+      }catch(e){
+        toast("Không vẽ được QR");
+      }
+      $("#btnCopyLink").addEventListener("click", ()=> copyText(url));
+    }
+
+    async function tryJoinByInvite(){
+      const params = new URLSearchParams(location.search);
+      const code = params.get("invite");
+      if(!code || !user) return;
+
+      // đọc invite
+      const { data: inv, error } = await sb
+        .from("invites")
+        .select("*")
+        .eq("code", code)
+        .maybeSingle();
+
+      if(error) { toast("Invite lỗi: " + error.message); return; }
+      if(!inv) { toast("Mã mời không hợp lệ"); return; }
+      if(inv.expires_at && new Date(inv.expires_at) < new Date()){
+        toast("Mã mời đã hết hạn"); return;
+      }
+
+      // đã là thành viên chưa?
+      const { data: existing, error: e2 } = await sb
+        .from("memberships")
+        .select("role")
+        .eq("family_id", inv.family_id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if(e2) { toast("Lỗi kiểm tra quyền: " + e2.message); return; }
+
+      if(!existing){
+        const { error: e3 } = await sb.from("memberships").insert({
+          family_id: inv.family_id,
+          user_id: user.id,
+          role: inv.role || "viewer"
+        });
+        if(e3) { toast("Không join được: " + e3.message); return; }
+        toast("Đã tham gia gia phả!");
+      }else{
+        toast("Bạn đã ở trong gia phả rồi");
+      }
+
+      // dọn URL
+      history.replaceState({}, "", location.origin + location.pathname);
+      await loadFamilies();
     }
 
     // ====== FAMILIES ======
@@ -353,11 +498,12 @@
         .select("family_id, role, families(name,address)")
         .eq("user_id", user.id)
         .order("created_at", { ascending:false });
+
       if(error){ toast("Lỗi tải gia phả: " + error.message); return; }
 
       const sel = $("#familySelect");
       sel.innerHTML = "";
-      data.forEach((m, idx)=>{
+      data.forEach((m)=>{
         const opt = document.createElement("option");
         opt.value = m.family_id;
         opt.textContent = `${m.families?.name || "Gia phả"} • ${m.role}`;
@@ -366,23 +512,25 @@
         opt.dataset.addr = m.families?.address || "";
         sel.appendChild(opt);
       });
+
       if(data.length===0){
         sel.innerHTML = `<option value="">(Chưa có gia phả) - bấm Tạo mới</option>`;
       }
+
       toast("Tải danh sách OK");
     }
 
     async function createFamily(name, address){
       if(!name.trim()) return toast("Nhập tên gia phả");
-      // create family
       const { data: fam, error: e1 } = await sb.from("families")
         .insert({ name, address, created_by: user.id })
         .select().single();
       if(e1) return toast("Lỗi tạo gia phả: " + e1.message);
-      // add membership owner
+
       const { error: e2 } = await sb.from("memberships")
         .insert({ family_id: fam.id, user_id: user.id, role: "owner" });
       if(e2) return toast("Lỗi set owner: " + e2.message);
+
       toast("Đã tạo gia phả");
       await loadFamilies();
       $("#familySelect").value = fam.id;
@@ -391,12 +539,14 @@
     async function openFamily(fid){
       if(!fid) return toast("Chưa chọn gia phả");
       familyId = fid;
-      // get role
+
       const { data: mem, error: e0 } = await sb.from("memberships")
         .select("role, families(name,address)")
         .eq("family_id", familyId).eq("user_id", user.id).single();
       if(e0) return toast("Không có quyền: " + e0.message);
-      role = mem.role; family = { id: familyId, name: mem.families?.name, address: mem.families?.address };
+
+      role = mem.role;
+      family = { id: familyId, name: mem.families?.name, address: mem.families?.address };
       $("#pillRole").textContent = "role: " + role;
       $("#hFamily").textContent = `3) ${family.name || "Gia phả"} • ${family.address || ""}`;
 
@@ -492,7 +642,6 @@
 
     function fillRootSelect(){
       const sel = $("#rootSelect");
-      const sel2 = $("#rootSelect"); // same
       if(!sel) return;
       sel.innerHTML = "";
       cachePeople.slice().reverse().forEach(p=>{
@@ -702,15 +851,11 @@
 
     async function uploadAvatar(personId, file){
       try{
-        // compress -> jpg 0.82, 512px
         const blob = await compressImage(file, 512, 0.82);
         const path = `families/${familyId}/avatars/${personId}.jpg`;
         const { error } = await sb.storage.from("giapha").upload(path, blob, { upsert: true, contentType: "image/jpeg" });
         if(error){ toast("Lỗi upload ảnh: "+error.message); return null; }
         const { data } = sb.storage.from("giapha").getPublicUrl(path);
-        // NOTE: bucket private => publicUrl may not work. If private, use signedUrl:
-        // const { data: s } = await sb.storage.from("giapha").createSignedUrl(path, 60*60*24*7);
-        // return s?.signedUrl;
         return data.publicUrl || null;
       }catch(e){
         toast("Lỗi nén ảnh"); return null;
@@ -887,16 +1032,13 @@
     function buildTree(rootId){
       const root = cachePeople.find(p=>p.id===rootId);
       if(!root) return;
-      // Build children map by relations type parent/child
       const children = {};
       cachePeople.forEach(p=>children[p.id]=[]);
-      // If relation type parent: A is parent of B => A->B
       cacheRelations.forEach(r=>{
         if(r.type==="parent") children[r.a]?.push(r.b);
         if(r.type==="child") children[r.b]?.push(r.a);
       });
 
-      // BFS levels
       const levels = [];
       const seen = new Set();
       let q = [rootId]; seen.add(rootId);
@@ -911,7 +1053,6 @@
         q = next;
       }
 
-      // Simple SVG
       const nodeW=170, nodeH=54, gapX=26, gapY=44, pad=20;
       const maxCols = Math.max(...levels.map(l=>l.length));
       const svgW = pad*2 + maxCols*(nodeW+gapX);
@@ -940,12 +1081,12 @@
         const p = cachePeople.find(x=>x.id===id);
         const {x,y} = pos[id];
         const name = escapeHtml(p.full_name);
-        const role = p.display_role ? ` • ${escapeHtml(p.display_role)}` : "";
+        const role2 = p.display_role ? ` • ${escapeHtml(p.display_role)}` : "";
         return `
           <g>
             <rect x="${x}" y="${y}" rx="16" ry="16" width="${nodeW}" height="${nodeH}" fill="rgba(0,0,0,.25)" stroke="rgba(255,255,255,.16)"/>
             <text x="${x+12}" y="${y+24}" fill="white" font-size="13" font-weight="800">${name}</text>
-            <text x="${x+12}" y="${y+42}" fill="rgba(255,255,255,.72)" font-size="11">${escapeHtml(p.gender||"")}${role}</text>
+            <text x="${x+12}" y="${y+42}" fill="rgba(255,255,255,.72)" font-size="11">${escapeHtml(p.gender||"")}${role2}</text>
           </g>`;
       }).join("");
 
@@ -964,7 +1105,7 @@
         people: cachePeople,
         relations: cacheRelations,
         events: cacheEvents,
-        notes: [], // load on demand
+        notes: [],
         media: cacheMedia,
         exported_at: new Date().toISOString()
       };
@@ -990,11 +1131,10 @@
         if(!f) return toast("Chưa chọn file");
         const txt = await f.text();
         const data = JSON.parse(txt);
-        // naive import: persons -> relations -> events
         if(Array.isArray(data.people) && data.people.length){
           const people = data.people.map(p=>{
             const copy = {...p};
-            delete copy.id; // new ids
+            delete copy.id;
             copy.family_id = familyId;
             return copy;
           });
@@ -1035,6 +1175,11 @@
     $("#btnMagic").addEventListener("click", ()=> sendMagic($("#email").value.trim()));
     $("#btnVerify").addEventListener("click", ()=> verifyOtp($("#email").value.trim(), $("#otp").value.trim()));
 
+    $("#btnCopyUid").addEventListener("click", ()=>{
+      if(!user) return;
+      copyText(user.id);
+    });
+
     $("#btnLogout").addEventListener("click", async ()=>{
       await sb.auth.signOut();
       familyId=null; family=null; role=null;
@@ -1046,16 +1191,42 @@
     $("#btnCreateFamily").addEventListener("click", ()=> createFamily($("#famName").value, $("#famAddr").value));
     $("#btnOpenFamily").addEventListener("click", ()=> openFamily($("#familySelect").value));
     $("#btnNewFamily").addEventListener("click", ()=> toast("Nhập form bên phải rồi bấm Tạo"));
+
+    // ✅ QR invite
+    $("#btnInviteQR").addEventListener("click", async ()=>{
+      // chọn quyền
+      const sel = $("#familySelect");
+      const fid = sel.value;
+      if(!fid) return toast("Chọn gia phả trước");
+      // đảm bảo familyId để policy owner check đúng khi bạn chưa mở
+      familyId = fid;
+      // lấy role hiện tại ở dropdown
+      const opt = sel.options[sel.selectedIndex];
+      const myRole = opt?.dataset?.role || "";
+      if(myRole !== "owner") return toast("Chỉ owner tạo QR mời");
+      role = "owner";
+      showModal("Chọn quyền mời", `
+        <div class="muted small">Chọn quyền cho người quét QR:</div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="qrViewer">Viewer (chỉ xem)</button>
+          <button class="btn warn" id="qrEditor">Editor (được sửa)</button>
+        </div>
+      `);
+      $("#qrViewer").addEventListener("click", ()=> createInvite("viewer"));
+      $("#qrEditor").addEventListener("click", ()=> createInvite("editor"));
+    });
+
+    // mời kiểu user_id (giữ lại)
     $("#btnInvite").addEventListener("click", ()=>{
       if(role!=="owner") return toast("Chỉ owner mới mời");
       showModal("Mời thành viên", `
-        <div class="muted small">Supabase membership theo user_id. Bản v1: bạn gửi người kia đăng nhập email trước, rồi nhập user_id của họ.</div>
+        <div class="muted small">Bản v1: người kia đăng nhập email trước, rồi bạn nhập user_id của họ.</div>
         <div class="field"><label>User ID người được mời</label><input id="invUser" placeholder="uuid..." /></div>
         <div class="field"><label>Quyền</label>
           <select id="invRole"><option>editor</option><option>viewer</option></select>
         </div>
         <div class="row"><button class="btn good" id="btnDoInvite">Mời</button></div>
-        <div class="muted small">Tip: người kia vào app → copy user id trong profile (bản sau mình thêm nút copy).</div>
+        <div class="muted small">Tip: người kia bấm “Copy User ID” ở header.</div>
       `);
       $("#btnDoInvite").addEventListener("click", async ()=>{
         const uid = $("#invUser").value.trim();
