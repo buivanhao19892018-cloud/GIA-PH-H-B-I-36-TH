@@ -3,1420 +3,1077 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Gia phả họ Bùi • PWA (Local)</title>
+  <title>Gia phả họ Bùi • CLOUD PWA</title>
   <meta name="theme-color" content="#7f1d1d" />
   <style>
     :root{
-      --bg:#0b1020; --card:#0f1730; --card2:#0b1329;
-      --text:#e8f0ff; --muted:#a8b7d6; --line:rgba(255,255,255,.08);
-      --brand:#7f1d1d; --brand2:#b91c1c; --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
-      --shadow: 0 18px 40px rgba(0,0,0,.35);
-      --r:18px;
-      font-synthesis-weight:none;
+      --bg:#070a14;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(0,0,0,.22);
+      --text:#eaf0ff;
+      --muted:#a7b2d6;
+      --line:rgba(255,255,255,.10);
+      --brand:#7f1d1d;
+      --brand2:#b91c1c;
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --r:20px;
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:radial-gradient(1100px 700px at 18% 0%, rgba(185,28,28,.22), transparent 60%),
-                 radial-gradient(900px 600px at 90% 10%, rgba(34,197,94,.10), transparent 55%),
-                 var(--bg);
-      color:var(--text)
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 15% 0%, rgba(185,28,28,.22), transparent 60%),
+        radial-gradient(900px 700px at 90% 10%, rgba(34,197,94,.12), transparent 60%),
+        linear-gradient(180deg, #070a14, #06081a 60%, #05061a);
     }
     a{color:inherit}
-    .wrap{max-width:1050px; margin:0 auto; padding:14px 14px 96px}
-    .top{
+    .wrap{max-width:1100px; margin:0 auto; padding:16px 14px 92px}
+    .topbar{
+      position:sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
-      background:linear-gradient(135deg, rgba(127,29,29,.95), rgba(15,23,48,.65));
-      border:1px solid var(--line); border-radius:22px; padding:14px;
+      padding:12px 12px;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:linear-gradient(135deg, rgba(127,29,29,.95), rgba(10,14,28,.60));
       box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
     }
-    .brand{display:flex; gap:12px; align-items:center; min-width:0}
+    .brand{display:flex; align-items:center; gap:12px; min-width:0}
     .logo{
       width:46px; height:46px; border-radius:16px;
-      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.25), transparent 55%), rgba(0,0,0,.25);
-      display:grid; place-items:center; border:1px solid rgba(255,255,255,.14);
-      font-weight:900; letter-spacing:.5px;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.28), transparent 58%), rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.16);
+      display:grid; place-items:center; font-weight:900; letter-spacing:.5px;
       flex:0 0 auto;
     }
-    .title{font-weight:900; font-size:16px; line-height:1.1}
-    .sub{color:rgba(255,255,255,.8); font-size:12px}
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .titleBox{min-width:0}
+    .title{font-weight:900; font-size:16px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .sub{font-size:12px; color:rgba(255,255,255,.82)}
+    .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .pill{
+      padding:7px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.25);
+      font-size:12px;
+    }
     .btn{
       border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.25);
       color:var(--text);
       padding:10px 12px; border-radius:14px;
       font-weight:800; cursor:pointer;
+      transition: transform .05s ease;
       user-select:none;
     }
-    .btn.primary{background:linear-gradient(135deg, var(--brand2), var(--brand)); border-color:rgba(255,255,255,.18)}
-    .btn.good{background:linear-gradient(135deg, rgba(34,197,94,.9), rgba(22,163,74,.9))}
+    .btn:active{transform: scale(.98)}
+    .btn.primary{background:linear-gradient(135deg, var(--brand2), var(--brand))}
+    .btn.good{background:linear-gradient(135deg, rgba(34,197,94,.92), rgba(22,163,74,.92)); border-color:rgba(255,255,255,.10)}
     .btn.warn{background:linear-gradient(135deg, rgba(245,158,11,.95), rgba(217,119,6,.95))}
-    .btn.bad{background:linear-gradient(135deg, rgba(239,68,68,.95), rgba(185,28,28,.95))}
-    .pill{padding:6px 10px; border:1px solid rgba(255,255,255,.12); border-radius:999px; background:rgba(0,0,0,.25); font-size:12px}
+    .btn.ghost{background:rgba(0,0,0,.18)}
+    .btn.icon{
+      padding:10px 12px; border-radius:14px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .bell{
+      position:relative;
+    }
+    .badge{
+      position:absolute; top:-6px; right:-6px;
+      min-width:18px; height:18px; padding:0 5px;
+      border-radius:999px;
+      background:#ef4444;
+      border:1px solid rgba(255,255,255,.25);
+      font-size:11px; font-weight:900;
+      display:grid; place-items:center;
+    }
+
     .card{
       margin-top:14px;
-      border:1px solid var(--line); border-radius:var(--r);
+      border:1px solid var(--line);
+      border-radius:var(--r);
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       box-shadow:var(--shadow);
       overflow:hidden;
     }
-    .card .hd{display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--line); background:rgba(0,0,0,.18)}
+    .card .hd{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:12px 12px;
+      border-bottom:1px solid var(--line);
+      background:rgba(0,0,0,.20);
+    }
     .card .hd h3{margin:0; font-size:14px}
     .card .bd{padding:12px}
     .grid{display:grid; gap:10px}
-    @media(min-width:900px){ .grid.two{grid-template-columns:1fr 1fr} .grid.three{grid-template-columns:1.2fr .8fr .8fr} }
+    @media(min-width:900px){
+      .grid.two{grid-template-columns:1fr 1fr}
+      .grid.three{grid-template-columns:1.2fr .8fr .8fr}
+      .grid.kpi{grid-template-columns:repeat(4, 1fr)}
+    }
     .field{display:flex; flex-direction:column; gap:6px}
     .field label{font-size:12px; color:var(--muted)}
     .field input,.field select,.field textarea{
-      width:100%; padding:11px 12px; border-radius:14px;
+      width:100%; padding:12px 12px; border-radius:14px;
       border:1px solid rgba(255,255,255,.12);
       background:rgba(0,0,0,.22); color:var(--text);
       outline:none;
     }
-    .field textarea{min-height:110px; resize:vertical}
+    .field textarea{min-height:96px; resize:vertical}
     .muted{color:var(--muted)}
-    .small{font-size:12px}
-    .list{display:flex; flex-direction:column; gap:10px}
-    .item{
-      border:1px solid rgba(255,255,255,.12); border-radius:16px;
-      background:rgba(0,0,0,.2); padding:10px;
-      display:flex; gap:10px; align-items:center; justify-content:space-between;
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .kpiCard{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      background:rgba(0,0,0,.20);
+      padding:12px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
     }
-    .left{display:flex; gap:10px; align-items:center; min-width:0}
-    .avatar{
-      width:44px; height:44px; border-radius:14px; background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12); overflow:hidden; flex:0 0 auto; display:grid; place-items:center;
-      font-weight:900; color:rgba(255,255,255,.7)
+    .kpiVal{font-weight:950; font-size:18px}
+    .kpiLab{font-size:12px; color:var(--muted)}
+    .kpiIco{
+      width:38px; height:38px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      display:grid; place-items:center;
     }
-    .avatar img{width:100%; height:100%; object-fit:cover}
-    .name{font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:58vw}
-    .meta{font-size:12px; color:var(--muted)}
+
     .tabs{
-      position:fixed; left:0; right:0; bottom:0;
-      background:rgba(11,16,32,.88);
+      position:fixed; left:0; right:0; bottom:0; z-index:6;
+      background:rgba(7,10,20,.84);
       border-top:1px solid rgba(255,255,255,.10);
       backdrop-filter: blur(14px);
       padding:10px 10px calc(10px + env(safe-area-inset-bottom));
       display:flex; gap:10px; justify-content:center;
-      z-index:50;
     }
     .tab{
-      width:min(160px, 22vw); text-align:center; padding:10px 10px;
-      border-radius:14px; border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.20); cursor:pointer; font-weight:900;
+      width:min(170px, 22vw);
+      text-align:center;
+      padding:11px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.20);
+      cursor:pointer; font-weight:900;
       user-select:none;
     }
     .tab.on{background:linear-gradient(135deg, rgba(185,28,28,.92), rgba(127,29,29,.92))}
     .hide{display:none !important}
-    .toast{position:fixed; top:12px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,.75); border:1px solid rgba(255,255,255,.18); padding:10px 12px; border-radius:14px; z-index:99; max-width:92vw}
-    .treeBox{border:1px dashed rgba(255,255,255,.16); border-radius:16px; padding:10px; overflow:auto; background:rgba(0,0,0,.18)}
-    svg{max-width:100%}
-    .sep{height:1px; background:rgba(255,255,255,.10); margin:10px 0}
-    .kpi{display:flex; gap:10px; flex-wrap:wrap}
-    .kpi .pill{font-weight:900}
-    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
-    .qrBox{display:grid; place-items:center; padding:12px; border:1px dashed rgba(255,255,255,.18); border-radius:16px; background:rgba(0,0,0,.18)}
+
+    .list{display:flex; flex-direction:column; gap:10px}
+    .item{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      background:rgba(0,0,0,.18);
+      padding:10px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .left{display:flex; align-items:center; gap:10px; min-width:0}
+    .avatar{
+      width:44px; height:44px; border-radius:14px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      overflow:hidden; flex:0 0 auto;
+      display:grid; place-items:center;
+      font-weight:900; color:rgba(255,255,255,.75);
+    }
+    .avatar img{width:100%; height:100%; object-fit:cover}
+    .name{font-weight:950; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .meta{font-size:12px; color:var(--muted)}
+    .toast{
+      position:fixed; top:14px; left:50%; transform:translateX(-50%);
+      background:rgba(0,0,0,.78);
+      border:1px solid rgba(255,255,255,.18);
+      padding:10px 12px; border-radius:14px;
+      z-index:99; max-width:92vw;
+    }
+
+    /* Modal */
+    .backdrop{
+      position:fixed; inset:0; z-index:50;
+      background:rgba(0,0,0,.55);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:14px 12px calc(14px + env(safe-area-inset-bottom));
+    }
+    .backdrop.on{display:flex}
+    .modal{
+      width:min(820px, 100%);
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.14);
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .modal .mh{
+      padding:12px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.22);
+    }
+    .modal .mh h3{margin:0; font-size:14px}
+    .modal .mb{padding:12px; max-height:min(70vh, 640px); overflow:auto}
+    .small{font-size:12px}
+    .hint{
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:18px;
+      padding:10px;
+      background:rgba(0,0,0,.16);
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="top">
+    <div class="topbar">
       <div class="brand">
         <div class="logo">BU</div>
-        <div style="min-width:0">
-          <div class="title">Gia phả họ Bùi • PWA (Local)</div>
-          <div class="sub">Tác giả: <b>Bùi Hào</b> • Lưu dữ liệu trên máy (Export/Import để sao lưu & chia sẻ)</div>
+        <div class="titleBox">
+          <div class="title" id="appTitle">Gia phả họ Bùi • CLOUD PWA</div>
+          <div class="sub">Tác giả: <b>Bùi Hào</b> • Supabase + GitHub Pages • Push (Edge Function)</div>
         </div>
       </div>
-      <div class="row">
-        <span class="pill" id="pillFamily">Chưa tạo gia phả</span>
-        <button class="btn" id="btnQR">QR vào app</button>
-        <button class="btn warn" id="btnExport">Export</button>
-        <button class="btn" id="btnImport">Import</button>
-        <button class="btn bad" id="btnReset">Reset</button>
+
+      <div class="right">
+        <span class="pill" id="pillState">Chưa kết nối Cloud</span>
+
+        <button class="btn icon ghost bell" id="btnBell" title="Thông báo">
+          🔔 <span style="font-weight:900">Thông báo</span>
+          <span class="badge hide" id="bellBadge">0</span>
+        </button>
+
+        <button class="btn icon" id="btnEnablePush">📣 Bật thông báo</button>
+        <button class="btn primary icon" id="btnCreateEventTop">＋ Tạo sự kiện</button>
       </div>
     </div>
 
     <!-- SETUP -->
     <section class="card" id="secSetup">
       <div class="hd">
-        <h3>1) Thiết lập gia phả</h3>
-        <span class="muted small">Tạo “Gia phả họ Bùi” để bắt đầu</span>
+        <h3>Thiết lập Cloud (bắt buộc)</h3>
+        <span class="muted small">Dán URL + ANON KEY của Supabase</span>
       </div>
       <div class="bd grid two">
         <div class="field">
-          <label>Tên gia phả</label>
-          <input id="famName" value="Gia phả họ Bùi" />
+          <label>SUPABASE_URL</label>
+          <input id="cfgUrl" placeholder="https://xxxxx.supabase.co" />
         </div>
         <div class="field">
-          <label>Địa chỉ / quê quán</label>
-          <input id="famAddr" placeholder="Thanh Hóa, ..." />
+          <label>SUPABASE_ANON_KEY</label>
+          <input id="cfgKey" placeholder="eyJhbGciOi..." />
         </div>
-        <div class="field" style="grid-column:1/-1">
-          <label>Mô tả ngắn</label>
-          <input id="famDesc" placeholder="Ví dụ: Dòng họ Bùi – chi X – thôn ... xã ... huyện ... tỉnh ..." />
+        <div class="field">
+          <label>Mã gia phả (family_code)</label>
+          <input id="cfgFamilyCode" placeholder="VD: BUI-THACHCAM-001" />
         </div>
-        <div class="row">
-          <button class="btn primary" id="btnCreate">Tạo / Lưu thiết lập</button>
-          <button class="btn good" id="btnSeed">Tạo mẫu 5 người</button>
+        <div class="row" style="align-items:flex-end">
+          <button class="btn good" id="btnSaveCfg">Lưu & Kết nối</button>
+          <button class="btn" id="btnClearCfg">Xóa cấu hình</button>
         </div>
-        <div class="muted small" style="grid-column:1/-1">
-          Gợi ý: Tạo “Cụ tổ” trước → thêm con/cháu → tạo quan hệ CHA/MẸ ↔ CON → qua tab “Cây” để xem phả đồ.
+
+        <div class="hint small muted" style="grid-column:1/-1">
+          ✅ App này chạy kiểu “cả họ dùng chung 1 mã gia phả”.  
+          - Ai mở app → nhập mã → vào được.  
+          - Khi tạo sự kiện → app tạo “thông báo” và **Edge Function** sẽ gửi push tới tất cả máy đã bấm “Bật thông báo”.  
+          <br><br>
+          ⚠️ Push bắt buộc có: file <b>sw.js</b> + Edge Function <b>send-push</b> (mình đưa ở dưới).
         </div>
       </div>
     </section>
 
-    <!-- APP -->
-    <section class="card" id="secApp">
+    <!-- DASHBOARD -->
+    <section class="card hide" id="secApp">
       <div class="hd">
-        <h3 id="hApp">2) Quản lý</h3>
-        <div class="kpi">
-          <span class="pill" id="statPeople">0 thành viên</span>
-          <span class="pill" id="statEvents">0 sự kiện</span>
-          <span class="pill" id="statPhotos">0 ảnh</span>
-          <span class="pill" id="statBranches">0 nhánh</span>
+        <h3>Tổng quan</h3>
+        <div class="row">
+          <span class="pill" id="pillFamily">family: -</span>
+          <button class="btn" id="btnRefresh">Tải lại</button>
+        </div>
+      </div>
+
+      <div class="bd grid kpi" id="kpiGrid">
+        <div class="kpiCard"><div><div class="kpiVal" id="kpiPeople">0</div><div class="kpiLab">Thành viên</div></div><div class="kpiIco">👤</div></div>
+        <div class="kpiCard"><div><div class="kpiVal" id="kpiEvents">0</div><div class="kpiLab">Sự kiện</div></div><div class="kpiIco">📅</div></div>
+        <div class="kpiCard"><div><div class="kpiVal" id="kpiNoti">0</div><div class="kpiLab">Thông báo</div></div><div class="kpiIco">🔔</div></div>
+        <div class="kpiCard"><div><div class="kpiVal" id="kpiPush">0</div><div class="kpiLab">Máy đã bật push</div></div><div class="kpiIco">📣</div></div>
+      </div>
+
+      <div class="bd grid two" style="padding-top:0">
+        <div class="card" style="margin:0">
+          <div class="hd"><h3>Thao tác nhanh</h3></div>
+          <div class="bd row">
+            <button class="btn primary" id="btnAddPerson">＋ Thêm người</button>
+            <button class="btn" id="btnOpenPeople">Danh sách</button>
+            <button class="btn warn" id="btnOpenNoti">Mở thông báo</button>
+          </div>
+          <div class="bd" style="padding-top:0">
+            <div class="muted small">Gợi ý: tạo “Cụ tổ” trước → thêm con/cháu → tạo sự kiện (giỗ, cưới, họp họ…)</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin:0">
+          <div class="hd"><h3>Sự kiện gần đây</h3></div>
+          <div class="bd">
+            <div class="list" id="recentEvents"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PEOPLE -->
+    <section class="card hide" id="secPeople">
+      <div class="hd">
+        <h3>Thành viên</h3>
+        <div class="row">
+          <input id="q" style="min-width:220px" placeholder="Tìm tên, quê quán, năm sinh..." />
+          <button class="btn" id="btnSearch">Tìm</button>
+          <button class="btn primary" id="btnAddPerson2">＋ Thêm</button>
+          <button class="btn" id="btnBackHome1">Về Home</button>
         </div>
       </div>
       <div class="bd">
-        <!-- screens -->
-        <div id="screenDashboard">
-          <div class="grid two">
-            <div class="card" style="margin:0">
-              <div class="hd"><h3>Tổng quan</h3></div>
-              <div class="bd">
-                <div class="muted small" id="famInfo">Chưa có dữ liệu gia phả.</div>
-                <div class="sep"></div>
-                <div class="row">
-                  <button class="btn primary" id="btnAddPersonQuick">+ Thêm người</button>
-                  <button class="btn" id="btnAddRelQuick">+ Thêm quan hệ</button>
-                  <button class="btn" id="btnAddEventQuick">+ Sự kiện</button>
-                  <button class="btn" id="btnAddPhotoQuick">+ Ảnh</button>
-                </div>
-                <div class="sep"></div>
-                <div class="muted small">
-                  ✅ Có đủ mục: Thành viên, Quan hệ, Cây gia phả, Sự kiện/Mốc, Phả ký, Từ đường, Ảnh, Import/Export.  
-                  ⚠️ Bản local: dữ liệu nằm trên máy bạn; muốn đưa cho người khác dùng chung → Export file JSON.
-                </div>
-              </div>
-            </div>
+        <div class="list" id="peopleList"></div>
+      </div>
+    </section>
 
-            <div class="card" style="margin:0">
-              <div class="hd"><h3>Tìm nhanh</h3></div>
-              <div class="bd">
-                <div class="row" style="margin-bottom:10px">
-                  <input id="q" style="flex:1; min-width:220px" placeholder="Tìm tên, năm sinh, quê quán..." />
-                  <button class="btn" id="btnSearch">Tìm</button>
-                </div>
-                <div class="muted small">Kết quả sẽ hiện ở tab “Thành viên”.</div>
-                <div class="sep"></div>
-                <div class="row">
-                  <button class="btn" id="btnOpenPhaky">Phả ký</button>
-                  <button class="btn" id="btnOpenTuduong">Từ đường</button>
-                  <button class="btn" id="btnOpenQR2">Mã QR chia sẻ link</button>
-                </div>
-              </div>
-            </div>
-          </div>
+    <!-- EVENTS -->
+    <section class="card hide" id="secEvents">
+      <div class="hd">
+        <h3>Sự kiện</h3>
+        <div class="row">
+          <button class="btn primary" id="btnCreateEvent">＋ Tạo sự kiện</button>
+          <button class="btn" id="btnBackHome2">Về Home</button>
         </div>
-
-        <!-- PEOPLE -->
-        <div id="screenPeople" class="hide">
-          <div class="row" style="margin-bottom:10px">
-            <input id="q2" style="flex:1; min-width:220px" placeholder="Tìm tên, năm sinh, quê quán..." />
-            <button class="btn" id="btnSearch2">Tìm</button>
-            <button class="btn primary" id="btnAddPerson">+ Thêm</button>
-          </div>
-          <div class="list" id="peopleList"></div>
-        </div>
-
-        <!-- TREE -->
-        <div id="screenTree" class="hide">
-          <div class="row" style="margin-bottom:10px">
-            <button class="btn primary" id="btnBuildTree">Vẽ cây</button>
-            <select id="rootSelect" style="flex:1; min-width:220px"></select>
-            <button class="btn" id="btnTreeMode">Chế độ: Gọn</button>
-          </div>
-          <div class="treeBox" id="treeBox">
-            <div class="muted small">Chọn “gốc” rồi bấm Vẽ cây. Bản này là layout SVG đơn giản (đủ dùng).</div>
-          </div>
-        </div>
-
-        <!-- RELATIONS -->
-        <div id="screenRelations" class="hide">
-          <div class="row" style="margin-bottom:10px">
-            <button class="btn primary" id="btnAddRelation">+ Thêm quan hệ</button>
-            <button class="btn" id="btnRelCheck">Kiểm tra lỗi quan hệ</button>
-          </div>
-          <div class="list" id="relList"></div>
-          <div class="muted small" style="margin-top:10px">
-            Quy ước: CHA/MẸ → CON là quan hệ chính để vẽ cây. Vợ/Chồng, Anh/Chị/Em để ghi chú.
-          </div>
-        </div>
-
-        <!-- EVENTS -->
-        <div id="screenEvents" class="hide">
-          <div class="row" style="margin-bottom:10px">
-            <button class="btn primary" id="btnAddEvent">+ Thêm sự kiện</button>
-            <button class="btn" id="btnSortEvents">Sắp xếp: Mới → Cũ</button>
-          </div>
-          <div class="list" id="eventList"></div>
-        </div>
-
-        <!-- NOTES -->
-        <div id="screenNotes" class="hide">
-          <div class="row" style="margin-bottom:10px">
-            <button class="btn" data-kind="phaky" id="btnNotePhaky">Phả ký</button>
-            <button class="btn" data-kind="tuduong" id="btnNoteTuduong">Từ đường</button>
-            <span class="pill" id="noteKind">-</span>
-          </div>
-          <div class="grid">
-            <div class="field">
-              <label>Tiêu đề</label>
-              <input id="noteTitle" />
-            </div>
-            <div class="field">
-              <label>Nội dung</label>
-              <textarea id="noteContent" placeholder="Viết lịch sử dòng họ / quy ước từ đường / bài văn tế..."></textarea>
-            </div>
-            <div class="row">
-              <button class="btn good" id="btnSaveNote">Lưu</button>
-              <button class="btn" id="btnPrintNote">In/Copy</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- PHOTOS -->
-        <div id="screenPhotos" class="hide">
-          <div class="row" style="margin-bottom:10px">
-            <button class="btn primary" id="btnAddPhoto">+ Thêm ảnh</button>
-            <button class="btn" id="btnClearPhotos">Xóa toàn bộ ảnh (local)</button>
-          </div>
-          <div class="muted small">Ảnh được nén và lưu ngay trong máy (base64). Nên Export để sao lưu.</div>
-          <div class="sep"></div>
-          <div class="list" id="photoList"></div>
-        </div>
-
-        <!-- MODAL -->
-        <div class="card hide" id="modal" style="margin-top:14px">
-          <div class="hd">
-            <h3 id="mTitle">Modal</h3>
-            <button class="btn" id="mClose">Đóng</button>
-          </div>
-          <div class="bd" id="mBody"></div>
-        </div>
+      </div>
+      <div class="bd">
+        <div class="list" id="eventList"></div>
       </div>
     </section>
   </div>
 
-  <div class="tabs" id="tabs">
-    <div class="tab on" data-tab="dashboard">Gia phả</div>
-    <div class="tab" data-tab="tree">Cây</div>
+  <!-- Bottom tabs -->
+  <div class="tabs hide" id="tabs">
+    <div class="tab on" data-tab="home">Home</div>
     <div class="tab" data-tab="people">Thành viên</div>
-    <div class="tab" data-tab="relations">Quan hệ</div>
     <div class="tab" data-tab="events">Sự kiện</div>
-    <div class="tab" data-tab="notes">Phả ký</div>
-    <div class="tab" data-tab="photos">Ảnh</div>
   </div>
 
+  <!-- Toast -->
   <div class="toast hide" id="toast"></div>
 
-  <!-- QR (pure JS) -->
+  <!-- Modal -->
+  <div class="backdrop" id="backdrop">
+    <div class="modal">
+      <div class="mh">
+        <h3 id="mTitle">Modal</h3>
+        <div class="row">
+          <button class="btn" id="mClose">Đóng</button>
+        </div>
+      </div>
+      <div class="mb" id="mBody"></div>
+    </div>
+  </div>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
-    /***************
-     * Gia phả họ Bùi • PWA (Local) — Tác giả: Bùi Hào
-     * 1-file version: localStorage + Export/Import + Photos (base64)
-     ***************/
-
-    // ====== helpers ======
+    // =========================
+    // 0) Tiny helpers
+    // =========================
     const $ = s => document.querySelector(s);
-    const uid = () => (crypto?.randomUUID ? crypto.randomUUID() : ("id_"+Math.random().toString(16).slice(2)+Date.now()));
-    const nowISO = () => new Date().toISOString();
-    const escapeHtml = (s)=> (s??"").toString().replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
-    const toast = (msg) => { const t=$("#toast"); t.textContent=msg; t.classList.remove("hide"); setTimeout(()=>t.classList.add("hide"), 2200); };
-    const show = (id, on=true) => $(id).classList.toggle("hide", !on);
+    const esc = (s)=> (s??"").toString().replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+    const toast = (msg)=>{
+      const t=$("#toast"); t.textContent=msg; t.classList.remove("hide");
+      setTimeout(()=>t.classList.add("hide"), 2200);
+    };
+    const show = (id, on=true)=> $(id).classList.toggle("hide", !on);
+    const openModal = (title, html)=>{ $("#mTitle").textContent=title; $("#mBody").innerHTML=html; $("#backdrop").classList.add("on"); };
+    const closeModal = ()=>{ $("#backdrop").classList.remove("on"); $("#mBody").innerHTML=""; };
+    $("#mClose").addEventListener("click", closeModal);
+    $("#backdrop").addEventListener("click", (e)=>{ if(e.target.id==="backdrop") closeModal(); });
 
-    // ====== storage ======
-    const KEY = "giapha_bui_local_v1";
-    const load = () => {
+    // =========================
+    // 1) Config (saved in localStorage)
+    // =========================
+    const LSKEY="BUI_GIAPHA_CLOUD_CFG_V1";
+    let CFG = JSON.parse(localStorage.getItem(LSKEY) || "null");
+    $("#cfgUrl").value = CFG?.url || "";
+    $("#cfgKey").value = CFG?.key || "";
+    $("#cfgFamilyCode").value = CFG?.familyCode || "";
+
+    let sb = null;
+    let family = null;
+    let familyId = null;
+
+    // Caches
+    let people=[], events=[], notis=[], pushSubs=[];
+    let unreadNoti = 0;
+
+    // Realtime channel holder
+    let chNoti = null;
+
+    // PWA push
+    const SW_PATH = "./sw.js"; // <-- Hào phải tạo file sw.js (mình đưa dưới)
+    const APP_PUBLIC_KEY_NAME = "WEB_PUSH_PUBLIC_KEY"; // public VAPID key do Edge Function trả về
+
+    // =========================
+    // 2) Connect to Supabase
+    // =========================
+    async function connect(){
       try{
-        const raw = localStorage.getItem(KEY);
-        if(!raw) return null;
-        return JSON.parse(raw);
-      }catch{ return null; }
-    };
-    const save = () => localStorage.setItem(KEY, JSON.stringify(state));
-
-    // ====== state ======
-    let state = load() || {
-      family: { name:"", address:"", desc:"", created_at: nowISO(), updated_at: nowISO() },
-      people: [],
-      relations: [],
-      events: [],
-      notes: { phaky:{title:"", content:"", updated_at:null}, tuduong:{title:"", content:"", updated_at:null} },
-      photos: [],
-      settings: { treeMode:"compact", eventSort:"desc" }
-    };
-
-    // ====== UI init ======
-    function refreshHeader(){
-      const fam = state.family;
-      const ok = !!(fam.name && fam.name.trim());
-      $("#pillFamily").textContent = ok ? fam.name : "Chưa tạo gia phả";
-      $("#hApp").textContent = ok ? `2) Quản lý • ${fam.name}` : "2) Quản lý";
-      $("#famInfo").innerHTML = ok
-        ? `• <b>${escapeHtml(fam.name)}</b><br>• Quê quán: ${escapeHtml(fam.address||"(chưa nhập)")}<br>• Mô tả: ${escapeHtml(fam.desc||"(chưa nhập)")}`
-        : "Chưa có dữ liệu gia phả. Hãy tạo thiết lập ở mục 1).";
-      $("#famName").value = fam.name || "Gia phả họ Bùi";
-      $("#famAddr").value = fam.address || "";
-      $("#famDesc").value = fam.desc || "";
-      updateStats();
-      fillRootSelect();
-      renderPeople(state.people);
-      renderRelations();
-      renderEvents();
-      renderPhotos();
-      save();
+        if(!CFG?.url || !CFG?.key || !CFG?.familyCode){
+          $("#pillState").textContent="Chưa kết nối Cloud";
+          show("#secSetup", true);
+          show("#secApp", false);
+          show("#tabs", false);
+          return;
+        }
+        sb = supabase.createClient(CFG.url, CFG.key);
+        $("#pillState").textContent="Đang kết nối...";
+        // Ensure family exists by code
+        await ensureFamily(CFG.familyCode);
+        await refreshAll();
+        setupRealtime();
+        $("#pillState").textContent="Cloud OK";
+        show("#secSetup", false);
+        show("#secApp", true);
+        show("#tabs", true);
+        $("#pillFamily").textContent = "family: " + CFG.familyCode;
+        toast("Kết nối Cloud OK");
+      }catch(e){
+        console.error(e);
+        $("#pillState").textContent="Lỗi kết nối";
+        toast("Lỗi Cloud. Kiểm tra URL/KEY/RLS");
+      }
     }
 
-    function updateStats(){
-      $("#statPeople").textContent = `${state.people.length} thành viên`;
-      $("#statEvents").textContent = `${state.events.length} sự kiện`;
-      $("#statPhotos").textContent = `${state.photos.length} ảnh`;
-      $("#statBranches").textContent = `${countBranches()} nhánh`;
+    async function ensureFamily(code){
+      // families: {id, family_code, name, address, created_at}
+      const { data: exist, error: e1 } = await sb
+        .from("families").select("*")
+        .eq("family_code", code).maybeSingle();
+      if(e1) throw e1;
+
+      if(exist){
+        family = exist; familyId = exist.id;
+        $("#appTitle").textContent = (exist.name || "Gia phả họ Bùi") + " • CLOUD PWA";
+        return;
+      }
+      // create new family (public by code)
+      const { data: created, error: e2 } = await sb
+        .from("families")
+        .insert({ family_code: code, name: "Gia phả họ Bùi", address: "Thanh Hóa", author: "Bùi Hào" })
+        .select().single();
+      if(e2) throw e2;
+      family = created; familyId = created.id;
+      $("#appTitle").textContent = (created.name || "Gia phả họ Bùi") + " • CLOUD PWA";
     }
 
-    // ====== tabs ======
-    function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
-    function goTab(tab){
-      ["dashboard","tree","people","relations","events","notes","photos"].forEach(t=>{
-        $("#screen"+cap(t)).classList.toggle("hide", t!==tab);
+    // =========================
+    // 3) Data load + render
+    // =========================
+    async function refreshAll(){
+      await Promise.all([loadPeople(), loadEvents(), loadNotis(), loadPushSubs()]);
+      renderHome();
+      renderPeople(people);
+      renderEvents(events);
+      updateBell();
+      updateKPI();
+    }
+
+    async function loadPeople(){
+      const { data, error } = await sb.from("persons")
+        .select("*").eq("family_id", familyId)
+        .order("created_at", {ascending:false});
+      if(error) throw error;
+      people = data || [];
+    }
+
+    async function loadEvents(){
+      const { data, error } = await sb.from("events")
+        .select("*").eq("family_id", familyId)
+        .order("created_at", {ascending:false});
+      if(error) throw error;
+      events = data || [];
+    }
+
+    async function loadNotis(){
+      const { data, error } = await sb.from("notifications")
+        .select("*").eq("family_id", familyId)
+        .order("created_at", {ascending:false})
+        .limit(50);
+      if(error) throw error;
+      notis = data || [];
+      // unread: those not in local read set
+      const read = JSON.parse(localStorage.getItem("BUI_NOTI_READ_"+familyId) || "[]");
+      const readSet = new Set(read);
+      unreadNoti = notis.filter(n=>!readSet.has(n.id)).length;
+    }
+
+    async function loadPushSubs(){
+      const { data, error } = await sb.from("push_subscriptions")
+        .select("*").eq("family_id", familyId);
+      if(error) throw error;
+      pushSubs = data || [];
+    }
+
+    function updateKPI(){
+      $("#kpiPeople").textContent = people.length;
+      $("#kpiEvents").textContent = events.length;
+      $("#kpiNoti").textContent = notis.length;
+      $("#kpiPush").textContent = pushSubs.length;
+    }
+
+    function updateBell(){
+      const b = $("#bellBadge");
+      if(unreadNoti>0){
+        b.textContent = unreadNoti>99 ? "99+" : String(unreadNoti);
+        b.classList.remove("hide");
+      }else b.classList.add("hide");
+    }
+
+    function renderHome(){
+      const box=$("#recentEvents");
+      box.innerHTML = "";
+      const take = events.slice(0,5);
+      if(!take.length){
+        box.innerHTML = `<div class="muted small">Chưa có sự kiện. Bấm “Tạo sự kiện”.</div>`;
+        return;
+      }
+      take.forEach(ev=>{
+        const a = ev.actor_name ? `👤 ${esc(ev.actor_name)} • ` : "";
+        const el = document.createElement("div");
+        el.className="item";
+        el.innerHTML = `
+          <div class="left">
+            <div class="avatar">${ev.actor_avatar_url ? `<img src="${esc(ev.actor_avatar_url)}">` : "BU"}</div>
+            <div style="min-width:0">
+              <div class="name">${esc(ev.title)} <span class="pill">${esc(ev.event_type||"custom")}</span></div>
+              <div class="meta">${a}${esc(ev.date_greg||"")} ${ev.date_lunar?("• "+esc(ev.date_lunar)):""}</div>
+            </div>
+          </div>
+          <button class="btn" data-id="${ev.id}">Xem</button>
+        `;
+        el.querySelector("button").addEventListener("click", ()=> openEvent(ev, true));
+        box.appendChild(el);
       });
-      document.querySelectorAll(".tab").forEach(el=>{
-        el.classList.toggle("on", el.dataset.tab===tab);
-      });
-    }
-    document.querySelectorAll(".tab").forEach(el=> el.addEventListener("click", ()=> goTab(el.dataset.tab)));
-
-    // ====== setup ======
-    $("#btnCreate").addEventListener("click", ()=>{
-      state.family.name = ($("#famName").value||"").trim() || "Gia phả họ Bùi";
-      state.family.address = ($("#famAddr").value||"").trim();
-      state.family.desc = ($("#famDesc").value||"").trim();
-      state.family.updated_at = nowISO();
-      toast("Đã lưu thiết lập");
-      refreshHeader();
-    });
-
-    $("#btnSeed").addEventListener("click", ()=>{
-      if(state.people.length) return toast("Đã có dữ liệu, không seed nữa");
-      const A = addPerson({display_role:"Cụ tổ", full_name:"Bùi (Cụ tổ)", gender:"Nam", birth_year: 1900, hometown_province:"Thanh Hóa"});
-      const B = addPerson({display_role:"Cụ bà", full_name:"(Cụ bà)", gender:"Nữ", birth_year: 1905});
-      const C = addPerson({display_role:"Đời 2", full_name:"Bùi Văn A", gender:"Nam", birth_year: 1930});
-      const D = addPerson({display_role:"Đời 2", full_name:"Bùi Thị B", gender:"Nữ", birth_year: 1933});
-      const E = addPerson({display_role:"Đời 3", full_name:"Bùi Hào", gender:"Nam", birth_year: 1998, phone:"", job:"", hometown_province:"Thanh Hóa"});
-      // relations: A parent of C,D ; C parent of E ; spouses A-B
-      addRelation({a:A.id, b:C.id, type:"parent"});
-      addRelation({a:A.id, b:D.id, type:"parent"});
-      addRelation({a:C.id, b:E.id, type:"parent"});
-      addRelation({a:A.id, b:B.id, type:"spouse"});
-      toast("Đã tạo mẫu 5 người");
-      refreshHeader();
-      goTab("people");
-    });
-
-    // ====== people ======
-    function addPerson(p){
-      const obj = {
-        id: uid(),
-        display_role: p.display_role||"",
-        full_name: p.full_name||"",
-        other_name: p.other_name||"",
-        gender: p.gender||"Nam",
-        birth_day: p.birth_day??null, birth_month: p.birth_month??null, birth_year: p.birth_year??null,
-        marital_status: p.marital_status||"",
-        phone: p.phone||"",
-        education: p.education||"",
-        job: p.job||"",
-        hometown_province: p.hometown_province||"",
-        hometown_district: p.hometown_district||"",
-        hometown_ward: p.hometown_ward||"",
-        current_address: p.current_address||"",
-        map_link: p.map_link||"",
-        bio: p.bio||"",
-        death_lunar_day: p.death_lunar_day??null,
-        death_lunar_month: p.death_lunar_month??null,
-        death_lunar_year: p.death_lunar_year??null,
-        death_lunar_text: p.death_lunar_text||"",
-        worship_place: p.worship_place||"",
-        caretaker_name: p.caretaker_name||"",
-        tomb_address: p.tomb_address||"",
-        avatar_data: p.avatar_data||"", // base64
-        created_at: nowISO(),
-        updated_at: nowISO(),
-      };
-      state.people.unshift(obj);
-      return obj;
-    }
-
-    function personAvatar(p){
-      if(p.avatar_data) return `<img src="${p.avatar_data}" alt="avatar">`;
-      const initial = (p.full_name||"?").trim().slice(0,1).toUpperCase();
-      return `<span>${escapeHtml(initial)}</span>`;
     }
 
     function renderPeople(arr){
-      const box = $("#peopleList");
-      box.innerHTML = "";
+      const box=$("#peopleList");
+      box.innerHTML="";
       if(!arr.length){
-        box.innerHTML = `<div class="muted small">Chưa có thành viên. Bấm “+ Thêm” để tạo.</div>`;
+        box.innerHTML=`<div class="muted small">Chưa có thành viên. Bấm “Thêm người”.</div>`;
         return;
       }
       arr.forEach(p=>{
-        const el = document.createElement("div");
-        el.className = "item";
-        el.innerHTML = `
+        const el=document.createElement("div");
+        el.className="item";
+        el.innerHTML=`
           <div class="left">
-            <div class="avatar">${personAvatar(p)}</div>
+            <div class="avatar">${p.avatar_url?`<img src="${esc(p.avatar_url)}">`:"BU"}</div>
             <div style="min-width:0">
-              <div class="name">${escapeHtml(p.full_name)} ${p.display_role?`<span class="pill">${escapeHtml(p.display_role)}</span>`:""}</div>
-              <div class="meta">${escapeHtml(p.gender||"")} • ${fmtY(p.birth_year)} • ${escapeHtml(p.hometown_province||"")}</div>
+              <div class="name">${esc(p.full_name)} ${p.display_role?`<span class="pill">${esc(p.display_role)}</span>`:""}</div>
+              <div class="meta">${esc(p.gender||"")} • ${p.birth_year?("SN "+p.birth_year):""} • ${esc(p.hometown_province||"")}</div>
             </div>
           </div>
-          <div class="row">
-            <button class="btn" data-id="${p.id}" data-act="view">Xem</button>
-            <button class="btn warn" data-id="${p.id}" data-act="edit">Sửa</button>
-          </div>
+          <button class="btn warn">Sửa</button>
         `;
-        el.addEventListener("click", (e)=>{
-          const b = e.target.closest("button");
-          if(!b) return;
-          const id=b.dataset.id, act=b.dataset.act;
-          const person = state.people.find(x=>x.id===id);
-          if(!person) return;
-          if(act==="view") openPerson(person, false);
-          if(act==="edit") openPerson(person, true);
-        });
+        el.querySelector("button").addEventListener("click", ()=> openPerson(p));
         box.appendChild(el);
       });
     }
 
-    function fillRootSelect(){
-      const sel = $("#rootSelect");
-      sel.innerHTML = "";
-      const arr = state.people.slice().reverse();
+    function renderEvents(arr){
+      const box=$("#eventList");
+      box.innerHTML="";
       if(!arr.length){
-        sel.innerHTML = `<option value="">(Chưa có người)</option>`;
+        box.innerHTML=`<div class="muted small">Chưa có sự kiện. Bấm “Tạo sự kiện”.</div>`;
         return;
       }
-      arr.forEach(p=>{
-        const opt = document.createElement("option");
-        opt.value = p.id;
-        opt.textContent = p.full_name || "(không tên)";
-        sel.appendChild(opt);
-      });
-    }
-
-    function openPerson(p={}, editable=true){
-      showModal(editable ? (p.id?"Sửa thành viên":"Thêm thành viên") : "Thông tin thành viên", personForm(p, editable));
-      wirePersonForm(p, editable);
-    }
-
-    function personForm(p={}, editable=true){
-      const dis = editable ? "" : "disabled";
-      return `
-        <div class="grid two">
-          <div class="field">
-            <label>Ảnh đại diện</label>
-            <div class="row">
-              <div class="avatar" style="width:72px;height:72px;border-radius:18px">${p.avatar_data?`<img src="${p.avatar_data}">`: (p.full_name?escapeHtml(p.full_name.trim().slice(0,1).toUpperCase()):"?" )}</div>
-              ${editable ? `<input ${dis} type="file" id="avatarFile" accept="image/*" />` : `<span class="muted small">Chỉ xem</span>`}
-            </div>
-            <div class="muted small">Bản local: ảnh lưu trong máy (nén jpg).</div>
-          </div>
-
-          <div class="field">
-            <label>Vai vế (Cụ tổ...)</label>
-            <input ${dis} id="display_role" value="${val(p.display_role)}" />
-          </div>
-
-          <div class="field">
-            <label>Họ và tên*</label>
-            <input ${dis} id="full_name" value="${val(p.full_name)}" />
-          </div>
-
-          <div class="field">
-            <label>Tên khác</label>
-            <input ${dis} id="other_name" value="${val(p.other_name)}" />
-          </div>
-
-          <div class="field">
-            <label>Giới tính</label>
-            <select ${dis} id="gender">
-              ${opt(p.gender, ["Nam","Nữ","Khác"])}
-            </select>
-          </div>
-
-          <div class="field">
-            <label>Tình trạng hôn nhân</label>
-            <input ${dis} id="marital_status" value="${val(p.marital_status)}" placeholder="Độc thân, 1 vợ..." />
-          </div>
-
-          <div class="field">
-            <label>Ngày sinh (d/m/y)</label>
-            <div class="row" style="width:100%">
-              <input ${dis} id="birth_day" style="flex:1" value="${val(p.birth_day)}" placeholder="dd">
-              <input ${dis} id="birth_month" style="flex:1" value="${val(p.birth_month)}" placeholder="mm">
-              <input ${dis} id="birth_year" style="flex:1" value="${val(p.birth_year)}" placeholder="yyyy">
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Số điện thoại</label>
-            <input ${dis} id="phone" value="${val(p.phone)}" placeholder="VD: 09..." />
-          </div>
-
-          <div class="field">
-            <label>Trình độ</label>
-            <input ${dis} id="education" value="${val(p.education)}" />
-          </div>
-
-          <div class="field">
-            <label>Nghề nghiệp</label>
-            <input ${dis} id="job" value="${val(p.job)}" />
-          </div>
-
-          <div class="field">
-            <label>Nguyên quán (Tỉnh / Huyện / Xã)</label>
-            <div class="row" style="width:100%">
-              <input ${dis} id="hp" style="flex:1" value="${val(p.hometown_province)}" placeholder="Tỉnh">
-              <input ${dis} id="hd" style="flex:1" value="${val(p.hometown_district)}" placeholder="Huyện">
-              <input ${dis} id="hw" style="flex:1" value="${val(p.hometown_ward)}" placeholder="Xã/Phường">
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Địa chỉ hiện tại</label>
-            <input ${dis} id="current_address" value="${val(p.current_address)}" />
-          </div>
-
-          <div class="field">
-            <label>Link Google Map</label>
-            <input ${dis} id="map_link" value="${val(p.map_link)}" placeholder="https://maps.google.com/..." />
-          </div>
-
-          <div class="field" style="grid-column:1/-1">
-            <label>Tiểu sử</label>
-            <textarea ${dis} id="bio">${val(p.bio)}</textarea>
-          </div>
-
-          <div class="field">
-            <label>Ngày giỗ (Âm lịch) (d/m/y)</label>
-            <div class="row" style="width:100%">
-              <input ${dis} id="death_lunar_day" style="flex:1" value="${val(p.death_lunar_day)}" placeholder="dd">
-              <input ${dis} id="death_lunar_month" style="flex:1" value="${val(p.death_lunar_month)}" placeholder="mm">
-              <input ${dis} id="death_lunar_year" style="flex:1" value="${val(p.death_lunar_year)}" placeholder="yyyy">
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Ngày giỗ tên âm lịch</label>
-            <input ${dis} id="death_lunar_text" value="${val(p.death_lunar_text)}" placeholder="Giờ Tuất tháng Chạp..." />
-          </div>
-
-          <div class="field">
-            <label>Thờ cúng tại</label>
-            <input ${dis} id="worship_place" value="${val(p.worship_place)}" placeholder="Từ đường chính..." />
-          </div>
-
-          <div class="field">
-            <label>Người phụ trách</label>
-            <input ${dis} id="caretaker_name" value="${val(p.caretaker_name)}" />
-          </div>
-
-          <div class="field" style="grid-column:1/-1">
-            <label>Mộ táng</label>
-            <input ${dis} id="tomb_address" value="${val(p.tomb_address)}" />
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:12px">
-          ${editable ? `<button class="btn good" id="btnSavePerson">${p.id?"Lưu":"Tạo"}</button>` : ``}
-          <button class="btn" id="btnOpenRel">Quan hệ</button>
-          ${p.id ? `<button class="btn bad" id="btnDelPerson">Xóa</button>` : ``}
-        </div>
-      `;
-    }
-
-    function val(x){ return escapeHtml(x??""); }
-    function opt(cur, arr){
-      const c = (cur??arr[0]??"");
-      return arr.map(x=>`<option ${x===c?"selected":""}>${escapeHtml(x)}</option>`).join("");
-    }
-    function toInt(v){ const n = parseInt(v,10); return Number.isFinite(n)?n:null; }
-    function fmtY(y){ return y?`SN ${y}`:""; }
-
-    async function wirePersonForm(p={}, editable=true){
-      const isNew = !p.id;
-      $("#btnOpenRel")?.addEventListener("click", ()=>{
-        closeModal();
-        goTab("relations");
-        openRelationEditor(p.id ? p : null);
-      });
-
-      $("#btnDelPerson")?.addEventListener("click", ()=>{
-        if(!confirm("Xóa thành viên này? (Quan hệ & sự kiện liên quan sẽ bị gỡ tham chiếu)")) return;
-        // remove person
-        state.people = state.people.filter(x=>x.id!==p.id);
-        // remove relations tied
-        state.relations = state.relations.filter(r=>r.a!==p.id && r.b!==p.id);
-        // detach events
-        state.events = state.events.map(ev=> ev.person_id===p.id ? ({...ev, person_id:null}) : ev);
-        // photos detach
-        state.photos = state.photos.map(ph=> ph.person_id===p.id ? ({...ph, person_id:null}) : ph);
-        toast("Đã xóa");
-        closeModal();
-        refreshHeader();
-      });
-
-      $("#btnSavePerson")?.addEventListener("click", async ()=>{
-        const payload = {
-          display_role: $("#display_role").value.trim(),
-          full_name: $("#full_name").value.trim(),
-          other_name: $("#other_name").value.trim(),
-          gender: $("#gender").value,
-          birth_day: toInt($("#birth_day").value),
-          birth_month: toInt($("#birth_month").value),
-          birth_year: toInt($("#birth_year").value),
-          marital_status: $("#marital_status").value.trim(),
-          phone: $("#phone").value.trim(),
-          education: $("#education").value.trim(),
-          job: $("#job").value.trim(),
-          hometown_province: $("#hp").value.trim(),
-          hometown_district: $("#hd").value.trim(),
-          hometown_ward: $("#hw").value.trim(),
-          current_address: $("#current_address").value.trim(),
-          map_link: $("#map_link").value.trim(),
-          bio: $("#bio").value,
-          death_lunar_day: toInt($("#death_lunar_day").value),
-          death_lunar_month: toInt($("#death_lunar_month").value),
-          death_lunar_year: toInt($("#death_lunar_year").value),
-          death_lunar_text: $("#death_lunar_text").value.trim(),
-          worship_place: $("#worship_place").value.trim(),
-          caretaker_name: $("#caretaker_name").value.trim(),
-          tomb_address: $("#tomb_address").value.trim(),
-          updated_at: nowISO()
-        };
-        if(!payload.full_name) return toast("Thiếu họ tên");
-
-        let personId = p.id;
-        if(isNew){
-          const created = addPerson(payload);
-          personId = created.id;
-          toast("Đã tạo");
-        }else{
-          const idx = state.people.findIndex(x=>x.id===p.id);
-          if(idx>=0) state.people[idx] = {...state.people[idx], ...payload};
-          toast("Đã lưu");
-        }
-
-        const file = $("#avatarFile")?.files?.[0];
-        if(file){
-          const base64 = await compressToDataUrl(file, 512, 0.82);
-          const idx = state.people.findIndex(x=>x.id===personId);
-          if(idx>=0) state.people[idx].avatar_data = base64;
-          toast("Đã lưu avatar");
-        }
-
-        closeModal();
-        refreshHeader();
-      });
-    }
-
-    // ====== relations ======
-    function addRelation(r){
-      // avoid duplicates simplistic
-      const exists = state.relations.some(x=> x.a===r.a && x.b===r.b && x.type===r.type);
-      if(exists) return null;
-      const obj = { id: uid(), a:r.a, b:r.b, type:r.type, note:r.note||"", created_at: nowISO() };
-      state.relations.unshift(obj);
-      return obj;
-    }
-
-    function openRelationEditor(person=null){
-      if(!state.people.length) return toast("Chưa có người");
-      const aDefault = person?.id || state.people[0].id;
-      const options = state.people.map(x=>`<option value="${x.id}">${escapeHtml(x.full_name||"(không tên)")}</option>`).join("");
-      const html = `
-        <div class="muted small">Tạo quan hệ (A ↔ B)</div>
-        <div class="grid two" style="margin-top:10px">
-          <div class="field">
-            <label>A</label>
-            <select id="relA">${options}</select>
-          </div>
-          <div class="field">
-            <label>B</label>
-            <select id="relB">${options}</select>
-          </div>
-          <div class="field">
-            <label>Loại quan hệ</label>
-            <select id="relType">
-              <option value="parent">A là CHA/MẸ của B</option>
-              <option value="child">A là CON của B</option>
-              <option value="spouse">Vợ/Chồng</option>
-              <option value="sibling">Anh/Chị/Em</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Ghi chú</label>
-            <input id="relNote" placeholder="Ví dụ: con trưởng / con thứ..." />
-          </div>
-        </div>
-        <div class="row" style="margin-top:10px">
-          <button class="btn good" id="btnSaveRel">Lưu quan hệ</button>
-        </div>
-        <div class="muted small" style="margin-top:10px">
-          Tip: Quan hệ “parent/child” dùng để vẽ cây. Vợ/Chồng/Anh em chỉ ghi chú.
-        </div>
-      `;
-      showModal("Thêm quan hệ", html);
-      $("#relA").value = aDefault;
-      $("#btnSaveRel").addEventListener("click", ()=>{
-        const a = $("#relA").value;
-        const b = $("#relB").value;
-        const type = $("#relType").value;
-        const note = ($("#relNote").value||"").trim();
-        if(!a || !b) return toast("Chọn A & B");
-        if(a===b) return toast("Không thể tự liên quan");
-        addRelation({a,b,type,note});
-        toast("Đã lưu quan hệ");
-        closeModal();
-        renderRelations();
-        updateStats(); save();
-      });
-    }
-
-    function relText(r){
-      const A = state.people.find(x=>x.id===r.a)?.full_name || "?";
-      const B = state.people.find(x=>x.id===r.b)?.full_name || "?";
-      const t = r.type==="parent" ? "CHA/MẸ → CON"
-            : r.type==="child" ? "CON → CHA/MẸ"
-            : r.type==="spouse" ? "VỢ/CHỒNG"
-            : "ANH/CHỊ/EM";
-      return {A,B,t};
-    }
-
-    function renderRelations(){
-      const box = $("#relList");
-      box.innerHTML = "";
-      if(!state.relations.length){
-        box.innerHTML = `<div class="muted small">Chưa có quan hệ. Bấm “+ Thêm quan hệ”.</div>`;
-        return;
-      }
-      state.relations.forEach(r=>{
-        const {A,B,t} = relText(r);
-        const el = document.createElement("div");
-        el.className = "item";
-        el.innerHTML = `
-          <div class="left">
-            <div style="min-width:0">
-              <div class="name">${escapeHtml(A)} <span class="pill">${escapeHtml(t)}</span> ${escapeHtml(B)}</div>
-              <div class="meta">${r.note?escapeHtml(r.note):""}</div>
-            </div>
-          </div>
-          <div class="row">
-            <button class="btn bad" data-id="${r.id}">Xóa</button>
-          </div>
-        `;
-        el.querySelector("button").addEventListener("click", ()=>{
-          if(!confirm("Xóa quan hệ này?")) return;
-          state.relations = state.relations.filter(x=>x.id!==r.id);
-          toast("Đã xóa");
-          renderRelations(); save();
-        });
-        box.appendChild(el);
-      });
-    }
-
-    function checkRelations(){
-      // basic checks: cycles for parent edges, missing ids
-      const ids = new Set(state.people.map(p=>p.id));
-      const bad = [];
-      state.relations.forEach(r=>{
-        if(!ids.has(r.a) || !ids.has(r.b)) bad.push(`Quan hệ mất người: ${r.id}`);
-        if(r.type==="parent" && r.a===r.b) bad.push(`Quan hệ tự thân: ${r.id}`);
-      });
-      // cycle detect for parent edges A->B
-      const g = {};
-      state.people.forEach(p=> g[p.id]=[]);
-      state.relations.forEach(r=>{
-        if(r.type==="parent") g[r.a].push(r.b);
-        if(r.type==="child") g[r.b].push(r.a);
-      });
-      const seen = new Set(), stack = new Set();
-      const dfs = (u)=>{
-        if(stack.has(u)) return true;
-        if(seen.has(u)) return false;
-        seen.add(u); stack.add(u);
-        for(const v of (g[u]||[])) if(dfs(v)) return true;
-        stack.delete(u); return false;
-      };
-      let hasCycle=false;
-      for(const id of Object.keys(g)){ if(dfs(id)){ hasCycle=true; break; } }
-      if(hasCycle) bad.push("Phát hiện vòng lặp CHA/MẸ→CON (sai dữ liệu).");
-
-      showModal("Kết quả kiểm tra", `
-        <div class="muted small">Nếu có vòng lặp, cây sẽ vẽ sai. Hãy xóa/đổi quan hệ parent/child.</div>
-        <div class="sep"></div>
-        <div class="list">
-          ${bad.length ? bad.map(x=>`<div class="item"><div class="left"><div>${escapeHtml(x)}</div></div></div>`).join("") : `<div class="muted small">✅ Không thấy lỗi cơ bản.</div>`}
-        </div>
-      `);
-    }
-
-    // ====== events ======
-    function addEvent(ev){
-      const obj = {
-        id: uid(),
-        title: ev.title||"",
-        event_type: ev.event_type||"custom", // gio, birth, death, anniversary, custom
-        person_id: ev.person_id||null,
-        date_greg: ev.date_greg||"",
-        date_lunar: ev.date_lunar||"",
-        note: ev.note||"",
-        created_at: nowISO()
-      };
-      state.events.unshift(obj);
-      return obj;
-    }
-
-    function renderEvents(){
-      const box = $("#eventList");
-      box.innerHTML = "";
-      if(!state.events.length){
-        box.innerHTML = `<div class="muted small">Chưa có sự kiện. Bấm “+ Thêm sự kiện”.</div>`;
-        return;
-      }
-      const arr = state.settings.eventSort==="desc" ? state.events.slice() : state.events.slice().reverse();
       arr.forEach(ev=>{
-        const p = ev.person_id ? state.people.find(x=>x.id===ev.person_id) : null;
-        const el = document.createElement("div");
-        el.className = "item";
-        el.innerHTML = `
+        const el=document.createElement("div");
+        el.className="item";
+        el.innerHTML=`
           <div class="left">
+            <div class="avatar">${ev.actor_avatar_url?`<img src="${esc(ev.actor_avatar_url)}">`:"📅"}</div>
             <div style="min-width:0">
-              <div class="name">${escapeHtml(ev.title)} <span class="pill">${escapeHtml(ev.event_type)}</span></div>
-              <div class="meta">${p ? ("👤 "+escapeHtml(p.full_name)+" • ") : ""}${escapeHtml(ev.date_greg||"")} ${ev.date_lunar?("• "+escapeHtml(ev.date_lunar)):""}</div>
+              <div class="name">${esc(ev.title)} <span class="pill">${esc(ev.event_type||"custom")}</span></div>
+              <div class="meta">Tạo bởi ${esc(ev.actor_name||"ẩn danh")} • ${esc(ev.date_greg||"")} ${ev.date_lunar?("• "+esc(ev.date_lunar)):""}</div>
             </div>
           </div>
-          <div class="row">
-            <button class="btn warn" data-id="${ev.id}">Sửa</button>
-            <button class="btn bad" data-id="${ev.id}" data-del="1">Xóa</button>
-          </div>
+          <button class="btn">Xem</button>
         `;
-        el.addEventListener("click",(e)=>{
-          const b=e.target.closest("button"); if(!b) return;
-          const id=b.dataset.id;
-          const item = state.events.find(x=>x.id===id);
-          if(!item) return;
-          if(b.dataset.del){
-            if(!confirm("Xóa sự kiện?")) return;
-            state.events = state.events.filter(x=>x.id!==id);
-            toast("Đã xóa");
-            renderEvents(); updateStats(); save();
-          }else{
-            openEvent(item);
-          }
-        });
+        el.querySelector("button").addEventListener("click", ()=> openEvent(ev, true));
         box.appendChild(el);
       });
     }
 
-    function openEvent(ev=null){
-      const options = [`<option value="">(không gắn người)</option>`].concat(
-        state.people.map(p=>`<option value="${p.id}" ${ev?.person_id===p.id?"selected":""}>${escapeHtml(p.full_name||"(không tên)")}</option>`)
-      ).join("");
-      const html = `
-        <div class="grid two">
-          <div class="field"><label>Tiêu đề</label><input id="evTitle" value="${val(ev?.title)}"></div>
-          <div class="field"><label>Loại</label>
-            <select id="evType">
-              ${opt(ev?.event_type, ["giỗ","birth","death","anniversary","custom"])}
-            </select>
-          </div>
-          <div class="field"><label>Gắn với người</label><select id="evPerson">${options}</select></div>
-          <div class="field"><label>Ngày dương (text)</label><input id="evGreg" value="${val(ev?.date_greg)}" placeholder="2026-02-05"></div>
-          <div class="field" style="grid-column:1/-1"><label>Ngày âm (text)</label><input id="evLunar" value="${val(ev?.date_lunar)}" placeholder="10/10 Canh Ngọ..."></div>
-          <div class="field" style="grid-column:1/-1"><label>Ghi chú</label><textarea id="evNote">${val(ev?.note)}</textarea></div>
-        </div>
-        <div class="row" style="margin-top:10px">
-          <button class="btn good" id="btnSaveEv">${ev?.id?"Lưu":"Tạo"}</button>
-        </div>
-      `;
-      showModal(ev?.id ? "Sửa sự kiện" : "Thêm sự kiện", html);
-      $("#btnSaveEv").addEventListener("click", ()=>{
-        const payload = {
-          title: ($("#evTitle").value||"").trim(),
-          event_type: $("#evType").value,
-          person_id: $("#evPerson").value || null,
-          date_greg: ($("#evGreg").value||"").trim(),
-          date_lunar: ($("#evLunar").value||"").trim(),
-          note: $("#evNote").value||""
-        };
-        if(!payload.title) return toast("Thiếu tiêu đề");
-        if(ev?.id){
-          const idx = state.events.findIndex(x=>x.id===ev.id);
-          if(idx>=0) state.events[idx] = {...state.events[idx], ...payload};
-          toast("Đã lưu");
-        }else{
-          addEvent(payload);
-          toast("Đã tạo");
-        }
-        closeModal();
-        renderEvents(); updateStats(); save();
-      });
-    }
-
-    // ====== notes ======
-    let noteKind = "phaky";
-    function openNote(kind){
-      noteKind = kind;
-      $("#noteKind").textContent = kind==="phaky" ? "Phả ký" : "Từ đường";
-      const n = state.notes[kind] || {title:"", content:""};
-      $("#noteTitle").value = n.title || "";
-      $("#noteContent").value = n.content || "";
-      goTab("notes");
-    }
-    function saveNote(){
-      state.notes[noteKind] = {
-        title: ($("#noteTitle").value||"").trim(),
-        content: $("#noteContent").value||"",
-        updated_at: nowISO()
-      };
-      toast("Đã lưu");
-      save();
-    }
-    function printNote(){
-      const t = ($("#noteTitle").value||"").trim();
-      const c = $("#noteContent").value||"";
-      const txt = `${t}\n\n${c}\n\n— Gia phả họ Bùi • Tác giả: Bùi Hào`;
-      navigator.clipboard?.writeText(txt).then(()=>toast("Đã copy nội dung")).catch(()=>toast("Không copy được (trình duyệt chặn)"));
-      showModal("In/Copy", `
-        <div class="muted small">Đã thử copy vào clipboard. Bạn cũng có thể chọn/copy thủ công.</div>
-        <textarea style="width:100%;min-height:220px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.22);color:var(--text);padding:12px">${escapeHtml(txt)}</textarea>
-      `);
-    }
-
-    // ====== photos ======
-    function addPhoto(obj){
-      const p = {
-        id: uid(),
-        title: obj.title||"",
-        person_id: obj.person_id||null,
-        data: obj.data||"", // base64
-        note: obj.note||"",
-        created_at: nowISO()
-      };
-      state.photos.unshift(p);
-      return p;
-    }
-
-    function renderPhotos(){
-      const box = $("#photoList");
-      box.innerHTML = "";
-      if(!state.photos.length){
-        box.innerHTML = `<div class="muted small">Chưa có ảnh. Bấm “+ Thêm ảnh”.</div>`;
-        return;
+    // =========================
+    // 4) Realtime notifications (in-app bell)
+    // =========================
+    function setupRealtime(){
+      try{
+        if(chNoti) sb.removeChannel(chNoti);
+        chNoti = sb.channel("noti_"+familyId);
+        chNoti
+          .on("postgres_changes",
+            { event:"INSERT", schema:"public", table:"notifications", filter:`family_id=eq.${familyId}` },
+            payload=>{
+              const n = payload.new;
+              // update UI instantly
+              notis.unshift(n);
+              const read = JSON.parse(localStorage.getItem("BUI_NOTI_READ_"+familyId) || "[]");
+              const readSet = new Set(read);
+              unreadNoti = notis.filter(x=>!readSet.has(x.id)).length;
+              updateBell();
+              updateKPI();
+              toast(`🔔 ${n.title || "Có thông báo mới"}`);
+              try{ navigator.vibrate?.(60); }catch(_){}
+            }
+          )
+          .subscribe();
+      }catch(e){
+        console.warn("Realtime not available", e);
       }
-      state.photos.forEach(ph=>{
-        const p = ph.person_id ? state.people.find(x=>x.id===ph.person_id) : null;
-        const el = document.createElement("div");
-        el.className = "item";
-        el.innerHTML = `
-          <div class="left">
-            <div class="avatar" style="width:54px;height:54px;border-radius:16px">${ph.data?`<img src="${ph.data}">`:"📷"}</div>
-            <div style="min-width:0">
-              <div class="name">${escapeHtml(ph.title||"Ảnh")} ${p?`<span class="pill">👤 ${escapeHtml(p.full_name)}</span>`:""}</div>
-              <div class="meta">${escapeHtml(ph.note||"")} • ${escapeHtml(new Date(ph.created_at).toLocaleString())}</div>
-            </div>
-          </div>
-          <div class="row">
-            <button class="btn" data-id="${ph.id}" data-act="view">Xem</button>
-            <button class="btn bad" data-id="${ph.id}" data-act="del">Xóa</button>
-          </div>
-        `;
-        el.addEventListener("click",(e)=>{
-          const b=e.target.closest("button"); if(!b) return;
-          const id=b.dataset.id; const act=b.dataset.act;
-          const item = state.photos.find(x=>x.id===id);
-          if(!item) return;
-          if(act==="del"){
-            if(!confirm("Xóa ảnh này?")) return;
-            state.photos = state.photos.filter(x=>x.id!==id);
-            toast("Đã xóa");
-            renderPhotos(); updateStats(); save();
-          }else{
-            showModal("Xem ảnh", `
-              <div class="muted small">${escapeHtml(item.title||"Ảnh")} ${item.person_id?("• "+escapeHtml(state.people.find(x=>x.id===item.person_id)?.full_name||"")):""}</div>
-              <div class="sep"></div>
-              <div style="border:1px solid rgba(255,255,255,.12);border-radius:16px;overflow:hidden;background:rgba(0,0,0,.22)">
-                <img src="${item.data}" style="width:100%;height:auto;display:block" />
-              </div>
-              <div class="sep"></div>
-              <div class="muted small">${escapeHtml(item.note||"")}</div>
-            `);
-          }
-        });
-        box.appendChild(el);
-      });
     }
 
-    async function openAddPhoto(){
-      if(!state.people.length) return toast("Thêm người trước để gắn ảnh (hoặc để trống)");
-      const options = [`<option value="">(không gắn người)</option>`].concat(
-        state.people.map(p=>`<option value="${p.id}">${escapeHtml(p.full_name||"(không tên)")}</option>`)
-      ).join("");
-      showModal("Thêm ảnh", `
-        <div class="grid">
-          <div class="field">
-            <label>Chọn ảnh</label>
-            <input id="phFile" type="file" accept="image/*" />
-          </div>
-          <div class="field">
-            <label>Tiêu đề</label>
-            <input id="phTitle" placeholder="Ví dụ: Ảnh từ đường / ảnh mộ tổ..." />
-          </div>
-          <div class="field">
-            <label>Gắn với người</label>
-            <select id="phPerson">${options}</select>
-          </div>
-          <div class="field">
-            <label>Ghi chú</label>
-            <input id="phNote" placeholder="Năm chụp, địa điểm..." />
-          </div>
-          <div class="row">
-            <button class="btn good" id="btnSavePhoto">Lưu ảnh</button>
-          </div>
-          <div class="muted small">Ảnh sẽ nén (1024px) để nhẹ máy.</div>
-        </div>
-      `);
-      $("#btnSavePhoto").addEventListener("click", async ()=>{
-        const f = $("#phFile").files?.[0];
-        if(!f) return toast("Chưa chọn ảnh");
-        const data = await compressToDataUrl(f, 1024, 0.82);
-        addPhoto({
-          title: ($("#phTitle").value||"").trim(),
-          person_id: $("#phPerson").value || null,
-          note: ($("#phNote").value||"").trim(),
-          data
-        });
-        toast("Đã lưu ảnh");
-        closeModal();
-        renderPhotos(); updateStats(); save();
-        goTab("photos");
-      });
-    }
+    // =========================
+    // 5) Notifications Center
+    // =========================
+    function openNotiCenter(){
+      const read = JSON.parse(localStorage.getItem("BUI_NOTI_READ_"+familyId) || "[]");
+      const readSet = new Set(read);
 
-    // ====== tree ======
-    function buildTree(rootId){
-      if(!rootId) return toast("Chưa có gốc");
-      const children = {};
-      state.people.forEach(p=>children[p.id]=[]);
-      // parent: A->B ; child: B->A
-      state.relations.forEach(r=>{
-        if(r.type==="parent") children[r.a]?.push(r.b);
-        if(r.type==="child") children[r.b]?.push(r.a);
-      });
-
-      // levels BFS
-      const levels = [];
-      const seen = new Set();
-      let q=[rootId]; seen.add(rootId);
-      for(let depth=0; depth<9 && q.length; depth++){
-        levels.push(q.slice());
-        const next=[];
-        q.forEach(id=>{
-          (children[id]||[]).forEach(cid=>{
-            if(!seen.has(cid)){ seen.add(cid); next.push(cid); }
-          });
-        });
-        q=next;
-      }
-
-      const mode = state.settings.treeMode || "compact";
-      const nodeW = mode==="wide" ? 220 : 170;
-      const nodeH = 56;
-      const gapX = mode==="wide" ? 34 : 26;
-      const gapY = 46;
-      const pad  = 20;
-
-      const maxCols = Math.max(...levels.map(l=>l.length));
-      const svgW = pad*2 + maxCols*(nodeW+gapX);
-      const svgH = pad*2 + levels.length*(nodeH+gapY);
-      const pos = {};
-
-      levels.forEach((lvl,i)=>{
-        const rowW = lvl.length*(nodeW+gapX) - gapX;
-        const startX = pad + (svgW - pad*2 - rowW)/2;
-        lvl.forEach((id,j)=>{
-          pos[id] = { x: startX + j*(nodeW+gapX), y: pad + i*(nodeH+gapY) };
-        });
-      });
-
-      const lines = [];
-      state.relations.forEach(r=>{
-        let parent=null, child=null;
-        if(r.type==="parent"){ parent=r.a; child=r.b; }
-        if(r.type==="child"){ parent=r.b; child=r.a; }
-        if(parent && child && pos[parent] && pos[child]){
-          const p1=pos[parent], p2=pos[child];
-          lines.push(`<line x1="${p1.x+nodeW/2}" y1="${p1.y+nodeH}" x2="${p2.x+nodeW/2}" y2="${p2.y}" stroke="rgba(255,255,255,.22)" stroke-width="2"/>`);
-        }
-      });
-
-      const nodes = Object.keys(pos).map(id=>{
-        const p = state.people.find(x=>x.id===id);
-        const {x,y}=pos[id];
-        const name = escapeHtml(p.full_name||"(không tên)");
-        const role = p.display_role ? ` • ${escapeHtml(p.display_role)}` : "";
-        const gender = escapeHtml(p.gender||"");
+      const rows = (notis || []).map(n=>{
+        const isUnread = !readSet.has(n.id);
         return `
-          <g style="cursor:pointer" data-id="${id}">
-            <rect x="${x}" y="${y}" rx="16" ry="16" width="${nodeW}" height="${nodeH}" fill="rgba(0,0,0,.25)" stroke="rgba(255,255,255,.16)"/>
-            <text x="${x+12}" y="${y+24}" fill="white" font-size="13" font-weight="900">${name}</text>
-            <text x="${x+12}" y="${y+44}" fill="rgba(255,255,255,.72)" font-size="11">${gender}${role}</text>
-          </g>`;
+          <div class="item" data-id="${n.id}" style="${isUnread?'border-color: rgba(34,197,94,.35)':''}">
+            <div class="left">
+              <div class="avatar">${n.actor_avatar_url?`<img src="${esc(n.actor_avatar_url)}">`:"🔔"}</div>
+              <div style="min-width:0">
+                <div class="name">${esc(n.title || "Thông báo")}${isUnread?` <span class="pill" style="border-color:rgba(34,197,94,.35)">Mới</span>`:""}</div>
+                <div class="meta">${esc(n.body || "")}</div>
+                <div class="meta">${new Date(n.created_at).toLocaleString()}</div>
+              </div>
+            </div>
+            <button class="btn">Đánh dấu đã đọc</button>
+          </div>
+        `;
       }).join("");
 
-      $("#treeBox").innerHTML = `
-        <div class="muted small" style="margin-bottom:10px">Chạm vào node để xem thông tin.</div>
-        <svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}">
-          ${lines.join("")}
-          ${nodes}
-        </svg>
-      `;
+      openModal("🔔 Thông báo", `
+        <div class="row" style="margin-bottom:10px">
+          <button class="btn good" id="btnMarkAll">Đã đọc tất cả</button>
+          <button class="btn" id="btnReloadNoti">Tải lại</button>
+        </div>
+        <div class="list" id="notiList">${rows || `<div class="muted small">Chưa có thông báo</div>`}</div>
+      `);
 
-      // click node open view
-      $("#treeBox").querySelector("svg").addEventListener("click",(e)=>{
-        const g = e.target.closest("g[data-id]");
-        if(!g) return;
-        const id = g.getAttribute("data-id");
-        const person = state.people.find(x=>x.id===id);
-        if(person) openPerson(person, false);
+      $("#btnReloadNoti").addEventListener("click", async ()=>{
+        await loadNotis(); updateBell(); updateKPI(); openNotiCenter();
+      });
+
+      $("#btnMarkAll").addEventListener("click", ()=>{
+        const ids = notis.map(x=>x.id);
+        localStorage.setItem("BUI_NOTI_READ_"+familyId, JSON.stringify(ids));
+        unreadNoti = 0; updateBell();
+        toast("Đã đọc tất cả");
+        closeModal();
+      });
+
+      $("#notiList").addEventListener("click", (e)=>{
+        const item = e.target.closest(".item");
+        if(!item) return;
+        const id = item.dataset.id;
+        // mark read
+        const cur = JSON.parse(localStorage.getItem("BUI_NOTI_READ_"+familyId) || "[]");
+        if(!cur.includes(id)) cur.push(id);
+        localStorage.setItem("BUI_NOTI_READ_"+familyId, JSON.stringify(cur));
+        unreadNoti = Math.max(0, unreadNoti-1);
+        updateBell();
+        toast("Đã đánh dấu đọc");
+        item.style.borderColor = "rgba(255,255,255,.12)";
+        const pill = item.querySelector(".pill");
+        if(pill) pill.remove();
       });
     }
 
-    function countBranches(){
-      // naive: count unique "display_role" prefixes or parent roots
-      // We'll compute number of top-level roots (no parent)
-      const hasParent = new Set();
-      state.relations.forEach(r=>{
-        if(r.type==="parent") hasParent.add(r.b);
-        if(r.type==="child") hasParent.add(r.a);
-      });
-      const roots = state.people.filter(p=> !hasParent.has(p.id));
-      return roots.length || 0;
-    }
+    // =========================
+    // 6) People (simple form)
+    // =========================
+    function openPerson(p){
+      openModal("👤 Sửa thành viên", `
+        <div class="grid two">
+          <div class="field"><label>Họ và tên</label><input id="p_name" value="${esc(p.full_name||"")}"></div>
+          <div class="field"><label>Vai vế</label><input id="p_role" value="${esc(p.display_role||"")}"></div>
 
-    // ====== modal ======
-    function showModal(title, html){
-      $("#mTitle").textContent = title;
-      $("#mBody").innerHTML = html;
-      show("#modal", true);
-      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
-    }
-    function closeModal(){ show("#modal", false); $("#mBody").innerHTML = ""; }
-    $("#mClose").addEventListener("click", closeModal);
+          <div class="field"><label>Giới tính</label>
+            <select id="p_gender">
+              ${["Nam","Nữ","Khác"].map(x=>`<option ${p.gender===x?"selected":""}>${x}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field"><label>Năm sinh</label><input id="p_birth" value="${esc(p.birth_year||"")}" placeholder="1989"></div>
 
-    // ====== export/import/reset ======
-    function exportJson(){
-      const pack = {
-        ...state,
-        exported_at: nowISO(),
-        app: "Gia phả họ Bùi • PWA(Local)",
-        author: "Bùi Hào"
-      };
-      const blob = new Blob([JSON.stringify(pack, null, 2)], {type:"application/json"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `giapha_ho_bui_local.json`;
-      a.click();
-      toast("Đã export");
-    }
+          <div class="field"><label>Quê quán (tỉnh)</label><input id="p_home" value="${esc(p.hometown_province||"")}"></div>
+          <div class="field"><label>SĐT</label><input id="p_phone" value="${esc(p.phone||"")}"></div>
 
-    function importJson(){
-      showModal("Import JSON", `
-        <div class="muted small">Chọn file JSON export trước đó. Import sẽ ghi đè toàn bộ dữ liệu local hiện tại.</div>
-        <input type="file" id="jsonFile" accept="application/json" />
+          <div class="field" style="grid-column:1/-1"><label>Tiểu sử</label><textarea id="p_bio">${esc(p.bio||"")}</textarea></div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label>Ảnh đại diện (URL)</label>
+            <input id="p_avatar" value="${esc(p.avatar_url||"")}" placeholder="https://...jpg">
+            <div class="muted small">Bản v1 dùng URL. Bản nâng cao mới upload Storage.</div>
+          </div>
+        </div>
         <div class="row" style="margin-top:10px">
-          <button class="btn warn" id="btnDoImport">Import (ghi đè)</button>
+          <button class="btn good" id="btnSaveP">Lưu</button>
         </div>
       `);
-      $("#btnDoImport").addEventListener("click", async ()=>{
-        const f = $("#jsonFile").files?.[0];
-        if(!f) return toast("Chưa chọn file");
-        try{
-          const txt = await f.text();
-          const data = JSON.parse(txt);
-          // minimal validation
-          if(!data || typeof data!=="object" || !Array.isArray(data.people)) return toast("File không đúng định dạng");
-          state = {
-            family: data.family || state.family,
-            people: data.people || [],
-            relations: data.relations || [],
-            events: data.events || [],
-            notes: data.notes || state.notes,
-            photos: data.photos || [],
-            settings: data.settings || state.settings
+
+      $("#btnSaveP").addEventListener("click", async ()=>{
+        const payload = {
+          full_name: $("#p_name").value.trim(),
+          display_role: $("#p_role").value.trim(),
+          gender: $("#p_gender").value,
+          birth_year: parseInt($("#p_birth").value,10) || null,
+          hometown_province: $("#p_home").value.trim(),
+          phone: $("#p_phone").value.trim(),
+          bio: $("#p_bio").value,
+          avatar_url: $("#p_avatar").value.trim(),
+          updated_at: new Date().toISOString()
+        };
+        if(!payload.full_name) return toast("Thiếu họ tên");
+        const { error } = await sb.from("persons").update(payload).eq("id", p.id);
+        if(error) return toast("Lỗi lưu: "+error.message);
+        toast("Đã lưu");
+        closeModal();
+        await refreshAll();
+      });
+    }
+
+    async function openAddPerson(){
+      openModal("＋ Thêm người", `
+        <div class="grid two">
+          <div class="field"><label>Họ và tên*</label><input id="np_name" placeholder="Bùi Văn ..."></div>
+          <div class="field"><label>Vai vế</label><input id="np_role" placeholder="Cụ tổ / Ông / Bố..."></div>
+          <div class="field"><label>Giới tính</label>
+            <select id="np_gender"><option>Nam</option><option>Nữ</option><option>Khác</option></select>
+          </div>
+          <div class="field"><label>Năm sinh</label><input id="np_birth" placeholder="1989"></div>
+          <div class="field"><label>Quê quán (tỉnh)</label><input id="np_home" placeholder="Thanh Hóa"></div>
+          <div class="field"><label>Ảnh (URL)</label><input id="np_avatar" placeholder="https://...jpg"></div>
+          <div class="field" style="grid-column:1/-1"><label>Tiểu sử</label><textarea id="np_bio" placeholder="..."></textarea></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn good" id="btnCreateP">Tạo</button>
+        </div>
+      `);
+
+      $("#btnCreateP").addEventListener("click", async ()=>{
+        const payload = {
+          family_id: familyId,
+          full_name: $("#np_name").value.trim(),
+          display_role: $("#np_role").value.trim(),
+          gender: $("#np_gender").value,
+          birth_year: parseInt($("#np_birth").value,10) || null,
+          hometown_province: $("#np_home").value.trim(),
+          bio: $("#np_bio").value,
+          avatar_url: $("#np_avatar").value.trim()
+        };
+        if(!payload.full_name) return toast("Thiếu họ tên");
+        const { error } = await sb.from("persons").insert(payload);
+        if(error) return toast("Lỗi tạo: "+error.message);
+        toast("Đã tạo");
+        closeModal();
+        await refreshAll();
+      });
+    }
+
+    // =========================
+    // 7) Events + Push to all (core idea of Hào)
+    // =========================
+    function openEvent(ev, readonly=false){
+      openModal("📅 Chi tiết sự kiện", `
+        <div class="grid two">
+          <div class="field"><label>Tiêu đề</label><input id="ev_title" ${readonly?"disabled":""} value="${esc(ev.title||"")}"></div>
+          <div class="field"><label>Loại</label>
+            <select id="ev_type" ${readonly?"disabled":""}>
+              ${["giỗ","họp họ","cưới","tang","khao thọ","custom"].map(x=>`<option ${ev.event_type===x?"selected":""}>${x}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field"><label>Ngày dương (text)</label><input id="ev_greg" ${readonly?"disabled":""} value="${esc(ev.date_greg||"")}"></div>
+          <div class="field"><label>Ngày âm (text)</label><input id="ev_lunar" ${readonly?"disabled":""} value="${esc(ev.date_lunar||"")}"></div>
+          <div class="field" style="grid-column:1/-1"><label>Ghi chú</label><textarea id="ev_note" ${readonly?"disabled":""}>${esc(ev.note||"")}</textarea></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          ${readonly?``:`<button class="btn good" id="btnSaveEv">Lưu</button>`}
+        </div>
+      `);
+      if(!readonly){
+        $("#btnSaveEv").addEventListener("click", async ()=>{
+          const payload = {
+            title: $("#ev_title").value.trim(),
+            event_type: $("#ev_type").value,
+            date_greg: $("#ev_greg").value.trim(),
+            date_lunar: $("#ev_lunar").value.trim(),
+            note: $("#ev_note").value
           };
-          toast("Import OK");
+          if(!payload.title) return toast("Thiếu tiêu đề");
+          const { error } = await sb.from("events").update(payload).eq("id", ev.id);
+          if(error) return toast("Lỗi: "+error.message);
+          toast("Đã lưu"); closeModal(); await refreshAll();
+        });
+      }
+    }
+
+    function openCreateEvent(){
+      // actor info (simple): ask name + avatar URL to show in push + in app.
+      openModal("＋ Tạo sự kiện (sẽ bắn chuông tới cả họ)", `
+        <div class="hint small muted" style="margin-bottom:10px">
+          Khi bấm “Tạo & Báo cả họ”:  
+          1) Lưu sự kiện vào Cloud  
+          2) Tạo 1 thông báo kèm <b>tên + ảnh người tạo</b>  
+          3) Gọi Edge Function để gửi <b>Push Notification</b> tới tất cả máy đã “Bật thông báo”
+        </div>
+        <div class="grid two">
+          <div class="field"><label>Tên người tạo*</label><input id="ac_name" placeholder="Bùi Hào"></div>
+          <div class="field"><label>Ảnh người tạo (URL)</label><input id="ac_avatar" placeholder="https://...jpg"></div>
+
+          <div class="field"><label>Tiêu đề sự kiện*</label><input id="ne_title" placeholder="Ví dụ: Giỗ cụ tổ / Họp họ / Nhà có việc..."></div>
+          <div class="field"><label>Loại</label>
+            <select id="ne_type">
+              ${["giỗ","họp họ","cưới","tang","khao thọ","custom"].map(x=>`<option>${x}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field"><label>Ngày dương (text)</label><input id="ne_greg" placeholder="2026-02-05 hoặc 05/02/2026"></div>
+          <div class="field"><label>Ngày âm (text)</label><input id="ne_lunar" placeholder="10/10 Canh Ngọ..."></div>
+          <div class="field" style="grid-column:1/-1"><label>Nội dung / ghi chú</label><textarea id="ne_note" placeholder="Địa điểm, giờ, việc cần chuẩn bị..."></textarea></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn good" id="btnCreateAndPush">Tạo & Báo cả họ 🔔</button>
+        </div>
+      `);
+
+      $("#btnCreateAndPush").addEventListener("click", async ()=>{
+        const actor_name = $("#ac_name").value.trim();
+        const actor_avatar_url = $("#ac_avatar").value.trim();
+        const title = $("#ne_title").value.trim();
+        const event_type = $("#ne_type").value;
+        const date_greg = $("#ne_greg").value.trim();
+        const date_lunar = $("#ne_lunar").value.trim();
+        const note = $("#ne_note").value;
+
+        if(!actor_name) return toast("Thiếu tên người tạo");
+        if(!title) return toast("Thiếu tiêu đề sự kiện");
+
+        try{
+          // 1) insert event
+          const { data: ev, error: e1 } = await sb.from("events")
+            .insert({ family_id: familyId, title, event_type, date_greg, date_lunar, note, actor_name, actor_avatar_url })
+            .select().single();
+          if(e1) return toast("Lỗi tạo sự kiện: "+e1.message);
+
+          // 2) create notification record (for bell + realtime)
+          const notiTitle = "Nhà có việc: " + title;
+          const notiBody = `${actor_name} vừa tạo sự kiện • ${date_greg||""} ${date_lunar?("("+date_lunar+")"):""}`;
+          const { data: n, error: e2 } = await sb.from("notifications")
+            .insert({
+              family_id: familyId,
+              type: "event_created",
+              title: notiTitle,
+              body: notiBody,
+              actor_name,
+              actor_avatar_url,
+              payload: { event_id: ev.id, event_type }
+            })
+            .select().single();
+          if(e2) return toast("Lỗi tạo thông báo: "+e2.message);
+
+          // 3) call Edge Function to send push to all (must exist)
+          const { data: fx, error: e3 } = await sb.functions.invoke("send-push", {
+            body: {
+              family_id: familyId,
+              title: notiTitle,
+              body: notiBody,
+              url: location.href, // click opens app
+              icon: actor_avatar_url || null,
+              tag: "family-event"
+            }
+          });
+          if(e3){
+            console.warn(e3);
+            toast("Đã tạo sự kiện (push chưa gửi). Cần cài Edge Function send-push");
+          }else{
+            toast("Đã tạo + gửi thông báo tới cả họ ✅");
+          }
+
           closeModal();
-          refreshHeader();
-          goTab("dashboard");
-        }catch(e){
-          toast("Lỗi import");
+          await refreshAll();
+          goTab("home");
+
+        }catch(err){
+          console.error(err);
+          toast("Lỗi tạo sự kiện");
         }
       });
     }
 
-    function resetAll(){
-      if(!confirm("Reset toàn bộ dữ liệu local?")) return;
-      localStorage.removeItem(KEY);
-      state = {
-        family: { name:"", address:"", desc:"", created_at: nowISO(), updated_at: nowISO() },
-        people: [],
-        relations: [],
-        events: [],
-        notes: { phaky:{title:"", content:"", updated_at:null}, tuduong:{title:"", content:"", updated_at:null} },
-        photos: [],
-        settings: { treeMode:"compact", eventSort:"desc" }
+    // =========================
+    // 8) Push: enable + store subscription to Supabase
+    // =========================
+    async function enablePushFlow(){
+      if(!sb || !familyId) return toast("Chưa kết nối Cloud");
+
+      if(!("serviceWorker" in navigator) || !("PushManager" in window)){
+        return toast("Máy/Trình duyệt chưa hỗ trợ Push");
+      }
+
+      // 1) register service worker
+      let reg = null;
+      try{
+        reg = await navigator.serviceWorker.register(SW_PATH, { scope: "./" });
+      }catch(e){
+        console.error(e);
+        return toast("Thiếu file sw.js hoặc đăng ký SW lỗi");
+      }
+
+      // 2) request permission
+      const perm = await Notification.requestPermission();
+      if(perm !== "granted") return toast("Bạn chưa cho phép thông báo");
+
+      // 3) get VAPID public key from Edge Function
+      let publicKey = null;
+      try{
+        const { data, error } = await sb.functions.invoke("public-vapid-key", { body: {} });
+        if(error) throw error;
+        publicKey = data?.publicKey;
+      }catch(e){
+        console.warn(e);
+        return toast("Thiếu Edge Function public-vapid-key (trả VAPID public key)");
+      }
+      if(!publicKey) return toast("Không có public key");
+
+      // 4) subscribe
+      let sub = await reg.pushManager.getSubscription();
+      if(!sub){
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicKey)
+        });
+      }
+
+      // 5) save subscription to DB (unique by endpoint)
+      const payload = {
+        family_id: familyId,
+        endpoint: sub.endpoint,
+        p256dh: arrayBufferToBase64(sub.getKey("p256dh")),
+        auth: arrayBufferToBase64(sub.getKey("auth")),
+        user_agent: navigator.userAgent,
+        created_at: new Date().toISOString()
       };
-      toast("Đã reset");
-      refreshHeader();
-      goTab("dashboard");
+
+      const { error: e1 } = await sb.from("push_subscriptions").upsert(payload, { onConflict: "endpoint" });
+      if(e1) return toast("Lỗi lưu subscription: "+e1.message);
+
+      toast("Đã bật thông báo ✅");
+      await loadPushSubs(); updateKPI();
     }
 
-    // ====== QR share ======
-    // Minimal QR generator (alphanumeric / URL) using a tiny implementation (not perfect but works well for URLs).
-    // For reliability, we encode as "Q" with simple QR-Like grid via an online API fallback if canvas fails.
-    function openQR(){
-      const link = location.href;
-      // render QR using public API (simple, stable) without extra libs:
-      // (If you want zero external requests, tell me; mình sẽ nhúng QR thuần JS mạnh hơn.)
-      const img = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(link)}`;
-      showModal("Mã QR vào app", `
-        <div class="muted small">Quét là mở đúng link app này:</div>
-        <div class="sep"></div>
-        <div class="qrBox">
-          <img src="${img}" alt="QR" style="width:260px;height:260px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:#fff">
-          <div class="sep"></div>
-          <div class="mono small" style="word-break:break-all;opacity:.85">${escapeHtml(link)}</div>
-          <div class="row" style="margin-top:10px">
-            <button class="btn" id="btnCopyLink">Copy link</button>
-          </div>
-        </div>
-      `);
-      $("#btnCopyLink").addEventListener("click", ()=>{
-        navigator.clipboard?.writeText(link).then(()=>toast("Đã copy link")).catch(()=>toast("Không copy được"));
-      });
+    // =========================
+    // 9) Tabs / nav
+    // =========================
+    function goTab(tab){
+      $(".tab[data-tab='home']").classList.toggle("on", tab==="home");
+      $(".tab[data-tab='people']").classList.toggle("on", tab==="people");
+      $(".tab[data-tab='events']").classList.toggle("on", tab==="events");
+
+      show("#secApp", tab==="home");
+      show("#secPeople", tab==="people");
+      show("#secEvents", tab==="events");
     }
-
-    // ====== image compress to dataURL ======
-    async function compressToDataUrl(file, maxSize=1024, quality=0.82){
-      const img = await new Promise((res, rej)=>{
-        const i = new Image();
-        i.onload=()=>res(i); i.onerror=rej;
-        i.src = URL.createObjectURL(file);
-      });
-      const w=img.width, h=img.height;
-      const scale = Math.min(1, maxSize / Math.max(w,h));
-      const nw=Math.round(w*scale), nh=Math.round(h*scale);
-      const canvas=document.createElement("canvas");
-      canvas.width=nw; canvas.height=nh;
-      const ctx=canvas.getContext("2d");
-      ctx.drawImage(img,0,0,nw,nh);
-      return canvas.toDataURL("image/jpeg", quality);
-    }
-
-    // ====== wires ======
-    $("#btnAddPersonQuick").addEventListener("click", ()=> openPerson({}, true));
-    $("#btnAddPerson").addEventListener("click", ()=> openPerson({}, true));
-
-    $("#btnAddRelQuick").addEventListener("click", ()=> { goTab("relations"); openRelationEditor(null); });
-    $("#btnAddRelation").addEventListener("click", ()=> openRelationEditor(null));
-    $("#btnRelCheck").addEventListener("click", checkRelations);
-
-    $("#btnAddEventQuick").addEventListener("click", ()=> { goTab("events"); openEvent(null); });
-    $("#btnAddEvent").addEventListener("click", ()=> openEvent(null));
-
-    $("#btnAddPhotoQuick").addEventListener("click", openAddPhoto);
-    $("#btnAddPhoto").addEventListener("click", openAddPhoto);
-    $("#btnClearPhotos").addEventListener("click", ()=>{
-      if(!confirm("Xóa toàn bộ ảnh local?")) return;
-      state.photos = [];
-      toast("Đã xóa ảnh");
-      renderPhotos(); updateStats(); save();
+    document.querySelectorAll(".tab").forEach(t=>{
+      t.addEventListener("click", ()=> goTab(t.dataset.tab));
     });
 
-    $("#btnBuildTree").addEventListener("click", ()=> buildTree($("#rootSelect").value));
-    $("#btnTreeMode").addEventListener("click", ()=>{
-      state.settings.treeMode = (state.settings.treeMode==="compact") ? "wide" : "compact";
-      $("#btnTreeMode").textContent = "Chế độ: " + (state.settings.treeMode==="compact" ? "Gọn" : "Rộng");
-      toast("Đã đổi chế độ cây");
-      save();
+    // =========================
+    // 10) Wire buttons
+    // =========================
+    $("#btnSaveCfg").addEventListener("click", ()=>{
+      const url = $("#cfgUrl").value.trim();
+      const key = $("#cfgKey").value.trim();
+      const familyCode = $("#cfgFamilyCode").value.trim();
+      if(!url || !key || !familyCode) return toast("Thiếu URL/KEY/Mã gia phả");
+      CFG = { url, key, familyCode };
+      localStorage.setItem(LSKEY, JSON.stringify(CFG));
+      toast("Đã lưu cấu hình");
+      connect();
     });
 
-    $("#btnSortEvents").addEventListener("click", ()=>{
-      state.settings.eventSort = (state.settings.eventSort==="desc") ? "asc" : "desc";
-      $("#btnSortEvents").textContent = "Sắp xếp: " + (state.settings.eventSort==="desc" ? "Mới → Cũ" : "Cũ → Mới");
-      renderEvents(); save();
+    $("#btnClearCfg").addEventListener("click", ()=>{
+      localStorage.removeItem(LSKEY);
+      toast("Đã xóa cấu hình");
+      location.reload();
     });
 
-    $("#btnNotePhaky").addEventListener("click", ()=> openNote("phaky"));
-    $("#btnNoteTuduong").addEventListener("click", ()=> openNote("tuduong"));
-    $("#btnSaveNote").addEventListener("click", saveNote);
-    $("#btnPrintNote").addEventListener("click", printNote);
-    $("#btnOpenPhaky").addEventListener("click", ()=> openNote("phaky"));
-    $("#btnOpenTuduong").addEventListener("click", ()=> openNote("tuduong"));
+    $("#btnRefresh").addEventListener("click", async ()=>{
+      try{ await refreshAll(); toast("Đã tải lại"); }
+      catch(e){ console.error(e); toast("Lỗi tải lại"); }
+    });
+
+    $("#btnOpenPeople").addEventListener("click", ()=> goTab("people"));
+    $("#btnBackHome1").addEventListener("click", ()=> goTab("home"));
+    $("#btnBackHome2").addEventListener("click", ()=> goTab("home"));
 
     $("#btnSearch").addEventListener("click", ()=>{
-      const key = ($("#q").value||"").trim().toLowerCase();
-      if(!key) return toast("Nhập từ khóa");
-      $("#q2").value = $("#q").value;
-      goTab("people");
-      doSearch(key);
-    });
-    $("#btnSearch2").addEventListener("click", ()=>{
-      const key = ($("#q2").value||"").trim().toLowerCase();
-      if(!key) return renderPeople(state.people);
-      doSearch(key);
-    });
-
-    function doSearch(key){
-      const arr = state.people.filter(p=>{
-        return (p.full_name||"").toLowerCase().includes(key)
-          || String(p.birth_year||"").includes(key)
-          || (p.hometown_province||"").toLowerCase().includes(key)
-          || (p.current_address||"").toLowerCase().includes(key)
-          || (p.display_role||"").toLowerCase().includes(key);
+      const k = $("#q").value.trim().toLowerCase();
+      if(!k) return renderPeople(people);
+      const arr = people.filter(p=>{
+        return (p.full_name||"").toLowerCase().includes(k)
+          || String(p.birth_year||"").includes(k)
+          || (p.hometown_province||"").toLowerCase().includes(k)
+          || (p.phone||"").toLowerCase().includes(k);
       });
       renderPeople(arr);
-      toast(`Tìm thấy ${arr.length}`);
+    });
+
+    $("#btnAddPerson").addEventListener("click", openAddPerson);
+    $("#btnAddPerson2").addEventListener("click", openAddPerson);
+
+    $("#btnCreateEvent").addEventListener("click", openCreateEvent);
+    $("#btnCreateEventTop").addEventListener("click", openCreateEvent);
+
+    $("#btnBell").addEventListener("click", ()=> openNotiCenter());
+    $("#btnOpenNoti").addEventListener("click", ()=> openNotiCenter());
+
+    $("#btnEnablePush").addEventListener("click", enablePushFlow);
+
+    // =========================
+    // 11) Init
+    // =========================
+    connect();
+
+    // =========================
+    // 12) Util for VAPID conversion
+    // =========================
+    function urlBase64ToUint8Array(base64String){
+      const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+      const rawData = atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i=0; i<rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+      return outputArray;
     }
-
-    $("#btnExport").addEventListener("click", exportJson);
-    $("#btnImport").addEventListener("click", importJson);
-    $("#btnReset").addEventListener("click", resetAll);
-
-    $("#btnQR").addEventListener("click", openQR);
-    $("#btnOpenQR2").addEventListener("click", openQR);
-
-    // ====== start ======
-    refreshHeader();
-    // default note open label
-    $("#noteKind").textContent = "Phả ký";
-    $("#btnTreeMode").textContent = "Chế độ: " + (state.settings.treeMode==="compact" ? "Gọn" : "Rộng");
-    $("#btnSortEvents").textContent = "Sắp xếp: " + (state.settings.eventSort==="desc" ? "Mới → Cũ" : "Cũ → Mới");
+    function arrayBufferToBase64(buffer){
+      if(!buffer) return null;
+      const bytes = new Uint8Array(buffer);
+      let binary = "";
+      for(let i=0;i<bytes.byteLength;i++) binary += String.fromCharCode(bytes[i]);
+      return btoa(binary);
+    }
   </script>
 </body>
 </html>
