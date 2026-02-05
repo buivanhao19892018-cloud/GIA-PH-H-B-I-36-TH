@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Gia Phả • PWA Demo Menu</title>
+  <meta name="theme-color" content="#0b1220" />
+  <style>
+    :root{
+      --bg:#07101d; --panel:#0b1730; --panel2:#0a1427;
+      --text:#e8f0ff; --muted:#a8b7d6; --line:rgba(255,255,255,.09);
+      --good:#32d583; --warn:#fdb022; --bad:#f97066; --chip:#12264b;
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --r:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1100px 600px at 20% -10%, rgba(79,140,255,.18), transparent 60%),
+                  radial-gradient(900px 500px at 100% 10%, rgba(50,213,131,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit; text-decoration:none}
+    .app{
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      min-height:100vh;
+    }
+    /* Sidebar */
+    .side{
+      position:sticky; top:0; height:100vh;
+      padding:16px;
+      border-right:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(11,23,48,.92), rgba(7,16,29,.85));
+      backdrop-filter: blur(6px);
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center;
+      padding:14px 12px; border:1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(10,20,39,.7);
+      box-shadow: var(--shadow);
+    }
+    .logo{
+      width:44px; height:44px; border-radius:14px;
+      display:grid; place-items:center;
+      background: radial-gradient(circle at 30% 30%, rgba(79,140,255,.45), rgba(18,38,75,.9));
+      border:1px solid rgba(255,255,255,.08);
+      font-weight:800;
+    }
+    .brand h1{margin:0; font-size:14px; line-height:1.2}
+    .brand .sub{color:var(--muted); font-size:12px; margin-top:4px}
+    .search{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(10,20,39,.55);
+      display:flex; gap:10px; align-items:center;
+    }
+    .search input{
+      width:100%; background:transparent; border:0; outline:none; color:var(--text);
+      font-size:13px;
+    }
+    .menu{margin-top:14px; display:flex; flex-direction:column; gap:8px}
+    .mgroup{margin-top:10px}
+    .mtitle{color:var(--muted); font-size:11px; letter-spacing:.12em; text-transform:uppercase; margin:10px 6px 6px}
+    .item{
+      display:flex; gap:10px; align-items:center;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid transparent;
+      color:var(--text);
+      background: transparent;
+      cursor:pointer;
+      user-select:none;
+    }
+    .item:hover{background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.06)}
+    .item.active{
+      background: rgba(79,140,255,.16);
+      border-color: rgba(79,140,255,.25);
+      box-shadow: 0 10px 24px rgba(0,0,0,.2);
+    }
+    .ico{
+      width:28px; height:28px; border-radius:10px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.06);
+      font-size:14px;
+    }
+    .badge{
+      margin-left:auto;
+      font-size:11px; color:var(--muted);
+      padding:3px 8px; border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .sidefooter{
+      position:absolute; left:16px; right:16px; bottom:16px;
+      border-top:1px dashed rgba(255,255,255,.10);
+      padding-top:12px;
+      color:var(--muted); font-size:12px;
+    }
+    /* Main */
+    .main{padding:18px}
+    .topbar{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      padding:14px 16px;
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(10,20,39,.55);
+      box-shadow: var(--shadow);
+    }
+    .topbar .title{font-size:14px; font-weight:700}
+    .topbar .hint{color:var(--muted); font-size:12px}
+    .actions{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{
+      padding:9px 12px; border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      cursor:pointer;
+      font-size:13px;
+    }
+    .btn.primary{
+      background: rgba(50,213,131,.14);
+      border-color: rgba(50,213,131,.25);
+    }
+    .btn.warn{
+      background: rgba(253,176,34,.14);
+      border-color: rgba(253,176,34,.22);
+    }
+    .grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+    .card{
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(11,23,48,.55);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex; justify-content:space-between; align-items:flex-end; gap:10px;
+    }
+    .card .hd .h{font-weight:800; font-size:14px}
+    .card .hd .s{color:var(--muted); font-size:12px}
+    .card .bd{padding:14px}
+    .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+    .chip{
+      font-size:12px; color:var(--muted);
+      padding:6px 10px; border-radius:999px;
+      background: rgba(18,38,75,.7);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .list{display:flex; flex-direction:column; gap:10px}
+    .row{
+      display:flex; gap:12px; align-items:center;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.07);
+      border-radius: 14px;
+      background: rgba(10,20,39,.55);
+    }
+    .avatar{
+      width:38px; height:38px; border-radius:14px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      display:grid; place-items:center;
+      font-weight:800;
+    }
+    .row .meta{display:flex; flex-direction:column; gap:2px}
+    .row .meta .name{font-weight:800; font-size:13px}
+    .row .meta .sub{color:var(--muted); font-size:12px}
+    .row .tag{margin-left:auto; font-size:11px; padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.08); color:var(--muted)}
+    .mocktree{
+      height:320px;
+      border:1px dashed rgba(255,255,255,.14);
+      border-radius: 16px;
+      background: radial-gradient(circle at 20% 20%, rgba(79,140,255,.10), transparent 55%),
+                  radial-gradient(circle at 80% 40%, rgba(50,213,131,.08), transparent 55%),
+                  rgba(10,20,39,.40);
+      display:grid; place-items:center;
+      color:var(--muted);
+      padding:14px;
+      text-align:center;
+      line-height:1.5;
+    }
+
+    /* Mobile */
+    @media (max-width: 900px){
+      .app{grid-template-columns: 1fr}
+      .side{
+        position:relative; height:auto;
+        border-right:none; border-bottom:1px solid var(--line);
+      }
+      .sidefooter{position:relative; left:auto; right:auto; bottom:auto; margin-top:12px}
+      .grid{grid-template-columns: 1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="side">
+      <div class="brand">
+        <div class="logo">GP</div>
+        <div>
+          <h1>Gia Phả • PWA</h1>
+          <div class="sub">Demo menu & điều hướng</div>
+        </div>
+      </div>
+
+      <div class="search" title="Tìm nhanh (demo)">
+        🔎 <input placeholder="Tìm tên, năm sinh, quê quán…" />
+      </div>
+
+      <div class="menu" id="menu">
+        <div class="mgroup">
+          <div class="mtitle">Tổng quan</div>
+          <div class="item active" data-page="dashboard"><div class="ico">🏠</div> Bảng điều khiển <span class="badge">Home</span></div>
+          <div class="item" data-page="tree"><div class="ico">🌳</div> Cây gia phả <span class="badge">Zoom</span></div>
+          <div class="item" data-page="members"><div class="ico">👥</div> Thành viên <span class="badge">List</span></div>
+        </div>
+
+        <div class="mgroup">
+          <div class="mtitle">Nhập liệu</div>
+          <div class="item" data-page="add-person"><div class="ico">➕</div> Thêm người</div>
+          <div class="item" data-page="add-relation"><div class="ico">🔗</div> Thêm quan hệ</div>
+          <div class="item" data-page="events"><div class="ico">📅</div> Sự kiện / Mốc</div>
+        </div>
+
+        <div class="mgroup">
+          <div class="mtitle">Tra cứu</div>
+          <div class="item" data-page="search"><div class="ico">🧭</div> Tìm họ hàng</div>
+          <div class="item" data-page="reports"><div class="ico">🧾</div> Báo cáo đời / chi họ</div>
+        </div>
+
+        <div class="mgroup">
+          <div class="mtitle">Sao lưu & chia sẻ</div>
+          <div class="item" data-page="backup"><div class="ico">💾</div> Import / Export</div>
+          <div class="item" data-page="print"><div class="ico">🖨️</div> In / Xuất PDF</div>
+        </div>
+
+        <div class="mgroup">
+          <div class="mtitle">Cài đặt</div>
+          <div class="item" data-page="settings"><div class="ico">⚙️</div> Cài đặt & phân quyền</div>
+          <div class="item" data-page="about"><div class="ico">ℹ️</div> Giới thiệu</div>
+        </div>
+      </div>
+
+      <div class="sidefooter">
+        <div><b>Gợi ý:</b> Menu này là “xương sống”. Sau khi duyệt ok, mình sẽ ghép dữ liệu + vẽ cây thật.</div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="title" id="pageTitle">Bảng điều khiển</div>
+          <div class="hint" id="pageHint">Tổng quan: thống kê nhanh, người mới thêm, việc cần làm.</div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="quickAdd">+ Thêm nhanh</button>
+          <button class="btn warn" id="quickExport">Export JSON</button>
+          <button class="btn" id="installHint">Cài như App (PWA)</button>
+        </div>
+      </div>
+
+      <div id="pageBody">
+        <!-- DASHBOARD -->
+        <div class="grid">
+          <section class="card">
+            <div class="hd">
+              <div>
+                <div class="h">Thành viên gần đây</div>
+                <div class="s">Demo danh sách (sau sẽ lấy từ DB)</div>
+              </div>
+              <div class="chips">
+                <div class="chip">Tổng: 128</div>
+                <div class="chip">Nam: 66</div>
+                <div class="chip">Nữ: 62</div>
+              </div>
+            </div>
+            <div class="bd">
+              <div class="list">
+                <div class="row">
+                  <div class="avatar">BH</div>
+                  <div class="meta">
+                    <div class="name">Bùi Hào</div>
+                    <div class="sub">199x • Thanh Hóa</div>
+                  </div>
+                  <div class="tag">Chủ quản</div>
+                </div>
+                <div class="row">
+                  <div class="avatar">BN</div>
+                  <div class="meta">
+                    <div class="name">Bùi Văn Bình</div>
+                    <div class="sub">19xx • Thạch Cẩm</div>
+                  </div>
+                  <div class="tag">Nhánh 1</div>
+                </div>
+                <div class="row">
+                  <div class="avatar">DH</div>
+                  <div class="meta">
+                    <div class="name">Đoàn Khắc Hiệp</div>
+                    <div class="sub">19xx • Kim Tân</div>
+                  </div>
+                  <div class="tag">Thông gia</div>
+                </div>
+              </div>
+              <div class="chips">
+                <div class="chip">Việc cần: thêm cha/mẹ cho 7 hồ sơ</div>
+                <div class="chip">Thiếu ngày sinh: 12 hồ sơ</div>
+              </div>
+            </div>
+          </section>
+
+          <aside class="card">
+            <div class="hd">
+              <div>
+                <div class="h">Cây gia phả (preview)</div>
+                <div class="s">Chỗ này sẽ render cây + zoom</div>
+              </div>
+            </div>
+            <div class="bd">
+              <div class="mocktree">
+                <div>
+                  <div style="font-weight:800; color:var(--text); margin-bottom:6px;">🌳 Khu vực cây</div>
+                  <div>Zoom/Pan • Chọn người • Xem cha/mẹ/vợ/chồng/con</div>
+                  <div style="margin-top:10px;">(Demo menu — chưa gắn dữ liệu)</div>
+                </div>
+              </div>
+              <div class="chips">
+                <div class="chip">Click “Cây gia phả” ở menu để xem trang riêng</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const pages = {
+      dashboard: {
+        title: "Bảng điều khiển",
+        hint: "Tổng quan: thống kê nhanh, người mới thêm, việc cần làm.",
+        html: document.getElementById("pageBody").innerHTML
+      },
+      tree: {
+        title: "Cây gia phả",
+        hint: "Xem cây (zoom/pan), chọn người để xem quan hệ.",
+        html: `
+          <div class="grid">
+            <section class="card">
+              <div class="hd"><div><div class="h">Cây gia phả</div><div class="s">Demo khung hiển thị</div></div></div>
+              <div class="bd">
+                <div class="mocktree" style="height:520px">
+                  <div>
+                    <div style="font-weight:900; color:var(--text); margin-bottom:6px;">🌳 Canvas/Graph Render</div>
+                    <div>Chế độ: Theo nhánh / Theo đời / Theo họ</div>
+                    <div style="margin-top:10px;">Sắp tới mình sẽ dùng layout cây + link cha/mẹ + hôn nhân.</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <aside class="card">
+              <div class="hd"><div><div class="h">Bộ lọc</div><div class="s">Demo</div></div></div>
+              <div class="bd">
+                <div class="chips">
+                  <div class="chip">Chi họ: Tất cả</div>
+                  <div class="chip">Đời: 1 → 8</div>
+                  <div class="chip">Hiển thị: Cha/Mẹ</div>
+                  <div class="chip">Hôn nhân: Có</div>
+                </div>
+                <div style="margin-top:12px; color:var(--muted); font-size:13px; line-height:1.6">
+                  Chọn 1 người → panel phải sẽ hiện: cha/mẹ, vợ/chồng, con, ghi chú, ảnh.
+                </div>
+              </div>
+            </aside>
+          </div>`
+      },
+      members: {
+        title: "Thành viên",
+        hint: "Danh sách + lọc theo đời/chi họ/quê quán.",
+        html: `
+          <section class="card">
+            <div class="hd"><div><div class="h">Danh sách thành viên</div><div class="s">Demo list + filter</div></div>
+              <div class="chips"><div class="chip">Lọc: Chi họ</div><div class="chip">Lọc: Đời</div><div class="chip">Sắp xếp: A→Z</div></div>
+            </div>
+            <div class="bd">
+              <div class="list">
+                ${["Bùi Hào","Bùi Văn Bình","Bùi Thị Lan","Bùi Văn Nam","Bùi Thị Hương"].map((n,i)=>`
+                  <div class="row">
+                    <div class="avatar">${n.split(" ").slice(-1)[0].slice(0,2).toUpperCase()}</div>
+                    <div class="meta"><div class="name">${n}</div><div class="sub">Đời ${Math.max(1, (i%4)+1)} • Quê: Thanh Hóa</div></div>
+                    <div class="tag">Mở hồ sơ</div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          </section>`
+      },
+      "add-person": {
+        title: "Thêm người",
+        hint: "Tạo hồ sơ: thông tin cơ bản + ảnh + ghi chú.",
+        html: `
+          <section class="card">
+            <div class="hd"><div><div class="h">Form thêm người (demo)</div><div class="s">Sau sẽ lưu vào DB</div></div></div>
+            <div class="bd" style="color:var(--muted); line-height:1.8">
+              Trường bắt buộc: <b style="color:var(--text)">Họ tên</b>, <b style="color:var(--text)">Giới tính</b>.<br/>
+              Trường nên có: Ngày sinh/mất, Quê quán, Ảnh, Ghi chú, Mã nhánh/đời.
+              <div class="chips" style="margin-top:12px">
+                <div class="chip">+ Upload ảnh</div>
+                <div class="chip">+ Gắn đời</div>
+                <div class="chip">+ Gắn chi họ</div>
+              </div>
+            </div>
+          </section>`
+      },
+      "add-relation": {
+        title: "Thêm quan hệ",
+        hint: "Liên kết cha/mẹ–con, vợ–chồng, con nuôi…",
+        html: `
+          <section class="card">
+            <div class="hd"><div><div class="h">Tạo quan hệ (demo)</div><div class="s">Chọn A, chọn B, chọn loại quan hệ</div></div></div>
+            <div class="bd" style="color:var(--muted); line-height:1.8">
+              Loại quan hệ:
+              <div class="chips" style="margin-top:10px">
+                <div class="chip">PARENT_OF</div>
+                <div class="chip">SPOUSE_OF</div>
+                <div class="chip">ADOPTED_PARENT_OF</div>
+              </div>
+              <div style="margin-top:12px">
+                Rule: Không tạo vòng lặp sai (con không thể là cha của chính mình), cảnh báo trùng quan hệ.
+              </div>
+            </div>
+          </section>`
+      },
+      events: {
+        title: "Sự kiện / Mốc",
+        hint: "Cưới, giỗ, an táng, di cư… gắn theo người hoặc theo nhánh.",
+        html: `
+          <section class="card">
+            <div class="hd"><div><div class="h">Sự kiện (demo)</div><div class="s">Timeline theo năm</div></div></div>
+            <div class="bd">
+              <div class="list">
+                <div class="row"><div class="ico">💍</div><div class="meta"><div class="name">Lễ cưới</div><div class="sub">1990 • Gắn: A ↔ B</div></div><div class="tag">Chi tiết</div></div>
+                <div class="row"><div class="ico">🕯️</div><div class="meta"><div class="name">Ngày giỗ</div><div class="sub">Âm lịch • Nhắc hằng năm</div></div><div class="tag">Nhắc</div></div>
+                <div class="row"><div class="ico">🧳</div><div class="meta"><div class="name">Di cư</div><div class="sub">2005 • Thanh Hóa → Hà Nội</div></div><div class="tag">Ghi chú</div></div>
+              </div>
+            </div>
+          </section>`
+      },
+      search: {
+        title: "Tìm họ hàng",
+        hint: "Tìm quan hệ giữa 2 người: ông/bà, cô/dì/chú/bác, anh em họ…",
+        html: `
+          <section class="card">
+            <div class="hd"><div><div class="h">Tìm quan hệ (demo)</div><div class="s">Sau sẽ chạy thuật toán đường đi ngắn trên graph</div></div></div>
+            <div class="bd" style="color:var(--muted); line-height:1.8">
+              Chọn <b style="color:var(--text)">Người A</b> và <b style="color:var(--text)">Người B</b> → hệ thống trả về:
+              <div class="chips" style="margin-top:10px">
+                <div class="chip">Quan hệ: Anh em họ đời 2</div>
+                <div class="chip">Đường đi: A → Cha → Ông → Con → B</div>
+              </div>
+            </div>
+          </section>`
+      },
+      reports: {
+        title: "Báo cáo đời / chi họ",
+        hint: "Thống kê theo đời: số người, tỷ lệ nam/nữ, phân bố quê quán.",
+        html: `
+          <section class="card">
+            <div class="hd"><div><div class="h">Báo cáo (demo)</div><div class="s">Biểu đồ & bảng thống kê</div></div></div>
+            <div class="bd" style="color:var(--muted); line-height:1.8">
+              Báo cáo sẽ có: theo đời, theo nhánh, theo địa phương, theo họ tên lặp…
+              <div class="chips" style="margin-top:10px">
+                <div class="chip">Đời 1: 8</div><div class="chip">Đời 2: 16</div><div class="chip">Đời 3: 24</div>
+              </div>
+            </div>
+          </section>`
+      },
+      backup: {
+        title: "Import / Export",
+        hint: "Sao lưu JSON, khôi phục, đồng bộ cloud (tuỳ chọn).",
+        html: `
+          <section class="card">
+            <div class="hd"><div><div class="h">Sao lưu dữ liệu (demo)</div><div class="s">PWA có thể lưu offline + export file</div></div></div>
+            <div class="bd" style="color:var(--muted); line-height:1.8">
+              Nút chính:
+              <div class="chips" style="margin-top:10px">
+                <div class="chip">Export JSON</div>
+                <div class="chip">Import JSON</div>
+                <div class="chip">Tự động backup</div>
+              </div>
+            </div>
+          </section>`
+      },
+      print: {
+        title: "In / Xuất PDF",
+        hint: "Xuất cây gia phả theo nhánh/đời, in khổ A4/A3.",
+        html: `
+          <section class="card">
+            <div class="hd"><div><div class="h">In / PDF (demo)</div><div class="s">Xuất danh sách + sơ đồ cây</div></div></div>
+            <div class="bd" style="color:var(--muted); line-height:1.8">
+              Tuỳ chọn: A4 dọc/ngang, A3, thêm logo họ, thêm ghi chú, ẩn thông tin nhạy cảm.
+            </div>
+          </section>`
+      },
+      settings: {
+        title: "Cài đặt & phân quyền",
+        hint: "Chế độ riêng tư: chỉ xem / được sửa / quản trị.",
+        html: `
+          <section class="card">
+            <div class="hd"><div><div class="h">Cài đặt (demo)</div><div class="s">Sau sẽ có tài khoản & phân quyền</div></div></div>
+            <div class="bd" style="color:var(--muted); line-height:1.8">
+              Phân quyền:
+              <div class="chips" style="margin-top:10px">
+                <div class="chip">Viewer</div><div class="chip">Editor</div><div class="chip">Admin</div>
+              </div>
+              <div style="margin-top:12px">Bảo mật: ẩn ngày sinh, ẩn thông tin người còn sống theo tuỳ chọn.</div>
+            </div>
+          </section>`
+      },
+      about: {
+        title: "Giới thiệu",
+        hint: "Thông tin ứng dụng, phiên bản, hướng dẫn sử dụng.",
+        html: `
+          <section class="card">
+            <div class="hd"><div><div class="h">Gia Phả • PWA</div><div class="s">Demo menu</div></div></div>
+            <div class="bd" style="color:var(--muted); line-height:1.8">
+              Bước tiếp theo: gắn dữ liệu thật (JSON/DB) → vẽ cây (graph) → export/in.
+            </div>
+          </section>`
+      }
+    };
+
+    const menu = document.getElementById("menu");
+    const pageTitle = document.getElementById("pageTitle");
+    const pageHint  = document.getElementById("pageHint");
+    const pageBody  = document.getElementById("pageBody");
+
+    function go(page){
+      [...menu.querySelectorAll(".item")].forEach(x=>x.classList.toggle("active", x.dataset.page===page));
+      pageTitle.textContent = pages[page].title;
+      pageHint.textContent  = pages[page].hint;
+      pageBody.innerHTML    = pages[page].html;
+      history.replaceState(null, "", "#"+page);
+    }
+
+    menu.addEventListener("click", (e)=>{
+      const item = e.target.closest(".item");
+      if(!item) return;
+      go(item.dataset.page);
+    });
+
+    document.getElementById("quickAdd").onclick = ()=>go("add-person");
+    document.getElementById("quickExport").onclick = ()=>alert("Demo: sau sẽ export JSON thật.");
+    document.getElementById("installHint").onclick = ()=>alert("Trên Chrome: Menu ⋮ → 'Thêm vào Màn hình chính' để cài như app.");
+
+    const initial = (location.hash || "#dashboard").slice(1);
+    go(pages[initial] ? initial : "dashboard");
+  </script>
+</body>
+</html>
