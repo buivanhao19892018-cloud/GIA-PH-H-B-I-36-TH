@@ -1,1938 +1,1135 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
-  <title>Gia phả họ Bùi • PWA • Bùi Hào</title>
-  <meta name="theme-color" content="#0b1220"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Gia phả họ Bùi • CLOUD PWA</title>
+  <meta name="theme-color" content="#7f1d1d" />
+  <link rel="manifest" href="manifest.webmanifest">
   <style>
     :root{
-      --bg:#07101d; --panel:#0b1730; --panel2:#0a1427;
-      --text:#e8f0ff; --muted:#a8b7d6; --line:rgba(255,255,255,.10);
-      --accent:#4f8cff; --ok:#32d583; --warn:#fdb022; --bad:#f97066;
-      --r:18px; --shadow: 0 14px 36px rgba(0,0,0,.42);
+      --bg:#0b1020; --card:#0f1730; --card2:#0b1329;
+      --text:#e8f0ff; --muted:#a8b7d6; --line:rgba(255,255,255,.08);
+      --brand:#7f1d1d; --brand2:#b91c1c; --good:#22c55e; --warn:#f59e0b;
+      --shadow: 0 18px 40px rgba(0,0,0,.35);
+      --r:18px;
+      font-synthesis-weight:none;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 700px at 15% -10%, rgba(79,140,255,.22), transparent 60%),
-        radial-gradient(1000px 600px at 100% 10%, rgba(50,213,131,.12), transparent 55%),
-        var(--bg);
-      -webkit-tap-highlight-color: transparent;
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:radial-gradient(1100px 700px at 20% 0%, rgba(185,28,28,.22), transparent 60%), var(--bg); color:var(--text)}
+    a{color:inherit}
+    .wrap{max-width:1000px; margin:0 auto; padding:14px 14px 90px}
+    .top{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      background:linear-gradient(135deg, rgba(127,29,29,.95), rgba(15,23,48,.65));
+      border:1px solid var(--line); border-radius:22px; padding:14px 14px;
+      box-shadow:var(--shadow);
     }
-    a{color:inherit;text-decoration:none}
-    button,input,select,textarea{font:inherit}
-    .topbar{
-      position:sticky; top:0; z-index:50;
-      padding:12px;
-      background: rgba(7,16,29,.72);
-      backdrop-filter: blur(10px);
-      border-bottom:1px solid var(--line);
-    }
-    .topbar-inner{
-      max-width:1200px; margin:0 auto;
-      display:flex; align-items:center; gap:10px; justify-content:space-between;
-    }
-    .left{display:flex; align-items:center; gap:10px; min-width:0;}
-    .hamb{
-      width:42px; height:42px; border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color:var(--text); cursor:pointer;
-      display:grid; place-items:center;
-    }
-    .brand{display:flex; flex-direction:column; min-width:0;}
-    .brand .t{font-weight:1000; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-    .brand .s{color:var(--muted); font-size:12px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-    .right{display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end}
-    .pill{
-      display:flex; gap:8px; align-items:center;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color:var(--muted);
-      font-size:12px;
-    }
-    .btn{
-      padding:10px 12px; border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color:var(--text); cursor:pointer; font-size:13px;
-    }
-    .btn.primary{background: rgba(50,213,131,.15); border-color: rgba(50,213,131,.26);}
-    .btn.warn{background: rgba(253,176,34,.14); border-color: rgba(253,176,34,.24);}
-    .btn.bad{background: rgba(249,112,102,.12); border-color: rgba(249,112,102,.24); color:#ffe8e6;}
-    .wrap{max-width:1200px;margin:0 auto;padding:14px 12px 110px;}
-    .page-title{display:flex;gap:10px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin:10px 2px 12px}
-    .page-title h2{margin:0;font-size:18px;font-weight:1000}
-    .page-title .hint{color:var(--muted);font-size:13px;line-height:1.4;margin-top:4px}
-    .chips{display:flex;gap:8px;flex-wrap:wrap}
-    .chip{
-      font-size:12px; color:var(--muted);
-      padding:6px 10px; border-radius:999px;
-      background: rgba(18,38,75,.72);
-      border:1px solid rgba(255,255,255,.10);
-    }
-    .chip.ok{color:#d9ffef;border-color:rgba(50,213,131,.24);background: rgba(50,213,131,.12)}
-    .chip.warn{color:#fff1d6;border-color:rgba(253,176,34,.26);background: rgba(253,176,34,.12)}
-    .chip.bad{color:#ffe8e6;border-color:rgba(249,112,102,.24);background: rgba(249,112,102,.10)}
-    .grid{display:grid;grid-template-columns:1fr;gap:12px}
-    @media(min-width:980px){.grid.two{grid-template-columns:1.15fr .85fr}}
-    .card{
-      border:1px solid var(--line);
-      border-radius: var(--r);
-      background: rgba(11,23,48,.58);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .card .hd{
-      padding:14px 14px 10px;
-      border-bottom:1px solid rgba(255,255,255,.07);
-      display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;
-    }
-    .card .hd .h{font-weight:1000;font-size:14px}
-    .card .hd .s{color:var(--muted);font-size:12px;margin-top:4px}
-    .card .bd{padding:14px}
-    .notice{
-      padding:12px 12px;border-radius:16px;
-      border:1px solid rgba(79,140,255,.22);
-      background: rgba(79,140,255,.10);
-      color:#dfe9ff; line-height:1.6; font-size:13px;
-    }
-    .notice.danger{border-color:rgba(249,112,102,.22); background: rgba(249,112,102,.10); color:#ffe8e6;}
-    .muted{color:var(--muted)}
-    .sep{height:1px;background: rgba(255,255,255,.08);margin:12px 0}
-
-    /* Drawer */
-    .backdrop{
-      position:fixed;inset:0;z-index:80;
-      background: rgba(0,0,0,.55);
-      opacity:0;pointer-events:none;transition:.18s ease;
-    }
-    .backdrop.show{opacity:1;pointer-events:auto}
-    .drawer{
-      position:fixed;top:0;left:0;bottom:0;z-index:90;
-      width:min(360px,92vw);
-      transform: translateX(-102%); transition:.2s ease;
-      padding:14px;
-      background: linear-gradient(180deg, rgba(11,23,48,.95), rgba(7,16,29,.92));
-      border-right:1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(10px);
-      box-shadow: 20px 0 60px rgba(0,0,0,.45);
-    }
-    .drawer.show{transform: translateX(0)}
-    .brandbox{
-      display:flex; gap:12px; align-items:center;
-      padding:14px 12px;border:1px solid rgba(255,255,255,.10);
-      border-radius: var(--r);
-      background: rgba(10,20,39,.55);
-    }
+    .brand{display:flex; gap:12px; align-items:center}
     .logo{
-      width:46px;height:46px;border-radius:16px;
-      display:grid;place-items:center;
-      background: radial-gradient(circle at 30% 30%, rgba(79,140,255,.45), rgba(18,38,75,.9));
-      border:1px solid rgba(255,255,255,.10);
-      font-weight:1000;
+      width:46px; height:46px; border-radius:16px;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.25), transparent 55%), rgba(0,0,0,.25);
+      display:grid; place-items:center; border:1px solid rgba(255,255,255,.14);
+      font-weight:800;
     }
-    .iconbtn{
-      width:40px;height:40px;border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color:var(--text); cursor:pointer;
-      display:grid;place-items:center;
-    }
-    .search{
-      margin-top:12px;
-      padding:10px 12px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(10,20,39,.55);
-      display:flex;gap:10px;align-items:center;
-    }
-    .search input{width:100%;border:0;outline:none;background:transparent;color:var(--text);font-size:13px}
-    .mtitle{color:var(--muted);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:12px 6px 6px}
-    .menu{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-    .item{
-      display:flex;gap:10px;align-items:center;
-      padding:11px 12px;border-radius:16px;
-      border:1px solid transparent;background:transparent;
-      cursor:pointer;user-select:none;
-    }
-    .item:hover{background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.06)}
-    .item.active{background: rgba(79,140,255,.20); border-color: rgba(79,140,255,.28)}
-    .ico{
-      width:30px;height:30px;border-radius:12px;
-      display:grid;place-items:center;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-      font-size:14px; flex:0 0 auto;
-    }
-    .badge{
-      margin-left:auto;
-      font-size:11px;color:var(--muted);
-      padding:3px 8px;border-radius:999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-      flex:0 0 auto;
-    }
-    .foot{
-      position:absolute;left:14px;right:14px;bottom:14px;
-      border-top:1px dashed rgba(255,255,255,.12);
-      padding-top:12px;
-      color:var(--muted);font-size:12px;line-height:1.5;
-    }
-
-    /* Lists */
-    .list{display:flex;flex-direction:column;gap:10px}
-    .row{
-      display:flex;gap:12px;align-items:center;
-      padding:10px 12px;border:1px solid rgba(255,255,255,.08);
-      border-radius:16px;background: rgba(10,20,39,.55);
-    }
-    .avatar{
-      width:42px;height:42px;border-radius:16px;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.10);
-      display:grid;place-items:center;
-      font-weight:1000; flex:0 0 auto;
-    }
-    .meta{display:flex;flex-direction:column;gap:2px;min-width:0}
-    .meta .name{font-weight:1000;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .meta .sub{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .actions{margin-left:auto;display:flex;gap:8px;flex:0 0 auto}
-
-    /* Forms */
-    .form{display:grid;gap:10px}
-    .fgrid{display:grid;grid-template-columns:1fr;gap:10px}
-    @media(min-width:680px){.fgrid.two{grid-template-columns:1fr 1fr}.fgrid.three{grid-template-columns:1fr 1fr 1fr}}
-    .frow{display:grid;gap:8px}
-    .frow label{font-size:12px;color:var(--muted)}
-    .frow input,.frow select,.frow textarea{
-      padding:12px 12px;border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(10,20,39,.55);
-      color:var(--text); outline:none;
-    }
-    .frow textarea{min-height:90px;resize:vertical}
-
-    /* Tree */
-    .treeWrap{
-      height:560px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.10);
-      background:
-        radial-gradient(circle at 20% 20%, rgba(79,140,255,.12), transparent 55%),
-        radial-gradient(circle at 80% 40%, rgba(50,213,131,.09), transparent 55%),
-        rgba(10,20,39,.42);
-      overflow:hidden;
-      position:relative;
-      touch-action:none;
-    }
-    .treeHud{
-      position:absolute;left:12px;top:12px;z-index:2;
-      display:flex;gap:8px;flex-wrap:wrap;
-    }
-    .tiny{
-      padding:8px 10px;border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(7,16,29,.55);
-      backdrop-filter: blur(8px);
+    .title{font-weight:800; font-size:16px; line-height:1.1}
+    .sub{color:rgba(255,255,255,.8); font-size:12px}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.25);
       color:var(--text);
-      font-size:12px;
-      cursor:pointer;
+      padding:10px 12px; border-radius:14px;
+      font-weight:700; cursor:pointer;
     }
-    .tiny.muted{color:var(--muted)}
-    svg{display:block; width:100%; height:100%;}
-    .node{
-      cursor:pointer;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
-    }
-    .node rect{
-      fill: rgba(11,23,48,.92);
-      stroke: rgba(255,255,255,.14);
-      stroke-width:1;
-      rx:14; ry:14;
-    }
-    .node .title{font-weight:900; font-size:12px; fill: #e8f0ff}
-    .node .sub{font-size:10.5px; fill: #a8b7d6}
-    .edge{
-      stroke: rgba(255,255,255,.20);
-      stroke-width: 2;
-      fill: none;
-    }
-    .edge.spouse{stroke: rgba(79,140,255,.35); stroke-width: 2.5}
-    .edge.parent{stroke: rgba(255,255,255,.22)}
-    .hintLine{
-      position:absolute; right:12px; top:12px; z-index:2;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(7,16,29,.55);
-      backdrop-filter: blur(8px);
-      color:var(--muted);
-      font-size:12px;
-      max-width: 60%;
-    }
-
-    /* Modal */
-    .modalWrap{
-      position:fixed; inset:0; z-index:120;
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      background: rgba(0,0,0,.55);
-      padding:12px;
-    }
-    .modalWrap.show{display:flex}
-    .modal{
-      width:min(920px, 100%);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(11,23,48,.92);
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
+    .btn.primary{background:linear-gradient(135deg, var(--brand2), var(--brand)); border-color:rgba(255,255,255,.18)}
+    .btn.good{background:linear-gradient(135deg, rgba(34,197,94,.9), rgba(22,163,74,.9))}
+    .btn.warn{background:linear-gradient(135deg, rgba(245,158,11,.95), rgba(217,119,6,.95))}
+    .btn.danger{background:linear-gradient(135deg, rgba(239,68,68,.95), rgba(185,28,28,.95))}
+    .card{
+      margin-top:14px;
+      border:1px solid var(--line); border-radius:var(--r);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow:var(--shadow);
       overflow:hidden;
     }
-    .modal .mhd{
-      padding:14px;
-      border-bottom:1px solid rgba(255,255,255,.08);
+    .card .hd{display:flex; justify-content:space-between; align-items:center; padding:12px 12px; border-bottom:1px solid var(--line); background:rgba(0,0,0,.18)}
+    .card .hd h3{margin:0; font-size:14px}
+    .card .bd{padding:12px}
+    .grid{display:grid; gap:10px}
+    @media(min-width:900px){ .grid.two{grid-template-columns:1fr 1fr} .grid.three{grid-template-columns:1.2fr .8fr .8fr} }
+    .field{display:flex; flex-direction:column; gap:6px}
+    .field label{font-size:12px; color:var(--muted)}
+    .field input,.field select,.field textarea{
+      width:100%; padding:11px 12px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.22); color:var(--text);
+      outline:none;
+    }
+    .field textarea{min-height:90px; resize:vertical}
+    .muted{color:var(--muted)}
+    .pill{padding:6px 10px; border:1px solid rgba(255,255,255,.12); border-radius:999px; background:rgba(0,0,0,.25); font-size:12px}
+    .list{display:flex; flex-direction:column; gap:10px}
+    .item{
+      border:1px solid rgba(255,255,255,.12); border-radius:16px;
+      background:rgba(0,0,0,.2); padding:10px;
       display:flex; gap:10px; align-items:center; justify-content:space-between;
     }
-    .modal .mhd .ttl{font-weight:1000}
-    .modal .mbd{padding:14px}
-    .modal .mft{
-      padding:12px 14px;
-      border-top:1px solid rgba(255,255,255,.08);
-      display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;
-    }
-
-    /* Bottom quick nav */
-    .bottomnav{
-      position:fixed;left:0;right:0;bottom:0;z-index:40;
-      padding:10px 10px 14px;
-      background: rgba(7,16,29,.72);
-      backdrop-filter: blur(10px);
+    .left{display:flex; gap:10px; align-items:center; min-width:0}
+    .avatar{width:44px; height:44px; border-radius:14px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); overflow:hidden; flex:0 0 auto}
+    .avatar img{width:100%; height:100%; object-fit:cover}
+    .name{font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:56vw}
+    .meta{font-size:12px; color:var(--muted)}
+    .tabs{
+      position:fixed; left:0; right:0; bottom:0;
+      background:rgba(11,16,32,.88);
       border-top:1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(14px);
+      padding:10px 10px env(safe-area-inset-bottom);
+      display:flex; gap:10px; justify-content:center;
     }
-    .bottomnav .bar{
-      max-width:1200px;margin:0 auto;
-      display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
-    }
-    .bitem{
-      padding:10px 10px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color:var(--muted);
-      cursor:pointer;
-      display:flex;gap:8px;align-items:center;justify-content:center;
-      font-size:12px;
-    }
-    .bitem.active{
-      color:var(--text);
-      border-color: rgba(79,140,255,.28);
-      background: rgba(79,140,255,.16);
-    }
+    .tab{width:min(160px, 22vw); text-align:center; padding:10px 10px; border-radius:14px; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.20); cursor:pointer; font-weight:800}
+    .tab.on{background:linear-gradient(135deg, rgba(185,28,28,.92), rgba(127,29,29,.92))}
+    .hide{display:none !important}
+    .toast{position:fixed; top:12px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,.75); border:1px solid rgba(255,255,255,.18); padding:10px 12px; border-radius:14px; z-index:99; max-width:92vw}
+    .treeBox{border:1px dashed rgba(255,255,255,.16); border-radius:16px; padding:10px; overflow:auto; background:rgba(0,0,0,.18)}
+    svg{max-width:100%}
+    .small{font-size:12px}
   </style>
 </head>
 <body>
-
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="left">
-      <button class="hamb" id="openDrawer" aria-label="Mở menu">☰</button>
+  <div class="wrap">
+    <div class="top">
       <div class="brand">
-        <div class="t" id="appTitle">Gia phả họ Bùi</div>
-        <div class="s" id="appSub">PWA • 1 file • Tác giả: Bùi Hào</div>
+        <div class="logo">BU</div>
+        <div>
+          <div class="title">Gia phả họ Bùi • CLOUD PWA</div>
+          <div class="sub">Tác giả: <b>Bùi Hào</b> • Supabase + GitHub Pages</div>
+        </div>
+      </div>
+      <div class="row">
+        <span class="pill" id="pillUser">Chưa đăng nhập</span>
+        <button class="btn" id="btnLogout">Đăng xuất</button>
       </div>
     </div>
-    <div class="right">
-      <div class="pill" id="kpiMini">👥 0 • 🔗 0 • 📅 0</div>
-      <button class="btn primary" id="quickAdd">+ Thêm người</button>
-      <button class="btn warn" id="quickExport">Export</button>
-    </div>
-  </div>
-</header>
 
-<div class="backdrop" id="backdrop"></div>
-
-<aside class="drawer" id="drawer">
-  <div class="brandbox">
-    <div class="logo">B</div>
-    <div style="min-width:0">
-      <div style="font-weight:1000;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Gia phả họ Bùi</div>
-      <div style="color:var(--muted);font-size:12px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Tác giả: Bùi Hào</div>
-    </div>
-    <button class="iconbtn" id="closeDrawer" aria-label="Đóng">✕</button>
-  </div>
-
-  <div class="search" title="Tìm nhanh (lọc danh sách)">
-    🔎 <input id="qSearch" placeholder="Tìm tên, năm sinh, quê quán, đời, nhánh…" />
-  </div>
-
-  <div class="menu" id="menu">
-    <div class="mtitle">Tổng quan</div>
-    <div class="item active" data-page="dashboard"><div class="ico">🏠</div> Bảng điều khiển <span class="badge">Home</span></div>
-    <div class="item" data-page="tree"><div class="ico">🌳</div> Cây gia phả <span class="badge">SVG</span></div>
-    <div class="item" data-page="members"><div class="ico">👥</div> Thành viên <span class="badge">List</span></div>
-
-    <div class="mtitle">Nhập liệu</div>
-    <div class="item" data-page="add-person"><div class="ico">➕</div> Thêm người</div>
-    <div class="item" data-page="add-relation"><div class="ico">🔗</div> Thêm quan hệ</div>
-    <div class="item" data-page="events"><div class="ico">📅</div> Sự kiện / Mốc</div>
-
-    <div class="mtitle">Tra cứu</div>
-    <div class="item" data-page="kin"><div class="ico">🧭</div> Tìm họ hàng</div>
-    <div class="item" data-page="reports"><div class="ico">🧾</div> Báo cáo đời / chi họ</div>
-
-    <div class="mtitle">Sao lưu & chia sẻ</div>
-    <div class="item" data-page="backup"><div class="ico">💾</div> Import / Export</div>
-    <div class="item" data-page="print"><div class="ico">🖨️</div> In / Xuất PDF</div>
-
-    <div class="mtitle">Cài đặt</div>
-    <div class="item" data-page="settings"><div class="ico">⚙️</div> Cài đặt</div>
-    <div class="item" data-page="about"><div class="ico">ℹ️</div> Giới thiệu</div>
-  </div>
-
-  <div class="foot">
-    <div><b>Mẹo:</b> Mobile bấm menu → nội dung đổi ngay.</div>
-    <div style="margin-top:6px;">© <b>Bùi Hào</b> • Gia phả họ Bùi</div>
-  </div>
-</aside>
-
-<main class="wrap">
-  <div class="page-title">
-    <div>
-      <h2 id="pageTitle">Bảng điều khiển</h2>
-      <div class="hint" id="pageHint">Tổng quan hệ thống, thống kê nhanh, người mới thêm.</div>
-    </div>
-    <div class="chips" id="pageChips"></div>
-  </div>
-  <div id="pageBody"></div>
-</main>
-
-<div class="bottomnav">
-  <div class="bar" id="bottomBar">
-    <div class="bitem active" data-page="dashboard">🏠 Home</div>
-    <div class="bitem" data-page="tree">🌳 Cây</div>
-    <div class="bitem" data-page="members">👥 DS</div>
-    <div class="bitem" data-page="backup">💾 Sao lưu</div>
-  </div>
-</div>
-
-<div class="modalWrap" id="modalWrap">
-  <div class="modal">
-    <div class="mhd">
-      <div class="ttl" id="modalTitle">Hồ sơ</div>
-      <button class="iconbtn" id="modalClose" aria-label="Đóng">✕</button>
-    </div>
-    <div class="mbd" id="modalBody"></div>
-    <div class="mft" id="modalFoot"></div>
-  </div>
-</div>
-
-<script>
-/* =========================
-   B1: DATA + STORAGE (REAL)
-   ========================= */
-const LS_KEY = "bui_giapha_full_v1";
-const now = () => Date.now();
-const todayISO = () => new Date().toISOString().slice(0,10);
-const uid = () => (crypto?.randomUUID ? crypto.randomUUID() : ("id_"+Math.random().toString(16).slice(2)+Date.now()));
-const esc = (s="") => (s+"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-const initials2 = (name="")=>{
-  const parts = (name||"").trim().split(/\s+/).filter(Boolean);
-  const last = parts.slice(-1)[0]||"";
-  const first = parts[0]||"";
-  return (first[0]||"").toUpperCase() + (last[0]||"").toUpperCase();
-};
-
-function loadDB(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return null;
-    return JSON.parse(raw);
-  }catch(e){ return null; }
-}
-function saveDB(db){ localStorage.setItem(LS_KEY, JSON.stringify(db)); }
-
-function seedIfEmpty(){
-  let db = loadDB();
-  if(db && db.persons && db.relationships && db.events) return db;
-
-  // Seed demo minimal (Họ Bùi) — Hào có thể xóa/reset sau
-  const pHao = { id: uid(), full_name:"Bùi Hào", gender:"M", alive:true, dob:"", dod:"",
-    birthplace:"Thanh Hóa", hometown:"Thanh Hóa", branch:"Họ Bùi", generation:0, notes:"Tác giả / quản trị", created_at: now() };
-  const pA = { id: uid(), full_name:"Bùi Văn Bình", gender:"M", alive:true, dob:"", dod:"",
-    birthplace:"Thạch Cẩm", hometown:"Thanh Hóa", branch:"Họ Bùi", generation:1, notes:"(demo)", created_at: now() };
-  const pB = { id: uid(), full_name:"Bùi Thị Lan", gender:"F", alive:true, dob:"", dod:"",
-    birthplace:"Kim Tân", hometown:"Thanh Hóa", branch:"Họ Bùi", generation:1, notes:"(demo)", created_at: now() };
-  const pC = { id: uid(), full_name:"Bùi Văn Nam", gender:"M", alive:true, dob:"", dod:"",
-    birthplace:"Thanh Hóa", hometown:"Thanh Hóa", branch:"Chi 1", generation:2, notes:"(demo con)", created_at: now() };
-
-  db = {
-    meta: { family_name:"Gia phả họ Bùi", author:"Bùi Hào", created: now(), version:"4.0-web-pwa" },
-    persons: [pHao,pA,pB,pC],
-    relationships: [
-      { id: uid(), type:"SPOUSE_OF", a:pA.id, b:pB.id, start_date:"", end_date:"", note:"(demo)", created_at: now() },
-      { id: uid(), type:"PARENT_OF", a:pA.id, b:pC.id, start_date:"", end_date:"", note:"", created_at: now() },
-      { id: uid(), type:"PARENT_OF", a:pB.id, b:pC.id, start_date:"", end_date:"", note:"", created_at: now() },
-    ],
-    events: [
-      { id: uid(), title:"Khởi tạo gia phả", type:"OTHER", date: todayISO(), person_id:pHao.id, note:"Bắt đầu nhập liệu.", created_at: now() }
-    ],
-    settings: { allow_delete:true }
-  };
-  saveDB(db);
-  return db;
-}
-
-let DB = seedIfEmpty();
-
-const getPerson = (id)=> DB.persons.find(p=>p.id===id);
-const parentsOf = (childId)=> DB.relationships.filter(r=>r.type==="PARENT_OF" && r.b===childId).map(r=>getPerson(r.a)).filter(Boolean);
-const childrenOf = (parentId)=> DB.relationships.filter(r=>r.type==="PARENT_OF" && r.a===parentId).map(r=>getPerson(r.b)).filter(Boolean);
-const spousesOf = (id)=> DB.relationships
-  .filter(r=>r.type==="SPOUSE_OF" && (r.a===id || r.b===id))
-  .map(r=>getPerson(r.a===id? r.b : r.a)).filter(Boolean);
-const relsOf = (id)=> DB.relationships.filter(r=>r.a===id || r.b===id);
-
-function refreshKPI(){
-  const persons = DB.persons.length, rels = DB.relationships.length, evs = DB.events.length;
-  document.getElementById("kpiMini").textContent = `👥 ${persons} • 🔗 ${rels} • 📅 ${evs}`;
-  document.getElementById("appTitle").textContent = DB.meta?.family_name || "Gia phả họ Bùi";
-  document.getElementById("appSub").textContent = `PWA • 1 file • Tác giả: ${DB.meta?.author || "Bùi Hào"}`;
-}
-
-function updatePerson(id, patch){
-  const idx = DB.persons.findIndex(p=>p.id===id);
-  if(idx<0) return;
-  DB.persons[idx] = { ...DB.persons[idx], ...patch };
-  saveDB(DB); refreshKPI();
-}
-function addPerson(p){
-  DB.persons.unshift(p);
-  saveDB(DB); refreshKPI();
-}
-function deletePerson(id){
-  DB.persons = DB.persons.filter(p=>p.id!==id);
-  DB.relationships = DB.relationships.filter(r=>r.a!==id && r.b!==id);
-  DB.events = DB.events.filter(e=>e.person_id!==id);
-  saveDB(DB); refreshKPI();
-}
-
-function isAncestor(ancestorId, targetId){
-  // DFS ancestor -> children; if reaches target => cycle
-  const seen = new Set();
-  const stack = [ancestorId];
-  while(stack.length){
-    const cur = stack.pop();
-    if(cur===targetId) return true;
-    if(seen.has(cur)) continue;
-    seen.add(cur);
-    const kids = DB.relationships.filter(r=>r.type==="PARENT_OF" && r.a===cur).map(r=>r.b);
-    kids.forEach(k=>{ if(!seen.has(k)) stack.push(k); });
-  }
-  return false;
-}
-
-function addRelationship(r){
-  if(r.a===r.b) return {ok:false,msg:"Không thể liên kết 1 người với chính họ."};
-  if(r.type==="PARENT_OF"){
-    if(isAncestor(r.b, r.a)) return {ok:false,msg:"Lỗi vòng lặp: con không thể là tổ tiên của cha/mẹ."};
-  }else if(r.type==="SPOUSE_OF"){
-    // prevent dup spouse
-    const dup = DB.relationships.some(x => x.type==="SPOUSE_OF" && (
-      (x.a===r.a && x.b===r.b) || (x.a===r.b && x.b===r.a)
-    ));
-    if(dup) return {ok:false,msg:"Quan hệ vợ/chồng đã tồn tại."};
-  }
-  DB.relationships.unshift(r);
-  saveDB(DB); refreshKPI();
-  return {ok:true};
-}
-function deleteRelationship(id){
-  DB.relationships = DB.relationships.filter(r=>r.id!==id);
-  saveDB(DB); refreshKPI();
-}
-
-function addEvent(e){ DB.events.unshift(e); saveDB(DB); refreshKPI(); }
-function deleteEvent(id){ DB.events = DB.events.filter(e=>e.id!==id); saveDB(DB); refreshKPI(); }
-
-/* =========================
-   B3: KINSHIP BFS (PRO)
-   ========================= */
-function computeKinship(aId, bId){
-  if(aId===bId) return { ok:true, text:"Cùng một người", path:[aId], steps:[] };
-
-  const adj = new Map();
-  const addEdge = (u,v,label)=>{
-    if(!adj.has(u)) adj.set(u, []);
-    adj.get(u).push({to:v,label});
-  };
-  DB.relationships.forEach(r=>{
-    if(r.type==="PARENT_OF"){
-      addEdge(r.a, r.b, "cha/mẹ → con");
-      addEdge(r.b, r.a, "con → cha/mẹ");
-    }else if(r.type==="SPOUSE_OF"){
-      addEdge(r.a, r.b, "vợ/chồng");
-      addEdge(r.b, r.a, "vợ/chồng");
-    }else{
-      addEdge(r.a, r.b, r.type);
-      addEdge(r.b, r.a, r.type);
-    }
-  });
-
-  const q=[aId];
-  const prev=new Map();
-  prev.set(aId,null);
-
-  while(q.length){
-    const u=q.shift();
-    for(const e of (adj.get(u)||[])){
-      if(prev.has(e.to)) continue;
-      prev.set(e.to,{p:u,label:e.label});
-      if(e.to===bId){
-        // reconstruct
-        const nodes=[]; const labels=[];
-        let cur=bId;
-        while(cur!==null){
-          nodes.push(cur);
-          const pr=prev.get(cur);
-          if(pr && pr.label) labels.push(pr.label);
-          cur = pr ? pr.p : null;
-        }
-        nodes.reverse(); labels.reverse();
-        return {ok:true, text: guessKinTitle(labels), path:nodes, steps:labels};
-      }
-      q.push(e.to);
-    }
-  }
-  return {ok:false, text:"Chưa tìm thấy đường liên kết. Hãy thêm quan hệ cha/mẹ hoặc hôn nhân trước.", path:[], steps:[]};
-}
-
-function guessKinTitle(labels){
-  // heuristic đơn giản (đủ dùng), Hào muốn chi tiết hơn mình nâng cấp tiếp
-  if(labels.length===1){
-    if(labels[0]==="vợ/chồng") return "Quan hệ: Vợ/Chồng";
-    if(labels[0]==="cha/mẹ → con") return "Quan hệ: Cha/Mẹ → Con";
-    if(labels[0]==="con → cha/mẹ") return "Quan hệ: Con → Cha/Mẹ";
-  }
-  if(labels.length===2){
-    if(labels[0]==="con → cha/mẹ" && labels[1]==="cha/mẹ → con") return "Quan hệ: Anh/Chị/Em (cùng cha/mẹ)";
-    if(labels[0]==="con → cha/mẹ" && labels[1]==="con → cha/mẹ") return "Quan hệ: Cháu ↔ Ông/Bà";
-    if(labels[0]==="cha/mẹ → con" && labels[1]==="cha/mẹ → con") return "Quan hệ: Ông/Bà ↔ Cháu";
-  }
-  return "Quan hệ: Đường liên kết họ hàng";
-}
-
-/* =========================
-   UI SHELL
-   ========================= */
-const drawer = document.getElementById("drawer");
-const backdrop = document.getElementById("backdrop");
-const openDrawerBtn = document.getElementById("openDrawer");
-const closeDrawerBtn = document.getElementById("closeDrawer");
-const menu = document.getElementById("menu");
-const bottomBar = document.getElementById("bottomBar");
-const pageTitle = document.getElementById("pageTitle");
-const pageHint = document.getElementById("pageHint");
-const pageChips = document.getElementById("pageChips");
-const pageBody = document.getElementById("pageBody");
-const qSearch = document.getElementById("qSearch");
-
-function openDrawer(){ drawer.classList.add("show"); backdrop.classList.add("show"); }
-function closeDrawer(){ drawer.classList.remove("show"); backdrop.classList.remove("show"); }
-openDrawerBtn.onclick=openDrawer; closeDrawerBtn.onclick=closeDrawer; backdrop.onclick=closeDrawer;
-
-function setActiveNav(page){
-  [...menu.querySelectorAll(".item")].forEach(x=>x.classList.toggle("active", x.dataset.page===page));
-  [...bottomBar.querySelectorAll(".bitem")].forEach(x=>x.classList.toggle("active", x.dataset.page===page));
-}
-
-function chip(text, kind=""){ return `<span class="chip ${kind}">${esc(text)}</span>`; }
-
-function personRowHTML(p){
-  const g = p.gender==="M"?"Nam":p.gender==="F"?"Nữ":"Khác";
-  const sub = `${g} • Đời ${p.generation??0} • Nhánh: ${p.branch||"Họ Bùi"} • Quê: ${p.hometown||"-"}`;
-  return `
-    <div class="row" data-person="${p.id}">
-      <div class="avatar">${esc(initials2(p.full_name))}</div>
-      <div class="meta">
-        <div class="name">${esc(p.full_name)}</div>
-        <div class="sub">${esc(sub)}</div>
+    <!-- AUTH -->
+    <section class="card" id="secAuth">
+      <div class="hd"><h3>1) Đăng nhập</h3><span class="muted small">Email OTP (không cần mật khẩu)</span></div>
+      <div class="bd grid two">
+        <div class="field">
+          <label>Email</label>
+          <input id="email" placeholder="vd: buihao@gmail.com" />
+        </div>
+        <div class="row" style="align-items:flex-end">
+          <button class="btn primary" id="btnSendOtp">Gửi mã OTP</button>
+          <button class="btn" id="btnMagic">Gửi link đăng nhập</button>
+        </div>
+        <div class="field">
+          <label>Mã OTP (nếu dùng OTP)</label>
+          <input id="otp" placeholder="6 số" />
+        </div>
+        <div class="row" style="align-items:flex-end">
+          <button class="btn good" id="btnVerify">Xác nhận OTP</button>
+        </div>
+        <div class="muted small">
+          * Nếu email chưa nhận được: kiểm tra Spam/Quảng cáo.  
+          * Có thể dùng “link đăng nhập” cho dễ.
+        </div>
       </div>
-      <div class="actions">
-        <button class="iconbtn" data-open="${p.id}" title="Mở hồ sơ">👁️</button>
-        <button class="iconbtn" data-edit="${p.id}" title="Sửa">✏️</button>
-      </div>
-    </div>
-  `;
-}
-function relRowHTML(r){
-  const A=getPerson(r.a), B=getPerson(r.b);
-  const typeLabel = r.type==="PARENT_OF" ? "Cha/Mẹ → Con" : r.type==="SPOUSE_OF" ? "Vợ/Chồng" : r.type;
-  const line = `${A?A.full_name:"?"} — ${typeLabel} — ${B?B.full_name:"?"}`;
-  const note = [r.start_date||"", r.end_date?("→ "+r.end_date):"", r.note?("• "+r.note):""].filter(Boolean).join(" ");
-  return `
-    <div class="row">
-      <div class="avatar">🔗</div>
-      <div class="meta">
-        <div class="name">${esc(line)}</div>
-        <div class="sub">${esc(note || "—")}</div>
-      </div>
-      <div class="actions">
-        <button class="iconbtn" data-delrel="${r.id}" title="Xoá quan hệ">🗑️</button>
-      </div>
-    </div>
-  `;
-}
-function eventRowHTML(e){
-  const p = e.person_id ? getPerson(e.person_id) : null;
-  const who = p ? `• ${p.full_name}` : "• Sự kiện chung";
-  return `
-    <div class="row">
-      <div class="avatar">📅</div>
-      <div class="meta">
-        <div class="name">${esc(e.title)} <span class="muted">(${esc(e.type)})</span></div>
-        <div class="sub">${esc(e.date||"-")} ${esc(who)}${e.note?(" • "+esc(e.note)):""}</div>
-      </div>
-      <div class="actions">
-        ${p ? `<button class="iconbtn" data-openperson="${p.id}" title="Mở người">👤</button>` : ``}
-        <button class="iconbtn" data-delev="${e.id}" title="Xoá sự kiện">🗑️</button>
-      </div>
-    </div>
-  `;
-}
+    </section>
 
-function bindPersonRowClicks(container){
-  container.querySelectorAll("[data-open]").forEach(btn=> btn.onclick=()=>openPersonModal(btn.getAttribute("data-open")) );
-  container.querySelectorAll("[data-edit]").forEach(btn=> btn.onclick=()=>page_add_person(btn.getAttribute("data-edit")) );
-  container.querySelectorAll("[data-person]").forEach(row=>{
-    row.onclick=(e)=>{ if(e.target.closest("button")) return; openPersonModal(row.getAttribute("data-person")); };
-  });
-}
-
-/* =========================
-   MODAL (VIEW/EDIT)
-   ========================= */
-const modalWrap=document.getElementById("modalWrap");
-document.getElementById("modalClose").onclick=()=>modalWrap.classList.remove("show");
-modalWrap.addEventListener("click",(e)=>{ if(e.target===modalWrap) modalWrap.classList.remove("show"); });
-
-function showConfirm(title, text, onYes){
-  modalWrap.classList.add("show");
-  document.getElementById("modalTitle").textContent = title;
-  document.getElementById("modalBody").innerHTML = `<div class="notice danger"><b>${esc(title)}</b><div style="margin-top:6px">${esc(text)}</div></div>`;
-  const foot = document.getElementById("modalFoot");
-  foot.innerHTML = `<button class="btn" id="cNo">Huỷ</button><button class="btn bad" id="cYes">Đồng ý</button>`;
-  document.getElementById("cNo").onclick = ()=>modalWrap.classList.remove("show");
-  document.getElementById("cYes").onclick = ()=>{ modalWrap.classList.remove("show"); onYes && onYes(); };
-}
-
-function openPersonModal(id){
-  const p=getPerson(id);
-  if(!p){ toast("Không tìm thấy người."); return; }
-
-  const parents=parentsOf(id);
-  const kids=childrenOf(id);
-  const spouses=spousesOf(id);
-  const rels=relsOf(id).slice(0,20);
-  const evs=DB.events.filter(e=>e.person_id===id).slice(0,20);
-
-  document.getElementById("modalTitle").textContent = p.full_name;
-
-  document.getElementById("modalBody").innerHTML = `
-    <div class="chips">
-      ${chip(p.gender==="M"?"Nam":p.gender==="F"?"Nữ":"Khác")}
-      ${chip(`Đời ${p.generation??0}`)}
-      ${chip(p.alive?"Còn sống":"Đã mất", p.alive?"ok":"warn")}
-      ${chip(p.branch||"Họ Bùi")}
-    </div>
-    <div class="sep"></div>
-    <div class="notice">
-      <b>Quê quán:</b> ${esc(p.hometown||"-")} • <b>Nơi sinh:</b> ${esc(p.birthplace||"-")}<br/>
-      <b>Ngày sinh:</b> ${esc(p.dob||"-")} • <b>Ngày mất:</b> ${esc(p.dod||"-")}<br/>
-      ${p.notes ? `<div style="margin-top:8px;"><b>Ghi chú:</b> ${esc(p.notes)}</div>` : ``}
-    </div>
-
-    <div class="sep"></div>
-    <div class="notice">
-      <b>Cha/Mẹ:</b> ${parents.length? parents.map(x=>esc(x.full_name)).join(", "):"—"}<br/>
-      <b>Vợ/Chồng:</b> ${spouses.length? spouses.map(x=>esc(x.full_name)).join(", "):"—"}<br/>
-      <b>Con:</b> ${kids.length? kids.map(x=>esc(x.full_name)).join(", "):"—"}
-    </div>
-
-    <div class="sep"></div>
-    <div class="card" style="box-shadow:none;background:rgba(10,20,39,.35);border-color:rgba(255,255,255,.08)">
-      <div class="hd"><div><div class="h">Quan hệ (chi tiết)</div><div class="s">Tối đa 20</div></div></div>
-      <div class="bd"><div class="list">
-        ${rels.length? rels.map(r=>relRowHTML(r)).join("") : `<div class="notice">Chưa có quan hệ.</div>`}
-      </div></div>
-    </div>
-
-    <div class="sep"></div>
-    <div class="card" style="box-shadow:none;background:rgba(10,20,39,.35);border-color:rgba(255,255,255,.08)">
-      <div class="hd"><div><div class="h">Sự kiện gắn với người</div><div class="s">Tối đa 20</div></div></div>
-      <div class="bd"><div class="list">
-        ${evs.length? evs.map(e=>eventRowHTML(e)).join("") : `<div class="notice">Chưa có sự kiện.</div>`}
-      </div></div>
-    </div>
-  `;
-
-  const foot=document.getElementById("modalFoot");
-  foot.innerHTML = `
-    <button class="btn" id="mEdit">✏️ Sửa</button>
-    <button class="btn" id="mRel">🔗 Thêm quan hệ</button>
-    <button class="btn" id="mEv">📅 Thêm sự kiện</button>
-    ${DB.settings.allow_delete? `<button class="btn bad" id="mDel">🗑️ Xoá</button>`:""}
-  `;
-
-  // bind delete rel/event inside modal
-  document.getElementById("modalBody").querySelectorAll("[data-delrel]").forEach(btn=>{
-    btn.onclick=()=>{
-      if(!DB.settings.allow_delete) return toast("Đang tắt quyền xoá.");
-      const rid=btn.getAttribute("data-delrel");
-      showConfirm("Xoá quan hệ?","Bạn chắc chắn muốn xoá quan hệ này?",()=>{
-        deleteRelationship(rid); toast("Đã xoá."); openPersonModal(id);
-      });
-    };
-  });
-  document.getElementById("modalBody").querySelectorAll("[data-delev]").forEach(btn=>{
-    btn.onclick=()=>{
-      if(!DB.settings.allow_delete) return toast("Đang tắt quyền xoá.");
-      const eid=btn.getAttribute("data-delev");
-      showConfirm("Xoá sự kiện?","Bạn chắc chắn muốn xoá sự kiện này?",()=>{
-        deleteEvent(eid); toast("Đã xoá."); openPersonModal(id);
-      });
-    };
-  });
-  document.getElementById("modalBody").querySelectorAll("[data-openperson]").forEach(btn=>{
-    btn.onclick=()=>{ const pid=btn.getAttribute("data-openperson"); if(pid) openPersonModal(pid); };
-  });
-
-  document.getElementById("mEdit").onclick=()=>{ modalWrap.classList.remove("show"); page_add_person(id); };
-  document.getElementById("mRel").onclick=()=>{ modalWrap.classList.remove("show"); go("add-relation"); };
-  document.getElementById("mEv").onclick=()=>{ modalWrap.classList.remove("show"); go("events"); };
-  const del=document.getElementById("mDel");
-  if(del){
-    del.onclick=()=>{
-      showConfirm("Xoá người?","Xoá sẽ mất hồ sơ + quan hệ + sự kiện liên quan.",()=>{
-        deletePerson(id); toast("Đã xoá."); modalWrap.classList.remove("show"); go("members");
-      });
-    };
-  }
-
-  modalWrap.classList.add("show");
-}
-
-/* =========================
-   TOAST
-   ========================= */
-let toastTimer=null;
-function toast(msg){
-  clearTimeout(toastTimer);
-  let el=document.getElementById("toast");
-  if(!el){
-    el=document.createElement("div");
-    el.id="toast";
-    el.style.position="fixed";
-    el.style.left="12px"; el.style.right="12px"; el.style.bottom="88px";
-    el.style.zIndex="200";
-    el.style.padding="12px 14px";
-    el.style.borderRadius="16px";
-    el.style.border="1px solid rgba(255,255,255,.12)";
-    el.style.background="rgba(11,23,48,.92)";
-    el.style.backdropFilter="blur(10px)";
-    el.style.boxShadow="0 16px 40px rgba(0,0,0,.5)";
-    el.style.color="var(--text)";
-    el.style.fontSize="13px";
-    el.style.opacity="0";
-    el.style.transform="translateY(8px)";
-    el.style.transition=".18s ease";
-    document.body.appendChild(el);
-  }
-  el.textContent=msg;
-  requestAnimationFrame(()=>{ el.style.opacity="1"; el.style.transform="translateY(0)"; });
-  toastTimer=setTimeout(()=>{ el.style.opacity="0"; el.style.transform="translateY(8px)"; }, 1800);
-}
-
-/* =========================
-   B2: TREE SVG + ZOOM/PAN
-   ========================= */
-function buildGraph(){
-  const persons = DB.persons.map(p=>({ ...p }));
-  const idSet = new Set(persons.map(p=>p.id));
-
-  const parentsMap = new Map(); // child -> parents[]
-  const childrenMap = new Map(); // parent -> children[]
-  const spouseMap = new Map(); // id -> spouse ids
-  persons.forEach(p=>{
-    parentsMap.set(p.id, []);
-    childrenMap.set(p.id, []);
-    spouseMap.set(p.id, []);
-  });
-
-  DB.relationships.forEach(r=>{
-    if(!idSet.has(r.a) || !idSet.has(r.b)) return;
-    if(r.type==="PARENT_OF"){
-      parentsMap.get(r.b).push(r.a);
-      childrenMap.get(r.a).push(r.b);
-    }else if(r.type==="SPOUSE_OF"){
-      spouseMap.get(r.a).push(r.b);
-      spouseMap.get(r.b).push(r.a);
-    }
-  });
-
-  return { persons, parentsMap, childrenMap, spouseMap };
-}
-
-function computeLevels(graph){
-  // If generation field exists, use it as base; else compute by parent chain.
-  const level = new Map();
-  graph.persons.forEach(p=>{
-    const g = Number.isFinite(p.generation) ? (p.generation??0) : 0;
-    level.set(p.id, g);
-  });
-
-  // Relax based on parent->child (child = parent+1)
-  for(let iter=0; iter<10; iter++){
-    let changed=false;
-    graph.persons.forEach(p=>{
-      const parents = graph.parentsMap.get(p.id)||[];
-      if(parents.length){
-        const maxParent = Math.max(...parents.map(pid => level.get(pid) ?? 0));
-        const want = maxParent + 1;
-        if((level.get(p.id) ?? 0) < want){
-          level.set(p.id, want);
-          changed=true;
-        }
-      }
-    });
-    if(!changed) break;
-  }
-  return level;
-}
-
-function layoutTree(graph){
-  const level = computeLevels(graph);
-  const groups = new Map(); // level -> ids
-  graph.persons.forEach(p=>{
-    const lv = level.get(p.id) ?? 0;
-    if(!groups.has(lv)) groups.set(lv, []);
-    groups.get(lv).push(p.id);
-  });
-
-  // sort within level by name
-  for(const [lv,arr] of groups.entries()){
-    arr.sort((a,b)=> (getPerson(a)?.full_name||"").localeCompare(getPerson(b)?.full_name||"","vi"));
-  }
-
-  const levels = [...groups.keys()].sort((a,b)=>a-b);
-  const nodeW = 190, nodeH = 60, gapX = 26, gapY = 90;
-
-  // place nodes in rows
-  const pos = new Map(); // id -> {x,y}
-  let maxW=0;
-
-  levels.forEach((lv, idx)=>{
-    const ids = groups.get(lv);
-    // keep spouses closer: simple pass to bubble pairs adjacent
-    const used = new Set();
-    const ordered = [];
-    ids.forEach(id=>{
-      if(used.has(id)) return;
-      const spouses = (graph.spouseMap.get(id)||[]).filter(s=>ids.includes(s));
-      if(spouses.length){
-        // pick first spouse not used
-        const sp = spouses.find(s=>!used.has(s));
-        if(sp){
-          ordered.push(id, sp);
-          used.add(id); used.add(sp);
-          return;
-        }
-      }
-      ordered.push(id);
-      used.add(id);
-    });
-
-    const rowW = ordered.length * nodeW + Math.max(0, ordered.length-1)*gapX;
-    maxW = Math.max(maxW, rowW);
-    let startX = 0; // we'll center later using viewbox offset, but store relative
-    const y = idx * (nodeH + gapY);
-
-    ordered.forEach((id, j)=>{
-      const x = startX + j*(nodeW+gapX);
-      pos.set(id, {x,y});
-    });
-  });
-
-  const totalH = levels.length * (nodeH + gapY) + 80;
-  const totalW = maxW + 80;
-
-  return { pos, nodeW, nodeH, totalW, totalH, levels, level };
-}
-
-function renderTree(container){
-  const graph = buildGraph();
-  const { pos, nodeW, nodeH, totalW, totalH } = layoutTree(graph);
-
-  // edges
-  const edges = [];
-  // spouse edges: draw between centers of spouse nodes if spouse is on same row
-  DB.relationships.forEach(r=>{
-    if(r.type==="SPOUSE_OF"){
-      const a=pos.get(r.a), b=pos.get(r.b);
-      if(!a || !b) return;
-      // draw only once
-      if(r.a > r.b) return;
-      const ax=a.x+nodeW/2, ay=a.y+nodeH/2;
-      const bx=b.x+nodeW/2, by=b.y+nodeH/2;
-      edges.push({type:"spouse", x1:ax, y1:ay, x2:bx, y2:by});
-    }
-    if(r.type==="PARENT_OF"){
-      const pa=pos.get(r.a), ch=pos.get(r.b);
-      if(!pa || !ch) return;
-      const x1=pa.x+nodeW/2, y1=pa.y+nodeH;
-      const x2=ch.x+nodeW/2, y2=ch.y;
-      // elbow path
-      const midY = (y1 + y2)/2;
-      edges.push({type:"parent", d:`M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}`});
-    }
-  });
-
-  // center content
-  const vb = `0 0 ${Math.max(800,totalW)} ${Math.max(600,totalH)}`;
-
-  container.innerHTML = `
-    <div class="treeWrap" id="treeWrap">
-      <div class="treeHud">
-        <button class="tiny" id="zIn">＋</button>
-        <button class="tiny" id="zOut">－</button>
-        <button class="tiny muted" id="zReset">Reset</button>
-        <button class="tiny" id="treeHint">Hướng dẫn</button>
-      </div>
-      <div class="hintLine" id="hintLine">Chạm & kéo để pan • Chụm 2 ngón để zoom (hoặc +/−) • Chạm vào node để mở hồ sơ</div>
-      <svg id="treeSvg" viewBox="${vb}" aria-label="Cây gia phả SVG">
-        <g id="viewport">
-          ${edges.map(e=>{
-            if(e.type==="spouse"){
-              return `<line class="edge spouse" x1="${e.x1}" y1="${e.y1}" x2="${e.x2}" y2="${e.y2}"></line>`;
-            }else{
-              return `<path class="edge parent" d="${e.d}"></path>`;
-            }
-          }).join("")}
-
-          ${DB.persons.map(p=>{
-            const p0=pos.get(p.id); if(!p0) return "";
-            const x=p0.x+40, y=p0.y+40; // margin
-            const g = p.gender==="M"?"Nam":p.gender==="F"?"Nữ":"Khác";
-            const sub = `${g} • Đời ${p.generation??0} • ${p.branch||"Họ Bùi"}`;
-            return `
-              <g class="node" data-id="${p.id}" transform="translate(${x},${y})">
-                <rect width="${nodeW}" height="${nodeH}"></rect>
-                <text class="title" x="12" y="24">${esc(p.full_name).slice(0,24)}</text>
-                <text class="sub" x="12" y="44">${esc(sub).slice(0,32)}</text>
-              </g>
-            `;
-          }).join("")}
-        </g>
-      </svg>
-    </div>
-  `;
-
-  // Bind node click
-  container.querySelectorAll(".node").forEach(n=>{
-    n.addEventListener("click", (e)=>{
-      e.stopPropagation();
-      const id=n.getAttribute("data-id");
-      if(id) openPersonModal(id);
-    });
-  });
-
-  // Zoom/pan (pointer)
-  const wrap = container.querySelector("#treeWrap");
-  const svg = container.querySelector("#treeSvg");
-  const vp = container.querySelector("#viewport");
-  const hintLine = container.querySelector("#hintLine");
-  const btnHint = container.querySelector("#treeHint");
-
-  let state = { scale: 1, tx: 0, ty: 0 };
-  const apply = ()=>{
-    vp.setAttribute("transform", `translate(${state.tx} ${state.ty}) scale(${state.scale})`);
-  };
-  const clampScale = (s)=> Math.max(0.35, Math.min(2.6, s));
-
-  function reset(){
-    state.scale=1; state.tx=0; state.ty=0; apply();
-  }
-  container.querySelector("#zIn").onclick=()=>{ state.scale=clampScale(state.scale*1.15); apply(); };
-  container.querySelector("#zOut").onclick=()=>{ state.scale=clampScale(state.scale/1.15); apply(); };
-  container.querySelector("#zReset").onclick=reset;
-
-  btnHint.onclick=()=>{
-    hintLine.style.display = (hintLine.style.display==="none") ? "block" : "none";
-  };
-
-  // Pan with one pointer
-  let panning=false;
-  let lastX=0,lastY=0;
-  wrap.addEventListener("pointerdown",(e)=>{
-    // only pan if not clicking a node
-    if(e.target.closest(".node")) return;
-    panning=true;
-    wrap.setPointerCapture(e.pointerId);
-    lastX=e.clientX; lastY=e.clientY;
-  });
-  wrap.addEventListener("pointermove",(e)=>{
-    if(!panning) return;
-    const dx = e.clientX-lastX;
-    const dy = e.clientY-lastY;
-    lastX=e.clientX; lastY=e.clientY;
-    state.tx += dx;
-    state.ty += dy;
-    apply();
-  });
-  wrap.addEventListener("pointerup",(e)=>{
-    panning=false;
-    try{ wrap.releasePointerCapture(e.pointerId); }catch(_){}
-  });
-
-  // pinch zoom (touch)
-  let touches=new Map();
-  wrap.addEventListener("touchstart",(e)=>{
-    for(const t of e.changedTouches) touches.set(t.identifier,{x:t.clientX,y:t.clientY});
-  }, {passive:true});
-  wrap.addEventListener("touchmove",(e)=>{
-    if(e.touches.length===2){
-      e.preventDefault();
-      const t1=e.touches[0], t2=e.touches[1];
-      const p1=touches.get(t1.identifier), p2=touches.get(t2.identifier);
-      if(!p1||!p2){ touches.set(t1.identifier,{x:t1.clientX,y:t1.clientY}); touches.set(t2.identifier,{x:t2.clientX,y:t2.clientY}); return; }
-      const d0=Math.hypot(p1.x-p2.x,p1.y-p2.y);
-      const d1=Math.hypot(t1.clientX-t2.clientX,t1.clientY-t2.clientY);
-      if(d0>0){
-        const factor=d1/d0;
-        state.scale = clampScale(state.scale*factor);
-        apply();
-      }
-      touches.set(t1.identifier,{x:t1.clientX,y:t1.clientY});
-      touches.set(t2.identifier,{x:t2.clientX,y:t2.clientY});
-    }else{
-      for(const t of e.changedTouches) touches.set(t.identifier,{x:t.clientX,y:t.clientY});
-    }
-  }, {passive:false});
-  wrap.addEventListener("touchend",(e)=>{
-    for(const t of e.changedTouches) touches.delete(t.identifier);
-  }, {passive:true});
-
-  apply();
-}
-
-/* =========================
-   PAGES
-   ========================= */
-function page_dashboard(){
-  pageTitle.textContent="Bảng điều khiển";
-  pageHint.textContent="B1 chạy thật (CRUD + lưu) • B2 cây SVG zoom/pan • B3 tìm họ hàng + báo cáo + in/PDF.";
-  const total=DB.persons.length;
-  const rels=DB.relationships.length;
-  const evs=DB.events.length;
-  const missingParents = DB.persons.filter(p=>parentsOf(p.id).length===0).length;
-
-  pageChips.innerHTML = [
-    chip(`Thành viên: ${total}`),
-    chip(`Quan hệ: ${rels}`),
-    chip(`Sự kiện: ${evs}`),
-    chip(`Thiếu cha/mẹ: ${missingParents}`, missingParents? "warn":"ok"),
-    chip(`Tác giả: ${DB.meta?.author||"Bùi Hào"}`)
-  ].join("");
-
-  const recent = DB.persons.slice(0,8);
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">Thành viên gần đây</div><div class="s">Chạm để mở hồ sơ • Sửa • Nối quan hệ</div></div></div>
-        <div class="bd">
-          <div class="list" id="recentList">
-            ${recent.map(personRowHTML).join("")}
-          </div>
-          <div class="sep"></div>
-          <div class="notice">
-            <b>Quy trình chuẩn:</b> Thêm người → Thêm quan hệ (cha/mẹ–con, vợ/chồng) → Xem cây gia phả.
-          </div>
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="hd"><div><div class="h">Lối tắt</div><div class="s">Đi nhanh tới chức năng chính</div></div></div>
-        <div class="bd">
-          <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn primary" onclick="go('add-person')">+ Thêm người</button>
-            <button class="btn" onclick="go('add-relation')">🔗 Thêm quan hệ</button>
-            <button class="btn" onclick="go('tree')">🌳 Xem cây</button>
-            <button class="btn warn" onclick="exportJSON()">Export</button>
-          </div>
-          <div class="sep"></div>
-          <div class="notice">
-            <b>B3 PRO:</b> Vào “Tìm họ hàng” để dò quan hệ giữa 2 người (BFS).
-          </div>
-        </div>
-      </aside>
-    </div>
-  `;
-  bindPersonRowClicks(document.getElementById("recentList"));
-}
-
-function page_members(){
-  pageTitle.textContent="Thành viên";
-  pageHint.textContent="Danh sách + lọc theo từ khoá (tên, quê, đời, nhánh…).";
-  const q=(qSearch.value||"").trim().toLowerCase();
-  const list = DB.persons
-    .filter(p=>{
-      if(!q) return true;
-      const blob = `${p.full_name} ${p.birthplace||""} ${p.hometown||""} ${p.branch||""} ${p.generation??""}`.toLowerCase();
-      return blob.includes(q);
-    })
-    .slice(0,300);
-
-  pageChips.innerHTML = [
-    chip(`Hiển thị: ${list.length}/${DB.persons.length}`),
-    chip(q? `Đang lọc: ${q}` : "Không lọc", q?"ok":"")
-  ].join("");
-
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">Danh sách</div><div class="s">Bấm người → hồ sơ • sửa • xoá</div></div></div>
-        <div class="bd">
-          <div class="list" id="memList">
-            ${list.map(personRowHTML).join("") || `<div class="notice">Không có kết quả.</div>`}
-          </div>
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="hd"><div><div class="h">Gợi ý</div><div class="s">Nhập đúng để cây đẹp</div></div></div>
-        <div class="bd">
-          <div class="notice">
-            <b>Đời (generation)</b> ảnh hưởng mạnh tới việc vẽ cây. Nếu chưa rõ đời, cứ để 0 rồi chỉnh sau.
-          </div>
-          <div class="sep"></div>
-          <button class="btn primary" onclick="go('add-person')">+ Thêm người</button>
-        </div>
-      </aside>
-    </div>
-  `;
-  bindPersonRowClicks(document.getElementById("memList"));
-}
-
-function page_add_person(editId=null){
-  const isEdit=!!editId;
-  const p=isEdit? getPerson(editId): null;
-
-  pageTitle.textContent = isEdit? "Sửa người" : "Thêm người";
-  pageHint.textContent = "B1 chạy thật: lưu LocalStorage • có xoá/sửa • dùng ngay.";
-  pageChips.innerHTML = [
-    chip("Bắt buộc: Họ tên + giới tính", "warn"),
-    chip("Khuyên: Đời + Nhánh", "")
-  ].join("");
-
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">${isEdit?"Cập nhật hồ sơ":"Tạo hồ sơ mới"}</div><div class="s">Dữ liệu lưu tại máy</div></div></div>
-        <div class="bd">
-          <form class="form" id="personForm">
-            <div class="fgrid two">
-              <div class="frow"><label>Họ tên *</label>
-                <input name="full_name" required value="${esc(p?.full_name||"")}" placeholder="Ví dụ: Bùi Văn A"/>
-              </div>
-              <div class="frow"><label>Giới tính *</label>
-                <select name="gender" required>
-                  <option value="" ${!p?.gender?"selected":""}>-- Chọn --</option>
-                  <option value="M" ${p?.gender==="M"?"selected":""}>Nam</option>
-                  <option value="F" ${p?.gender==="F"?"selected":""}>Nữ</option>
-                  <option value="O" ${p?.gender==="O"?"selected":""}>Khác</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="fgrid three">
-              <div class="frow"><label>Ngày sinh</label><input type="date" name="dob" value="${esc(p?.dob||"")}"></div>
-              <div class="frow"><label>Đang sống?</label>
-                <select name="alive">
-                  <option value="true" ${(p?.alive ?? true)?"selected":""}>Còn sống</option>
-                  <option value="false" ${(p && !p.alive)?"selected":""}>Đã mất</option>
-                </select>
-              </div>
-              <div class="frow"><label>Ngày mất</label><input type="date" name="dod" value="${esc(p?.dod||"")}"></div>
-            </div>
-
-            <div class="fgrid two">
-              <div class="frow"><label>Nơi sinh</label><input name="birthplace" value="${esc(p?.birthplace||"")}" placeholder="Ví dụ: Thạch Cẩm"></div>
-              <div class="frow"><label>Quê quán</label><input name="hometown" value="${esc(p?.hometown||"")}" placeholder="Ví dụ: Thanh Hóa"></div>
-            </div>
-
-            <div class="fgrid two">
-              <div class="frow"><label>Nhánh / Chi</label><input name="branch" value="${esc(p?.branch||"Họ Bùi")}" placeholder="Ví dụ: Chi 1 / Nhánh A"></div>
-              <div class="frow"><label>Đời (số)</label><input type="number" name="generation" min="0" step="1" value="${esc(p?.generation ?? 0)}"></div>
-            </div>
-
-            <div class="frow"><label>Ghi chú</label><textarea name="notes" placeholder="Biệt danh, nghề nghiệp, mộ phần...">${esc(p?.notes||"")}</textarea></div>
-
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn primary" type="submit">${isEdit?"Lưu thay đổi":"Thêm người"}</button>
-              <button class="btn" type="button" onclick="go('members')">Danh sách</button>
-              ${isEdit? `<button class="btn bad" type="button" id="btnDeletePerson">Xoá người</button>`:""}
-            </div>
-          </form>
-
-          <div class="sep"></div>
-          <div class="notice"><b>Tip:</b> Thêm người xong → qua “Thêm quan hệ” để nối cha/mẹ–con và vợ/chồng.</div>
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="hd"><div><div class="h">Gợi ý nhập</div><div class="s">Để cây vẽ đúng</div></div></div>
-        <div class="bd">
-          <div class="notice">
-            <b>Đời</b> nên tăng dần theo thế hệ. Nếu chưa chắc, để 0 rồi chỉnh lại sau.
-          </div>
-          <div class="sep"></div>
-          <button class="btn" onclick="go('tree')">🌳 Xem cây (để kiểm tra)</button>
-        </div>
-      </aside>
-    </div>
-  `;
-
-  const form=document.getElementById("personForm");
-  form.onsubmit=(ev)=>{
-    ev.preventDefault();
-    const fd=new FormData(form);
-    const full_name=(fd.get("full_name")+"").trim();
-    const gender=(fd.get("gender")+"").trim();
-    if(!full_name||!gender) return toast("Thiếu Họ tên hoặc Giới tính.");
-    const alive=(fd.get("alive")+"")==="true";
-    const obj={
-      full_name, gender,
-      dob:(fd.get("dob")+"").trim(),
-      alive,
-      dod: alive ? "" : (fd.get("dod")+"").trim(),
-      birthplace:(fd.get("birthplace")+"").trim(),
-      hometown:(fd.get("hometown")+"").trim(),
-      branch:((fd.get("branch")+"").trim()||"Họ Bùi"),
-      generation: Number(fd.get("generation")||0),
-      notes:(fd.get("notes")+"").trim()
-    };
-    if(isEdit){
-      updatePerson(editId, obj);
-      toast("Đã lưu ✅");
-      go("members");
-    }else{
-      addPerson({ id: uid(), ...obj, created_at: now() });
-      toast("Đã thêm ✅");
-      go("members");
-    }
-  };
-
-  if(isEdit){
-    document.getElementById("btnDeletePerson").onclick=()=>{
-      if(!DB.settings.allow_delete) return toast("Đang tắt quyền xoá trong Cài đặt.");
-      showConfirm("Xoá người?","Xoá sẽ mất hồ sơ + quan hệ + sự kiện liên quan.",()=>{
-        deletePerson(editId); toast("Đã xoá."); go("members");
-      });
-    };
-  }
-}
-
-function page_add_relation(){
-  pageTitle.textContent="Thêm quan hệ";
-  pageHint.textContent="B1 chạy thật: nối cha/mẹ–con và vợ/chồng (chống vòng lặp cơ bản).";
-  pageChips.innerHTML = [chip("PARENT_OF: A là cha/mẹ, B là con"), chip("SPOUSE_OF: vợ/chồng")].join("");
-
-  const options = DB.persons.slice().sort((a,b)=>a.full_name.localeCompare(b.full_name,"vi"))
-    .map(p=>`<option value="${p.id}">${esc(p.full_name)} • Đời ${p.generation??0}</option>`).join("");
-
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">Tạo quan hệ</div><div class="s">Chọn A, B, loại quan hệ</div></div></div>
-        <div class="bd">
-          <form class="form" id="relForm">
-            <div class="fgrid two">
-              <div class="frow"><label>Người A</label>
-                <select name="a" required><option value="">-- Chọn --</option>${options}</select>
-              </div>
-              <div class="frow"><label>Người B</label>
-                <select name="b" required><option value="">-- Chọn --</option>${options}</select>
-              </div>
-            </div>
-
-            <div class="fgrid two">
-              <div class="frow"><label>Loại quan hệ</label>
-                <select name="type" required>
-                  <option value="PARENT_OF">PARENT_OF (A là cha/mẹ của B)</option>
-                  <option value="SPOUSE_OF">SPOUSE_OF (A là vợ/chồng của B)</option>
-                </select>
-              </div>
-              <div class="frow"><label>Ghi chú</label><input name="note" placeholder="Ví dụ: kết hôn năm..., con nuôi..."></div>
-            </div>
-
-            <div class="fgrid two">
-              <div class="frow"><label>Ngày bắt đầu (tuỳ chọn)</label><input type="date" name="start_date"></div>
-              <div class="frow"><label>Ngày kết thúc (tuỳ chọn)</label><input type="date" name="end_date"></div>
-            </div>
-
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn primary" type="submit">Lưu quan hệ</button>
-              <button class="btn" type="button" onclick="go('tree')">🌳 Xem cây</button>
-            </div>
-          </form>
-
-          <div class="sep"></div>
-          <div class="notice"><b>Tip:</b> Tạo quan hệ xong, qua “Cây gia phả” để kiểm tra đường nối.</div>
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="hd"><div><div class="h">Quan hệ gần đây</div><div class="s">Tối đa 12</div></div></div>
-        <div class="bd">
-          <div class="list" id="relList">
-            ${DB.relationships.slice(0,12).map(relRowHTML).join("") || `<div class="notice">Chưa có quan hệ.</div>`}
-          </div>
-        </div>
-      </aside>
-    </div>
-  `;
-
-  document.getElementById("relForm").onsubmit=(ev)=>{
-    ev.preventDefault();
-    const fd=new FormData(ev.target);
-    const a=fd.get("a")+""; const b=fd.get("b")+""; const type=fd.get("type")+"";
-    if(!a||!b) return toast("Chọn đủ A và B.");
-    const res = addRelationship({
-      id: uid(), type, a, b,
-      start_date:(fd.get("start_date")+"").trim(),
-      end_date:(fd.get("end_date")+"").trim(),
-      note:(fd.get("note")+"").trim(),
-      created_at: now()
-    });
-    if(!res.ok) return toast(res.msg || "Không tạo được quan hệ.");
-    toast("Đã lưu quan hệ ✅");
-    go("add-relation");
-  };
-
-  pageBody.querySelectorAll("[data-delrel]").forEach(btn=>{
-    btn.onclick=()=>{
-      if(!DB.settings.allow_delete) return toast("Đang tắt quyền xoá trong Cài đặt.");
-      const id=btn.getAttribute("data-delrel");
-      showConfirm("Xoá quan hệ?","Bạn chắc chắn muốn xoá quan hệ này?",()=>{
-        deleteRelationship(id); toast("Đã xoá."); go("add-relation");
-      });
-    };
-  });
-}
-
-function page_events(){
-  pageTitle.textContent="Sự kiện / Mốc";
-  pageHint.textContent="B1 chạy thật: thêm sự kiện gắn theo người (cưới/giỗ/di cư...).";
-  pageChips.innerHTML = [chip("Lưu offline", "ok"), chip("Export/Import", "")].join("");
-
-  const options = DB.persons.slice().sort((a,b)=>a.full_name.localeCompare(b.full_name,"vi"))
-    .map(p=>`<option value="${p.id}">${esc(p.full_name)}</option>`).join("");
-
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">Thêm sự kiện</div><div class="s">Chọn người (nếu cần)</div></div></div>
-        <div class="bd">
-          <form class="form" id="evForm">
-            <div class="fgrid two">
-              <div class="frow"><label>Tiêu đề *</label><input name="title" required placeholder="Ví dụ: Lễ cưới / Ngày giỗ / An táng..."></div>
-              <div class="frow"><label>Loại</label>
-                <select name="type">
-                  <option value="WEDDING">WEDDING</option>
-                  <option value="DEATH">DEATH</option>
-                  <option value="ANNIVERSARY">ANNIVERSARY</option>
-                  <option value="MOVE">MOVE</option>
-                  <option value="OTHER" selected>OTHER</option>
-                </select>
-              </div>
-            </div>
-            <div class="fgrid two">
-              <div class="frow"><label>Ngày</label><input type="date" name="date" value="${todayISO()}"></div>
-              <div class="frow"><label>Gắn với người</label>
-                <select name="person_id"><option value="">-- Sự kiện chung --</option>${options}</select>
-              </div>
-            </div>
-            <div class="frow"><label>Ghi chú</label><textarea name="note" placeholder="Ghi chú chi tiết..."></textarea></div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn primary" type="submit">Lưu sự kiện</button>
-              <button class="btn" type="button" onclick="go('events')">Làm mới</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="hd"><div><div class="h">Danh sách sự kiện</div><div class="s">Tối đa 30</div></div></div>
-        <div class="bd">
-          <div class="list" id="evList">
-            ${DB.events.slice(0,30).map(eventRowHTML).join("") || `<div class="notice">Chưa có sự kiện.</div>`}
-          </div>
-        </div>
-      </aside>
-    </div>
-  `;
-
-  document.getElementById("evForm").onsubmit=(ev)=>{
-    ev.preventDefault();
-    const fd=new FormData(ev.target);
-    const title=(fd.get("title")+"").trim();
-    if(!title) return toast("Thiếu tiêu đề.");
-    addEvent({
-      id: uid(),
-      title,
-      type:(fd.get("type")+"").trim(),
-      date:(fd.get("date")+"").trim(),
-      person_id:(fd.get("person_id")+"").trim()||"",
-      note:(fd.get("note")+"").trim(),
-      created_at: now()
-    });
-    toast("Đã lưu sự kiện ✅");
-    go("events");
-  };
-
-  pageBody.querySelectorAll("[data-delev]").forEach(btn=>{
-    btn.onclick=()=>{
-      if(!DB.settings.allow_delete) return toast("Đang tắt quyền xoá trong Cài đặt.");
-      const id=btn.getAttribute("data-delev");
-      showConfirm("Xoá sự kiện?","Bạn chắc chắn muốn xoá sự kiện này?",()=>{
-        deleteEvent(id); toast("Đã xoá."); go("events");
-      });
-    };
-  });
-
-  pageBody.querySelectorAll("[data-openperson]").forEach(btn=>{
-    btn.onclick=()=>{ const pid=btn.getAttribute("data-openperson"); if(pid) openPersonModal(pid); };
-  });
-}
-
-function page_tree(){
-  pageTitle.textContent="Cây gia phả";
-  pageHint.textContent="B2: SVG node + đường nối + zoom/pan. Click node để mở hồ sơ.";
-  pageChips.innerHTML = [chip("Zoom/Pan mượt", "ok"), chip("Click mở hồ sơ", "ok"), chip("Layout theo đời", "")].join("");
-
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">Cây gia phả (SVG)</div><div class="s">Dựa trên PARENT_OF + SPOUSE_OF</div></div></div>
-        <div class="bd" id="treeContainer"></div>
-      </section>
-
-      <aside class="card">
-        <div class="hd"><div><div class="h">Gợi ý để cây đẹp</div><div class="s">Nhập đúng đời & quan hệ</div></div></div>
-        <div class="bd">
-          <div class="notice">
-            1) Thêm quan hệ <b>cha/mẹ–con</b> đủ 2 bên (nếu có).<br/>
-            2) Đời (generation) nên nhất quán.<br/>
-            3) Vợ/chồng cùng đời để đường nối ngang đẹp.
-          </div>
-          <div class="sep"></div>
-          <button class="btn" onclick="go('add-relation')">🔗 Thêm quan hệ</button>
-          <button class="btn primary" onclick="go('add-person')">➕ Thêm người</button>
-        </div>
-      </aside>
-    </div>
-  `;
-  renderTree(document.getElementById("treeContainer"));
-}
-
-function page_kin(){
-  pageTitle.textContent="Tìm họ hàng";
-  pageHint.textContent="B3 PRO: chọn 2 người → tìm đường liên kết ngắn nhất (BFS).";
-  pageChips.innerHTML = [chip("BFS đường ngắn", "ok")].join("");
-
-  const options = DB.persons.slice().sort((a,b)=>a.full_name.localeCompare(b.full_name,"vi"))
-    .map(p=>`<option value="${p.id}">${esc(p.full_name)}</option>`).join("");
-
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">Chọn 2 người</div><div class="s">Cần quan hệ PARENT_OF hoặc SPOUSE_OF</div></div></div>
-        <div class="bd">
-          <div class="form">
-            <div class="fgrid two">
-              <div class="frow"><label>Người A</label><select id="kinA"><option value="">-- Chọn --</option>${options}</select></div>
-              <div class="frow"><label>Người B</label><select id="kinB"><option value="">-- Chọn --</option>${options}</select></div>
-            </div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn primary" id="btnFindKin">Tìm quan hệ</button>
-              <button class="btn" id="btnSwap">Đổi A/B</button>
-            </div>
-          </div>
-          <div class="sep"></div>
-          <div class="notice" id="kinResult">Chọn A và B rồi bấm “Tìm quan hệ”.</div>
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="hd"><div><div class="h">Khi chưa tìm thấy</div><div class="s">Cách xử lý</div></div></div>
-        <div class="bd">
-          <div class="notice">
-            Nếu báo “chưa tìm thấy”, hãy vào <b>Thêm quan hệ</b> để nối cha/mẹ–con hoặc vợ/chồng.
-          </div>
-          <div class="sep"></div>
-          <button class="btn" onclick="go('add-relation')">Đi tới Thêm quan hệ</button>
-        </div>
-      </aside>
-    </div>
-  `;
-
-  const kinA=document.getElementById("kinA");
-  const kinB=document.getElementById("kinB");
-  document.getElementById("btnSwap").onclick=(e)=>{ e.preventDefault(); const t=kinA.value; kinA.value=kinB.value; kinB.value=t; };
-  document.getElementById("btnFindKin").onclick=(e)=>{
-    e.preventDefault();
-    const a=kinA.value, b=kinB.value;
-    const box=document.getElementById("kinResult");
-    if(!a||!b){ box.className="notice danger"; box.textContent="Chọn đủ A và B."; return; }
-    const res=computeKinship(a,b);
-    if(!res.ok){ box.className="notice danger"; box.textContent=res.text; return; }
-    const names=res.path.map(id=>getPerson(id)?.full_name || "(?)");
-    box.className="notice";
-    box.innerHTML = `
-      <div style="font-weight:1000;margin-bottom:6px;">${esc(res.text)}</div>
-      <div class="muted" style="margin-bottom:8px;">Đường đi:</div>
-      <div>${names.map(esc).join(" → ")}</div>
-      ${res.steps?.length ? `<div class="muted" style="margin-top:10px;">Bước:</div><div>${res.steps.map(esc).join(" • ")}</div>` : ``}
-    `;
-  };
-}
-
-function page_reports(){
-  pageTitle.textContent="Báo cáo đời / chi họ";
-  pageHint.textContent="B3 PRO: thống kê theo đời và nhánh/chi.";
-  const byGen=new Map();
-  const byBranch=new Map();
-  DB.persons.forEach(p=>{
-    const g = p.generation ?? 0;
-    byGen.set(g, (byGen.get(g)||0)+1);
-    const br=(p.branch||"Họ Bùi").trim() || "Họ Bùi";
-    byBranch.set(br, (byBranch.get(br)||0)+1);
-  });
-  const genRows=[...byGen.entries()].sort((a,b)=>a[0]-b[0]);
-  const brRows=[...byBranch.entries()].sort((a,b)=>b[1]-a[1]).slice(0,20);
-
-  pageChips.innerHTML = [chip(`Số đời: ${genRows.length}`), chip(`Số nhánh: ${brRows.length}`)].join("");
-
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">Theo đời</div><div class="s">Số lượng theo đời</div></div></div>
-        <div class="bd">
-          <div class="list">
-            ${genRows.map(([g,n])=>`
-              <div class="row">
-                <div class="avatar">Đ${g}</div>
-                <div class="meta"><div class="name">Đời ${g}</div><div class="sub">${n} người</div></div>
-                <div class="actions"><button class="btn" onclick="filterKeyword('${String(g)}')">Lọc</button></div>
-              </div>
-            `).join("") || `<div class="notice">Chưa có dữ liệu.</div>`}
-          </div>
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="hd"><div><div class="h">Theo nhánh/chi</div><div class="s">Top 20</div></div></div>
-        <div class="bd">
-          <div class="list">
-            ${brRows.map(([br,n])=>`
-              <div class="row">
-                <div class="avatar">🏷️</div>
-                <div class="meta"><div class="name">${esc(br)}</div><div class="sub">${n} người</div></div>
-                <div class="actions"><button class="btn" onclick="filterKeyword('${escAttr(br)}')">Lọc</button></div>
-              </div>
-            `).join("") || `<div class="notice">Chưa có dữ liệu.</div>`}
-          </div>
-          <div class="sep"></div>
-          <div class="notice"><b>Mẹo:</b> Nhập “nhánh/chi” rõ ràng để báo cáo chuẩn.</div>
-        </div>
-      </aside>
-    </div>
-  `;
-}
-
-function page_backup(){
-  pageTitle.textContent="Import / Export";
-  pageHint.textContent="B1 chạy thật: sao lưu JSON (để gửi cho người thân / lưu dài hạn).";
-  pageChips.innerHTML = [chip("Export JSON", "ok"), chip("Import JSON", "ok")].join("");
-
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">Export</div><div class="s">Tải file JSON về máy</div></div></div>
-        <div class="bd">
-          <button class="btn warn" id="btnExport">⬇️ Export JSON</button>
-          <div class="sep"></div>
-          <div class="notice">Export xong, Hào có thể lưu hoặc gửi file để dùng trên thiết bị khác.</div>
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="hd"><div><div class="h">Import / Reset</div><div class="s">Khôi phục dữ liệu</div></div></div>
-        <div class="bd">
-          <input type="file" id="importFile" accept="application/json" class="btn" style="width:100%;text-align:left"/>
-          <div class="sep"></div>
-          <button class="btn bad" id="btnReset">Reset dữ liệu (xoá sạch)</button>
-          <div class="sep"></div>
-          <div class="notice danger"><b>Cẩn thận:</b> Reset sẽ xoá toàn bộ dữ liệu đang lưu trên máy.</div>
-        </div>
-      </aside>
-    </div>
-  `;
-
-  document.getElementById("btnExport").onclick=exportJSON;
-  document.getElementById("importFile").onchange=importJSON;
-  document.getElementById("btnReset").onclick=()=>{
-    showConfirm("Reset dữ liệu?","Xoá toàn bộ gia phả đang lưu trên máy?",()=>{
-      localStorage.removeItem(LS_KEY);
-      DB = seedIfEmpty();
-      refreshKPI();
-      toast("Đã reset.");
-      go("dashboard");
-    });
-  };
-}
-
-function page_print(){
-  pageTitle.textContent="In / Xuất PDF";
-  pageHint.textContent="B3 PRO: dùng tính năng In của trình duyệt để lưu PDF.";
-  pageChips.innerHTML = [chip("Chrome ⋮ → In → Lưu PDF", "ok")].join("");
-
-  const sample = DB.persons.slice().sort((a,b)=>a.full_name.localeCompare(b.full_name,"vi")).slice(0,60);
-
-  pageBody.innerHTML = `
-    <div class="card">
+    <!-- FAMILY -->
+    <section class="card hide" id="secFamily">
       <div class="hd">
-        <div><div class="h">Bản in danh sách (preview)</div><div class="s">Dùng In của trình duyệt để lưu PDF</div></div>
-        <div class="chips">${chip(`Tác giả: ${DB.meta?.author||"Bùi Hào"}`)}${chip("Họ: Bùi")}</div>
+        <h3>2) Gia phả</h3>
+        <div class="row">
+          <button class="btn" id="btnReload">Tải lại</button>
+          <button class="btn primary" id="btnNewFamily">Tạo gia phả mới</button>
+        </div>
       </div>
-      <div class="bd" id="printArea">
-        <div class="notice"><b>Cách xuất PDF:</b> Chrome → Menu ⋮ → <b>In</b> → chọn <b>Lưu dưới dạng PDF</b>.</div>
-        <div class="sep"></div>
-        <div class="list">
-          ${sample.map(p=>`
-            <div class="row">
-              <div class="avatar">${esc(initials2(p.full_name))}</div>
-              <div class="meta">
-                <div class="name">${esc(p.full_name)}</div>
-                <div class="sub">Giới tính: ${p.gender==="M"?"Nam":p.gender==="F"?"Nữ":"Khác"} • Đời: ${esc(p.generation??0)} • Nhánh: ${esc(p.branch||"Họ Bùi")} • Quê: ${esc(p.hometown||"-")}</div>
+      <div class="bd grid two">
+        <div>
+          <div class="field">
+            <label>Chọn gia phả</label>
+            <select id="familySelect"></select>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn good" id="btnOpenFamily">Mở</button>
+            <button class="btn warn" id="btnInvite">Mời thành viên</button>
+          </div>
+          <div class="muted small" style="margin-top:10px">
+            Quyền: <b>Owner</b> có thể mời/xóa/đổi quyền. Editor được thêm/sửa. Viewer chỉ xem.
+          </div>
+        </div>
+
+        <div class="card" style="margin:0">
+          <div class="hd"><h3>Tạo gia phả mới</h3></div>
+          <div class="bd grid">
+            <div class="field">
+              <label>Tên gia phả</label>
+              <input id="famName" value="Gia phả họ Bùi" />
+            </div>
+            <div class="field">
+              <label>Địa chỉ / quê quán</label>
+              <input id="famAddr" placeholder="Thanh Hóa, ..." />
+            </div>
+            <button class="btn primary" id="btnCreateFamily">Tạo + làm Owner</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- APP -->
+    <section class="card hide" id="secApp">
+      <div class="hd">
+        <h3 id="hFamily">3) Quản lý</h3>
+        <div class="row">
+          <span class="pill" id="pillRole">role: -</span>
+          <button class="btn" id="btnBackup">Export</button>
+          <button class="btn" id="btnRestore">Import</button>
+        </div>
+      </div>
+      <div class="bd">
+        <!-- Screens -->
+        <div id="screenDashboard">
+          <div class="grid two">
+            <div class="card" style="margin:0">
+              <div class="hd"><h3>Tổng quan</h3></div>
+              <div class="bd">
+                <div class="row">
+                  <span class="pill" id="statPeople">0 thành viên</span>
+                  <span class="pill" id="statEvents">0 sự kiện</span>
+                  <span class="pill" id="statPhotos">0 ảnh</span>
+                </div>
+                <p class="muted small" style="margin-top:10px">
+                  Gợi ý: nhập “Cụ tổ” trước → thêm con/cháu → tạo quan hệ.  
+                  Ảnh lưu Cloud trong Supabase Storage.
+                </p>
               </div>
             </div>
-          `).join("")}
-        </div>
-        <div class="sep"></div>
-        <div class="muted">© ${esc(DB.meta?.author||"Bùi Hào")} • ${esc(DB.meta?.family_name||"Gia phả họ Bùi")}</div>
-      </div>
-      <div class="bd" style="padding-top:0">
-        <button class="btn primary" onclick="window.print()">🖨️ In / Save as PDF</button>
-      </div>
-    </div>
-  `;
-}
-
-function page_settings(){
-  pageTitle.textContent="Cài đặt";
-  pageHint.textContent="Đổi tên gia phả, tác giả, bật/tắt quyền xoá.";
-  pageChips.innerHTML = [chip("Lưu tại máy", "ok")].join("");
-
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">Thông tin</div><div class="s">Tên gia phả & tác giả</div></div></div>
-        <div class="bd">
-          <div class="form">
-            <div class="frow"><label>Tên gia phả</label>
-              <input id="metaFamily" value="${esc(DB.meta?.family_name||"Gia phả họ Bùi")}">
-            </div>
-            <div class="frow"><label>Tác giả</label>
-              <input id="metaAuthor" value="${esc(DB.meta?.author||"Bùi Hào")}">
-            </div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn primary" id="btnSaveMeta">Lưu</button>
+            <div class="card" style="margin:0">
+              <div class="hd"><h3>Thao tác nhanh</h3></div>
+              <div class="bd row">
+                <button class="btn primary" id="btnAddPersonQuick">+ Thêm người</button>
+                <button class="btn" id="btnAddRelationQuick">+ Thêm quan hệ</button>
+                <button class="btn" id="btnAddEventQuick">+ Sự kiện</button>
+              </div>
             </div>
           </div>
         </div>
-      </section>
 
-      <aside class="card">
-        <div class="hd"><div><div class="h">Quyền</div><div class="s">Bảo vệ khỏi xoá nhầm</div></div></div>
-        <div class="bd">
-          <div class="frow"><label>Cho phép xoá dữ liệu?</label>
-            <select id="setAllowDelete">
-              <option value="true" ${DB.settings.allow_delete?"selected":""}>Cho phép</option>
-              <option value="false" ${!DB.settings.allow_delete?"selected":""}>Không cho phép</option>
+        <div id="screenPeople" class="hide">
+          <div class="row" style="margin-bottom:10px">
+            <input id="q" style="flex:1; min-width:220px" placeholder="Tìm tên, năm sinh, quê quán..." />
+            <button class="btn" id="btnSearch">Tìm</button>
+            <button class="btn primary" id="btnAddPerson">+ Thêm</button>
+          </div>
+          <div class="list" id="peopleList"></div>
+        </div>
+
+        <div id="screenTree" class="hide">
+          <div class="row" style="margin-bottom:10px">
+            <button class="btn" id="btnBuildTree">Vẽ cây</button>
+            <select id="rootSelect" style="flex:1; min-width:220px"></select>
+          </div>
+          <div class="treeBox" id="treeBox">
+            <div class="muted small">Chọn “gốc” rồi bấm Vẽ cây (demo). Bản nâng cao sẽ zoom/pan + layout đẹp hơn.</div>
+          </div>
+        </div>
+
+        <div id="screenEvents" class="hide">
+          <div class="row" style="margin-bottom:10px">
+            <button class="btn primary" id="btnAddEvent">+ Thêm sự kiện</button>
+            <button class="btn" id="btnRefreshEvents">Tải lại</button>
+          </div>
+          <div class="list" id="eventList"></div>
+        </div>
+
+        <div id="screenNotes" class="hide">
+          <div class="row" style="margin-bottom:10px">
+            <button class="btn" data-kind="phaky" id="btnOpenPhaky">Phả ký</button>
+            <button class="btn" data-kind="tuduong" id="btnOpenTuduong">Từ đường</button>
+            <span class="pill" id="noteKind">-</span>
+          </div>
+          <div class="grid">
+            <div class="field">
+              <label>Tiêu đề</label>
+              <input id="noteTitle" />
+            </div>
+            <div class="field">
+              <label>Nội dung</label>
+              <textarea id="noteContent" placeholder="Viết lịch sử dòng họ / quy ước từ đường..."></textarea>
+            </div>
+            <div class="row">
+              <button class="btn good" id="btnSaveNote">Lưu</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODALS (simple) -->
+        <div class="card hide" id="modal" style="margin-top:14px">
+          <div class="hd">
+            <h3 id="mTitle">Modal</h3>
+            <button class="btn" id="mClose">Đóng</button>
+          </div>
+          <div class="bd" id="mBody"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="tabs hide" id="tabs">
+    <div class="tab on" data-tab="dashboard">Gia phả</div>
+    <div class="tab" data-tab="tree">Cây</div>
+    <div class="tab" data-tab="people">Thành viên</div>
+    <div class="tab" data-tab="events">Sự kiện</div>
+    <div class="tab" data-tab="notes">Phả ký</div>
+  </div>
+
+  <div class="toast hide" id="toast"></div>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // ====== CONFIG (HÀO THAY 2 DÒNG NÀY) ======
+    const SUPABASE_URL = "YOUR_SUPABASE_URL";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ====== STATE ======
+    let user = null;
+    let familyId = null;
+    let family = null;
+    let role = null;
+    let cachePeople = [];
+    let cacheRelations = [];
+    let cacheEvents = [];
+    let cacheMedia = [];
+    let currentNoteKind = "phaky";
+    let currentNoteId = null;
+
+    // ====== UI HELPERS ======
+    const $ = s => document.querySelector(s);
+    const toast = (msg) => {
+      const t = $("#toast"); t.textContent = msg; t.classList.remove("hide");
+      setTimeout(()=>t.classList.add("hide"), 2200);
+    };
+    const show = (id, on=true) => $(id).classList.toggle("hide", !on);
+
+    // ====== AUTH ======
+    async function refreshSession(){
+      const { data } = await sb.auth.getSession();
+      user = data.session?.user || null;
+      $("#pillUser").textContent = user ? (user.email || user.id) : "Chưa đăng nhập";
+      show("#secAuth", !user);
+      show("#secFamily", !!user);
+      show("#btnLogout", !!user);
+      if(user) await loadFamilies();
+    }
+
+    async function sendOtp(email){
+      const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+      if(error) return toast("Lỗi gửi OTP: " + error.message);
+      toast("Đã gửi OTP về email");
+    }
+    async function sendMagic(email){
+      const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.href } });
+      if(error) return toast("Lỗi: " + error.message);
+      toast("Đã gửi link đăng nhập");
+    }
+    async function verifyOtp(email, token){
+      // Supabase v2: verifyOtp
+      const { error } = await sb.auth.verifyOtp({ email, token, type: "email" });
+      if(error) return toast("Sai OTP: " + error.message);
+      toast("Đăng nhập OK");
+      await refreshSession();
+    }
+
+    // ====== FAMILIES ======
+    async function loadFamilies(){
+      const { data, error } = await sb
+        .from("memberships")
+        .select("family_id, role, families(name,address)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending:false });
+      if(error){ toast("Lỗi tải gia phả: " + error.message); return; }
+
+      const sel = $("#familySelect");
+      sel.innerHTML = "";
+      data.forEach((m, idx)=>{
+        const opt = document.createElement("option");
+        opt.value = m.family_id;
+        opt.textContent = `${m.families?.name || "Gia phả"} • ${m.role}`;
+        opt.dataset.role = m.role;
+        opt.dataset.name = m.families?.name || "";
+        opt.dataset.addr = m.families?.address || "";
+        sel.appendChild(opt);
+      });
+      if(data.length===0){
+        sel.innerHTML = `<option value="">(Chưa có gia phả) - bấm Tạo mới</option>`;
+      }
+      toast("Tải danh sách OK");
+    }
+
+    async function createFamily(name, address){
+      if(!name.trim()) return toast("Nhập tên gia phả");
+      // create family
+      const { data: fam, error: e1 } = await sb.from("families")
+        .insert({ name, address, created_by: user.id })
+        .select().single();
+      if(e1) return toast("Lỗi tạo gia phả: " + e1.message);
+      // add membership owner
+      const { error: e2 } = await sb.from("memberships")
+        .insert({ family_id: fam.id, user_id: user.id, role: "owner" });
+      if(e2) return toast("Lỗi set owner: " + e2.message);
+      toast("Đã tạo gia phả");
+      await loadFamilies();
+      $("#familySelect").value = fam.id;
+    }
+
+    async function openFamily(fid){
+      if(!fid) return toast("Chưa chọn gia phả");
+      familyId = fid;
+      // get role
+      const { data: mem, error: e0 } = await sb.from("memberships")
+        .select("role, families(name,address)")
+        .eq("family_id", familyId).eq("user_id", user.id).single();
+      if(e0) return toast("Không có quyền: " + e0.message);
+      role = mem.role; family = { id: familyId, name: mem.families?.name, address: mem.families?.address };
+      $("#pillRole").textContent = "role: " + role;
+      $("#hFamily").textContent = `3) ${family.name || "Gia phả"} • ${family.address || ""}`;
+
+      show("#secApp", true);
+      show("#tabs", true);
+      await preloadAll();
+      goTab("dashboard");
+    }
+
+    // ====== DATA ======
+    async function preloadAll(){
+      await Promise.all([loadPeople(), loadRelations(), loadEvents(), loadMedia()]);
+      updateStats();
+      fillRootSelect();
+    }
+
+    async function loadPeople(){
+      const { data, error } = await sb.from("persons")
+        .select("*")
+        .eq("family_id", familyId)
+        .order("created_at", {ascending:false});
+      if(error){ toast("Lỗi people: "+error.message); return; }
+      cachePeople = data || [];
+      renderPeople(cachePeople);
+      fillRootSelect();
+    }
+
+    async function loadRelations(){
+      const { data, error } = await sb.from("relations")
+        .select("*")
+        .eq("family_id", familyId);
+      if(error){ toast("Lỗi relations: "+error.message); return; }
+      cacheRelations = data || [];
+    }
+
+    async function loadEvents(){
+      const { data, error } = await sb.from("events")
+        .select("*")
+        .eq("family_id", familyId)
+        .order("created_at", {ascending:false});
+      if(error){ toast("Lỗi events: "+error.message); return; }
+      cacheEvents = data || [];
+      renderEvents(cacheEvents);
+    }
+
+    async function loadMedia(){
+      const { data, error } = await sb.from("media")
+        .select("*")
+        .eq("family_id", familyId)
+        .order("created_at", {ascending:false});
+      if(error){ toast("Lỗi media: "+error.message); return; }
+      cacheMedia = data || [];
+    }
+
+    function updateStats(){
+      $("#statPeople").textContent = `${cachePeople.length} thành viên`;
+      $("#statEvents").textContent = `${cacheEvents.length} sự kiện`;
+      $("#statPhotos").textContent = `${cacheMedia.length} ảnh`;
+    }
+
+    // ====== PEOPLE UI ======
+    function renderPeople(arr){
+      const box = $("#peopleList");
+      box.innerHTML = "";
+      arr.forEach(p=>{
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="left">
+            <div class="avatar">${p.avatar_url ? `<img src="${p.avatar_url}">` : ""}</div>
+            <div style="min-width:0">
+              <div class="name">${escapeHtml(p.full_name)} ${p.display_role?`<span class="pill">${escapeHtml(p.display_role)}</span>`:""}</div>
+              <div class="meta">${escapeHtml(p.gender||"")} • ${fmtY(p.birth_year)} • ${escapeHtml(p.hometown_province||"")}</div>
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn" data-id="${p.id}" data-act="view">Xem</button>
+            ${canWrite()?`<button class="btn warn" data-id="${p.id}" data-act="edit">Sửa</button>`:""}
+          </div>
+        `;
+        el.addEventListener("click", (e)=>{
+          const b = e.target.closest("button");
+          if(!b) return;
+          const id = b.dataset.id;
+          const act = b.dataset.act;
+          const person = cachePeople.find(x=>x.id===id);
+          if(act==="view") openPerson(person, false);
+          if(act==="edit") openPerson(person, true);
+        });
+        box.appendChild(el);
+      });
+    }
+
+    function fillRootSelect(){
+      const sel = $("#rootSelect");
+      const sel2 = $("#rootSelect"); // same
+      if(!sel) return;
+      sel.innerHTML = "";
+      cachePeople.slice().reverse().forEach(p=>{
+        const opt = document.createElement("option");
+        opt.value = p.id;
+        opt.textContent = p.full_name;
+        sel.appendChild(opt);
+      });
+    }
+
+    function canWrite(){ return ["owner","editor"].includes(role); }
+
+    function openPerson(p, editable){
+      showModal(editable ? "Sửa thành viên" : "Thông tin thành viên", personForm(p, editable));
+      wirePersonForm(p, editable);
+    }
+
+    function personForm(p={}, editable=true){
+      const dis = editable && canWrite() ? "" : "disabled";
+      return `
+        <div class="grid two">
+          <div class="field">
+            <label>Ảnh đại diện</label>
+            <div class="row">
+              <div class="avatar" style="width:72px;height:72px;border-radius:18px">${p.avatar_url?`<img src="${p.avatar_url}">`:""}</div>
+              ${editable && canWrite() ? `<input ${dis} type="file" id="avatarFile" accept="image/*" />` : `<span class="muted small">Chỉ xem</span>`}
+            </div>
+            <div class="muted small">Ảnh sẽ được nén và upload lên Cloud.</div>
+          </div>
+          <div class="field">
+            <label>Vai vế (Cụ tổ...)</label>
+            <input ${dis} id="display_role" value="${val(p.display_role)}" />
+          </div>
+
+          <div class="field">
+            <label>Họ và tên*</label>
+            <input ${dis} id="full_name" value="${val(p.full_name)}" />
+          </div>
+          <div class="field">
+            <label>Tên khác</label>
+            <input ${dis} id="other_name" value="${val(p.other_name)}" />
+          </div>
+
+          <div class="field">
+            <label>Giới tính</label>
+            <select ${dis} id="gender">
+              ${opt(p.gender, ["Nam","Nữ","Khác"])}
             </select>
           </div>
-          <div class="sep"></div>
-          <div class="notice"><b>Gợi ý:</b> Khi gửi file cho người khác dùng, nên tắt quyền xoá.</div>
-        </div>
-      </aside>
-    </div>
-  `;
-
-  document.getElementById("btnSaveMeta").onclick=(e)=>{
-    e.preventDefault();
-    DB.meta.family_name=(document.getElementById("metaFamily").value||"").trim() || "Gia phả họ Bùi";
-    DB.meta.author=(document.getElementById("metaAuthor").value||"").trim() || "Bùi Hào";
-    saveDB(DB); refreshKPI();
-    toast("Đã lưu ✅");
-  };
-  document.getElementById("setAllowDelete").onchange=(e)=>{
-    DB.settings.allow_delete=(e.target.value==="true");
-    saveDB(DB);
-    toast("Đã cập nhật quyền xoá.");
-  };
-}
-
-function page_about(){
-  pageTitle.textContent="Giới thiệu";
-  pageHint.textContent="Bản web/PWA 1 file – đủ B1+B2+B3 – dành cho Gia phả họ Bùi.";
-  pageChips.innerHTML = [chip("B1+B2+B3", "ok"), chip(`Tác giả: ${DB.meta?.author||"Bùi Hào"}`)].join("");
-
-  pageBody.innerHTML = `
-    <div class="grid two">
-      <section class="card">
-        <div class="hd"><div><div class="h">Gia phả họ Bùi</div><div class="s">Phiên bản: ${esc(DB.meta?.version||"full")}</div></div></div>
-        <div class="bd">
-          <div class="notice">
-            <b>Đã có:</b> Thêm người, thêm quan hệ, sự kiện, cây SVG zoom/pan, tìm họ hàng, báo cáo, import/export, in PDF.
+          <div class="field">
+            <label>Tình trạng hôn nhân</label>
+            <input ${dis} id="marital_status" value="${val(p.marital_status)}" placeholder="Độc thân, 1 vợ..." />
           </div>
-          <div class="sep"></div>
-          <div class="muted" style="line-height:1.8">
-            <b>Cài như app:</b> Chrome Android → Menu ⋮ → <b>Thêm vào màn hình chính</b>.
-          </div>
-          <div class="sep"></div>
-          <div class="muted">© <b>${esc(DB.meta?.author||"Bùi Hào")}</b> • ${esc(DB.meta?.family_name||"Gia phả họ Bùi")}</div>
-        </div>
-      </section>
 
-      <aside class="card">
-        <div class="hd"><div><div class="h">Nâng cấp tiếp (nếu muốn giống Giapha 4.0 hơn)</div><div class="s">Mình làm tiếp ngay</div></div></div>
-        <div class="bd">
-          <div class="notice">
-            1) Cây: gom “cặp vợ chồng” thành 1 cụm, nối con theo cụm.<br/>
-            2) Lịch giỗ (âm lịch), nhắc lịch.<br/>
-            3) Đồng bộ cloud (Firebase/Supabase) nhiều người cùng sửa.
+          <div class="field">
+            <label>Ngày sinh (d/m/y)</label>
+            <div class="row" style="width:100%">
+              <input ${dis} id="birth_day" style="flex:1" value="${val(p.birth_day)}" placeholder="dd">
+              <input ${dis} id="birth_month" style="flex:1" value="${val(p.birth_month)}" placeholder="mm">
+              <input ${dis} id="birth_year" style="flex:1" value="${val(p.birth_year)}" placeholder="yyyy">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Số điện thoại</label>
+            <input ${dis} id="phone" value="${val(p.phone)}" />
+          </div>
+
+          <div class="field">
+            <label>Trình độ</label>
+            <input ${dis} id="education" value="${val(p.education)}" />
+          </div>
+          <div class="field">
+            <label>Nghề nghiệp</label>
+            <input ${dis} id="job" value="${val(p.job)}" />
+          </div>
+
+          <div class="field">
+            <label>Nguyên quán (Tỉnh / Huyện / Xã)</label>
+            <div class="row" style="width:100%">
+              <input ${dis} id="hp" style="flex:1" value="${val(p.hometown_province)}" placeholder="Tỉnh">
+              <input ${dis} id="hd" style="flex:1" value="${val(p.hometown_district)}" placeholder="Huyện">
+              <input ${dis} id="hw" style="flex:1" value="${val(p.hometown_ward)}" placeholder="Xã/Phường">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Địa chỉ hiện tại</label>
+            <input ${dis} id="current_address" value="${val(p.current_address)}" />
+          </div>
+
+          <div class="field">
+            <label>Link Google Map</label>
+            <input ${dis} id="map_link" value="${val(p.map_link)}" placeholder="https://maps.google.com/..." />
+          </div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label>Tiểu sử</label>
+            <textarea ${dis} id="bio">${val(p.bio)}</textarea>
+          </div>
+
+          <div class="field">
+            <label>Ngày giỗ (Âm lịch) (d/m/y)</label>
+            <div class="row" style="width:100%">
+              <input ${dis} id="death_lunar_day" style="flex:1" value="${val(p.death_lunar_day)}" placeholder="dd">
+              <input ${dis} id="death_lunar_month" style="flex:1" value="${val(p.death_lunar_month)}" placeholder="mm">
+              <input ${dis} id="death_lunar_year" style="flex:1" value="${val(p.death_lunar_year)}" placeholder="yyyy">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Ngày giỗ tên âm lịch</label>
+            <input ${dis} id="death_lunar_text" value="${val(p.death_lunar_text)}" placeholder="Giờ Tuất tháng Chạp..." />
+          </div>
+
+          <div class="field">
+            <label>Thờ cúng tại</label>
+            <input ${dis} id="worship_place" value="${val(p.worship_place)}" placeholder="Từ đường chính..." />
+          </div>
+
+          <div class="field">
+            <label>Người phụ trách</label>
+            <input ${dis} id="caretaker_name" value="${val(p.caretaker_name)}" />
+          </div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label>Mộ táng</label>
+            <input ${dis} id="tomb_address" value="${val(p.tomb_address)}" />
           </div>
         </div>
-      </aside>
-    </div>
-  `;
-}
 
-/* =========================
-   EXPORT / IMPORT
-   ========================= */
-function exportJSON(){
-  const data = JSON.stringify(DB, null, 2);
-  const blob = new Blob([data], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  const ts = new Date().toISOString().slice(0,10);
-  a.download = `gia-pha-ho-bui_${ts}.json`;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
-  toast("Đã export JSON ⬇️");
-}
-function importJSON(ev){
-  const file = ev.target.files?.[0];
-  if(!file) return;
-  const reader=new FileReader();
-  reader.onload=()=>{
-    try{
-      const obj=JSON.parse(reader.result);
-      if(!obj || !obj.persons || !obj.relationships || !obj.events){
-        toast("File không đúng định dạng.");
-        return;
+        <div class="row" style="margin-top:12px">
+          ${editable && canWrite() ? `<button class="btn good" id="btnSavePerson">${p.id?"Lưu":"Tạo"}</button>` : ``}
+          ${canWrite() ? `<button class="btn" id="btnOpenRel">Quan hệ</button>` : `<span class="muted small">Quan hệ: chỉ xem</span>`}
+          ${p.id && canWrite() ? `<button class="btn danger" id="btnDelPerson">Xóa</button>` : ``}
+        </div>
+      `;
+    }
+
+    async function wirePersonForm(p={}, editable=true){
+      const isNew = !p.id;
+      const getVal = () => ({
+        family_id: familyId,
+        display_role: $("#display_role").value.trim(),
+        full_name: $("#full_name").value.trim(),
+        other_name: $("#other_name").value.trim(),
+        gender: $("#gender").value,
+        birth_day: toInt($("#birth_day").value),
+        birth_month: toInt($("#birth_month").value),
+        birth_year: toInt($("#birth_year").value),
+        marital_status: $("#marital_status").value.trim(),
+        phone: $("#phone").value.trim(),
+        education: $("#education").value.trim(),
+        job: $("#job").value.trim(),
+        hometown_province: $("#hp").value.trim(),
+        hometown_district: $("#hd").value.trim(),
+        hometown_ward: $("#hw").value.trim(),
+        current_address: $("#current_address").value.trim(),
+        map_link: $("#map_link").value.trim(),
+        bio: $("#bio").value,
+        death_lunar_day: toInt($("#death_lunar_day").value),
+        death_lunar_month: toInt($("#death_lunar_month").value),
+        death_lunar_year: toInt($("#death_lunar_year").value),
+        death_lunar_text: $("#death_lunar_text").value.trim(),
+        worship_place: $("#worship_place").value.trim(),
+        caretaker_name: $("#caretaker_name").value.trim(),
+        tomb_address: $("#tomb_address").value.trim(),
+        updated_at: new Date().toISOString()
+      });
+
+      $("#btnOpenRel")?.addEventListener("click", ()=> openRelationEditor(p));
+      $("#btnDelPerson")?.addEventListener("click", async ()=>{
+        if(!confirm("Xóa thành viên này?")) return;
+        const { error } = await sb.from("persons").delete().eq("id", p.id);
+        if(error) return toast("Lỗi xóa: "+error.message);
+        toast("Đã xóa");
+        closeModal(); await preloadAll();
+      });
+
+      $("#btnSavePerson")?.addEventListener("click", async ()=>{
+        const payload = getVal();
+        if(!payload.full_name) return toast("Thiếu họ tên");
+        let saved = null;
+
+        if(isNew){
+          const { data, error } = await sb.from("persons").insert(payload).select().single();
+          if(error) return toast("Lỗi tạo: "+error.message);
+          saved = data; toast("Đã tạo");
+        }else{
+          const { data, error } = await sb.from("persons").update(payload).eq("id", p.id).select().single();
+          if(error) return toast("Lỗi lưu: "+error.message);
+          saved = data; toast("Đã lưu");
+        }
+
+        // avatar upload if file chosen
+        const f = $("#avatarFile")?.files?.[0];
+        if(f && saved?.id){
+          const url = await uploadAvatar(saved.id, f);
+          if(url){
+            await sb.from("persons").update({ avatar_url: url, updated_at: new Date().toISOString() }).eq("id", saved.id);
+            toast("Đã upload avatar");
+          }
+        }
+        closeModal(); await preloadAll();
+      });
+    }
+
+    async function uploadAvatar(personId, file){
+      try{
+        // compress -> jpg 0.82, 512px
+        const blob = await compressImage(file, 512, 0.82);
+        const path = `families/${familyId}/avatars/${personId}.jpg`;
+        const { error } = await sb.storage.from("giapha").upload(path, blob, { upsert: true, contentType: "image/jpeg" });
+        if(error){ toast("Lỗi upload ảnh: "+error.message); return null; }
+        const { data } = sb.storage.from("giapha").getPublicUrl(path);
+        // NOTE: bucket private => publicUrl may not work. If private, use signedUrl:
+        // const { data: s } = await sb.storage.from("giapha").createSignedUrl(path, 60*60*24*7);
+        // return s?.signedUrl;
+        return data.publicUrl || null;
+      }catch(e){
+        toast("Lỗi nén ảnh"); return null;
       }
-      DB=obj; saveDB(DB); refreshKPI();
-      toast("Đã import ✅");
-      go("dashboard");
-    }catch(e){ toast("Không đọc được JSON."); }
-  };
-  reader.readAsText(file);
-}
+    }
 
-/* =========================
-   HELPERS
-   ========================= */
-function escAttr(s=""){ return (s+"").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
-window.filterKeyword = (kw)=>{
-  qSearch.value = kw;
-  go("members");
-  toast(`Đang lọc: ${kw}`);
-};
+    // ====== RELATIONS ======
+    function openRelationEditor(p){
+      if(!p?.id) return toast("Hãy tạo người trước");
+      const options = cachePeople.map(x=>`<option value="${x.id}">${escapeHtml(x.full_name)}</option>`).join("");
+      const html = `
+        <div class="muted small">Tạo quan hệ cho: <b>${escapeHtml(p.full_name)}</b></div>
+        <div class="grid two" style="margin-top:10px">
+          <div class="field">
+            <label>Chọn người liên quan</label>
+            <select id="relB">${options}</select>
+          </div>
+          <div class="field">
+            <label>Loại quan hệ</label>
+            <select id="relType">
+              <option value="parent">A là CHA/MẸ của B</option>
+              <option value="child">A là CON của B</option>
+              <option value="spouse">Vợ/Chồng</option>
+              <option value="sibling">Anh/Chị/Em</option>
+            </select>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn good" id="btnSaveRel">Lưu quan hệ</button>
+          <button class="btn" id="btnViewRel">Xem danh sách quan hệ</button>
+        </div>
+      `;
+      showModal("Quan hệ", html);
+      $("#btnSaveRel").addEventListener("click", async ()=>{
+        const b = $("#relB").value;
+        const type = $("#relType").value;
+        if(b===p.id) return toast("Không thể tự liên quan");
+        const payload = { family_id: familyId, a: p.id, b, type };
+        const { error } = await sb.from("relations").insert(payload);
+        if(error) return toast("Lỗi quan hệ: "+error.message);
+        toast("Đã lưu quan hệ");
+        await loadRelations();
+      });
+      $("#btnViewRel").addEventListener("click", ()=>{
+        const rels = cacheRelations
+          .filter(r=>r.a===p.id || r.b===p.id)
+          .map(r=>{
+            const A = cachePeople.find(x=>x.id===r.a)?.full_name || "?";
+            const B = cachePeople.find(x=>x.id===r.b)?.full_name || "?";
+            return `<div class="item"><div class="left"><div><b>${escapeHtml(A)}</b> — <span class="pill">${escapeHtml(r.type)}</span> — <b>${escapeHtml(B)}</b></div></div></div>`;
+          }).join("");
+        $("#mBody").insertAdjacentHTML("beforeend", `<div style="margin-top:10px" class="list">${rels || `<div class="muted small">Chưa có quan hệ</div>`}</div>`);
+      });
+    }
 
-/* =========================
-   ROUTER
-   ========================= */
-const PAGES = {
-  dashboard:{render:page_dashboard},
-  tree:{render:page_tree},
-  members:{render:page_members},
-  "add-person":{render:()=>page_add_person(null)},
-  "add-relation":{render:page_add_relation},
-  events:{render:page_events},
-  kin:{render:page_kin},
-  reports:{render:page_reports},
-  backup:{render:page_backup},
-  print:{render:page_print},
-  settings:{render:page_settings},
-  about:{render:page_about},
-};
+    // ====== EVENTS ======
+    function renderEvents(arr){
+      const box = $("#eventList");
+      box.innerHTML = "";
+      arr.forEach(ev=>{
+        const p = ev.person_id ? cachePeople.find(x=>x.id===ev.person_id) : null;
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="left">
+            <div style="min-width:0">
+              <div class="name">${escapeHtml(ev.title)} <span class="pill">${escapeHtml(ev.event_type)}</span></div>
+              <div class="meta">${p ? ("👤 "+escapeHtml(p.full_name)+" • ") : ""}${escapeHtml(ev.date_greg||"")} ${ev.date_lunar?("• "+escapeHtml(ev.date_lunar)):""}</div>
+            </div>
+          </div>
+          ${canWrite()?`<button class="btn warn" data-id="${ev.id}">Sửa</button>`:""}
+        `;
+        el.querySelector("button")?.addEventListener("click", ()=> openEvent(ev));
+        box.appendChild(el);
+      });
+    }
 
-function go(page){
-  if(!PAGES[page]) page="dashboard";
-  setActiveNav(page);
-  closeDrawer();
-  PAGES[page].render();
-  history.replaceState(null,"","#"+page);
-  window.scrollTo({top:0,behavior:"smooth"});
-}
+    function openEvent(ev=null){
+      const options = [`<option value="">(không gắn người)</option>`].concat(
+        cachePeople.map(p=>`<option value="${p.id}" ${ev?.person_id===p.id?"selected":""}>${escapeHtml(p.full_name)}</option>`)
+      ).join("");
+      const html = `
+        <div class="grid two">
+          <div class="field"><label>Tiêu đề</label><input id="evTitle" value="${val(ev?.title)}"></div>
+          <div class="field"><label>Loại</label>
+            <select id="evType">
+              ${opt(ev?.event_type, ["giỗ","birth","death","anniversary","custom"])}
+            </select>
+          </div>
+          <div class="field"><label>Gắn với người</label><select id="evPerson">${options}</select></div>
+          <div class="field"><label>Ngày dương (text)</label><input id="evGreg" value="${val(ev?.date_greg)}" placeholder="2026-02-05"></div>
+          <div class="field" style="grid-column:1/-1"><label>Ngày âm (text)</label><input id="evLunar" value="${val(ev?.date_lunar)}" placeholder="10/10 Canh Ngọ..."></div>
+          <div class="field" style="grid-column:1/-1"><label>Ghi chú</label><textarea id="evNote">${val(ev?.note)}</textarea></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn good" id="btnSaveEv">${ev?.id?"Lưu":"Tạo"}</button>
+          ${ev?.id?`<button class="btn danger" id="btnDelEv">Xóa</button>`:""}
+        </div>
+      `;
+      showModal(ev?.id ? "Sửa sự kiện" : "Thêm sự kiện", html);
+      $("#btnSaveEv").addEventListener("click", async ()=>{
+        const payload = {
+          family_id: familyId,
+          person_id: $("#evPerson").value || null,
+          title: $("#evTitle").value.trim(),
+          event_type: $("#evType").value,
+          date_greg: $("#evGreg").value.trim(),
+          date_lunar: $("#evLunar").value.trim(),
+          note: $("#evNote").value
+        };
+        if(!payload.title) return toast("Thiếu tiêu đề");
+        if(ev?.id){
+          const { error } = await sb.from("events").update(payload).eq("id", ev.id);
+          if(error) return toast("Lỗi: "+error.message);
+          toast("Đã lưu"); closeModal(); await loadEvents(); updateStats();
+        }else{
+          const { error } = await sb.from("events").insert(payload);
+          if(error) return toast("Lỗi: "+error.message);
+          toast("Đã tạo"); closeModal(); await loadEvents(); updateStats();
+        }
+      });
+      $("#btnDelEv")?.addEventListener("click", async ()=>{
+        if(!confirm("Xóa sự kiện?")) return;
+        const { error } = await sb.from("events").delete().eq("id", ev.id);
+        if(error) return toast("Lỗi: "+error.message);
+        toast("Đã xóa"); closeModal(); await loadEvents(); updateStats();
+      });
+    }
 
-menu.addEventListener("click",(e)=>{
-  const it=e.target.closest(".item");
-  if(!it) return;
-  go(it.dataset.page);
-});
-bottomBar.addEventListener("click",(e)=>{
-  const it=e.target.closest(".bitem");
-  if(!it) return;
-  go(it.dataset.page);
-});
+    // ====== NOTES ======
+    async function openNote(kind){
+      currentNoteKind = kind;
+      $("#noteKind").textContent = kind === "phaky" ? "Phả ký" : "Từ đường";
+      const { data, error } = await sb.from("notes")
+        .select("*")
+        .eq("family_id", familyId)
+        .eq("kind", kind)
+        .maybeSingle();
+      if(error) return toast("Lỗi note: "+error.message);
 
-/* Quick buttons */
-document.getElementById("quickAdd").onclick=()=>go("add-person");
-document.getElementById("quickExport").onclick=exportJSON;
+      if(!data){
+        currentNoteId = null;
+        $("#noteTitle").value = "";
+        $("#noteContent").value = "";
+      }else{
+        currentNoteId = data.id;
+        $("#noteTitle").value = data.title || "";
+        $("#noteContent").value = data.content || "";
+      }
+      goTab("notes");
+    }
 
-/* Search typing refresh members page if active */
-qSearch.addEventListener("input", ()=>{
-  const cur=(location.hash||"#dashboard").slice(1);
-  if(cur==="members") page_members();
-});
+    async function saveNote(){
+      if(!canWrite()) return toast("Bạn không có quyền sửa");
+      const payload = {
+        family_id: familyId,
+        kind: currentNoteKind,
+        title: $("#noteTitle").value.trim(),
+        content: $("#noteContent").value,
+        updated_at: new Date().toISOString()
+      };
+      if(currentNoteId){
+        const { error } = await sb.from("notes").update(payload).eq("id", currentNoteId);
+        if(error) return toast("Lỗi lưu: "+error.message);
+      }else{
+        const { data, error } = await sb.from("notes").insert(payload).select().single();
+        if(error) return toast("Lỗi tạo: "+error.message);
+        currentNoteId = data.id;
+      }
+      toast("Đã lưu");
+    }
 
-/* =========================
-   BOOT
-   ========================= */
-refreshKPI();
-const initial=(location.hash||"#dashboard").slice(1);
-go(PAGES[initial]? initial : "dashboard");
-</script>
+    // ====== TREE (demo layout) ======
+    function buildTree(rootId){
+      const root = cachePeople.find(p=>p.id===rootId);
+      if(!root) return;
+      // Build children map by relations type parent/child
+      const children = {};
+      cachePeople.forEach(p=>children[p.id]=[]);
+      // If relation type parent: A is parent of B => A->B
+      cacheRelations.forEach(r=>{
+        if(r.type==="parent") children[r.a]?.push(r.b);
+        if(r.type==="child") children[r.b]?.push(r.a);
+      });
+
+      // BFS levels
+      const levels = [];
+      const seen = new Set();
+      let q = [rootId]; seen.add(rootId);
+      for(let depth=0; depth<8 && q.length; depth++){
+        levels.push(q.slice());
+        const next = [];
+        q.forEach(id=>{
+          (children[id]||[]).forEach(cid=>{
+            if(!seen.has(cid)){ seen.add(cid); next.push(cid); }
+          });
+        });
+        q = next;
+      }
+
+      // Simple SVG
+      const nodeW=170, nodeH=54, gapX=26, gapY=44, pad=20;
+      const maxCols = Math.max(...levels.map(l=>l.length));
+      const svgW = pad*2 + maxCols*(nodeW+gapX);
+      const svgH = pad*2 + levels.length*(nodeH+gapY);
+      const pos = {};
+      levels.forEach((lvl, i)=>{
+        const rowW = lvl.length*(nodeW+gapX) - gapX;
+        let startX = pad + (svgW - pad*2 - rowW)/2;
+        lvl.forEach((id, j)=>{
+          pos[id] = { x: startX + j*(nodeW+gapX), y: pad + i*(nodeH+gapY) };
+        });
+      });
+
+      const lines = [];
+      cacheRelations.forEach(r=>{
+        let parent=null, child=null;
+        if(r.type==="parent"){ parent=r.a; child=r.b; }
+        if(r.type==="child"){ parent=r.b; child=r.a; }
+        if(parent && child && pos[parent] && pos[child]){
+          const p1 = pos[parent], p2 = pos[child];
+          lines.push(`<line x1="${p1.x+nodeW/2}" y1="${p1.y+nodeH}" x2="${p2.x+nodeW/2}" y2="${p2.y}" stroke="rgba(255,255,255,.22)" stroke-width="2"/>`);
+        }
+      });
+
+      const nodes = Object.keys(pos).map(id=>{
+        const p = cachePeople.find(x=>x.id===id);
+        const {x,y} = pos[id];
+        const name = escapeHtml(p.full_name);
+        const role = p.display_role ? ` • ${escapeHtml(p.display_role)}` : "";
+        return `
+          <g>
+            <rect x="${x}" y="${y}" rx="16" ry="16" width="${nodeW}" height="${nodeH}" fill="rgba(0,0,0,.25)" stroke="rgba(255,255,255,.16)"/>
+            <text x="${x+12}" y="${y+24}" fill="white" font-size="13" font-weight="800">${name}</text>
+            <text x="${x+12}" y="${y+42}" fill="rgba(255,255,255,.72)" font-size="11">${escapeHtml(p.gender||"")}${role}</text>
+          </g>`;
+      }).join("");
+
+      $("#treeBox").innerHTML = `
+        <svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}">
+          ${lines.join("")}
+          ${nodes}
+        </svg>
+      `;
+    }
+
+    // ====== BACKUP ======
+    async function exportJson(){
+      const pack = {
+        family, role,
+        people: cachePeople,
+        relations: cacheRelations,
+        events: cacheEvents,
+        notes: [], // load on demand
+        media: cacheMedia,
+        exported_at: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(pack, null, 2)], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `giapha_${familyId}.json`;
+      a.click();
+      toast("Đã export");
+    }
+
+    async function importJson(){
+      if(!canWrite()) return toast("Bạn không có quyền import");
+      showModal("Import JSON", `
+        <div class="muted small">Chọn file JSON export trước đó. Import sẽ thêm mới, không ghi đè hoàn hảo (bản v1).</div>
+        <input type="file" id="jsonFile" accept="application/json" />
+        <div class="row" style="margin-top:10px">
+          <button class="btn warn" id="btnDoImport">Import</button>
+        </div>
+      `);
+      $("#btnDoImport").addEventListener("click", async ()=>{
+        const f = $("#jsonFile").files?.[0];
+        if(!f) return toast("Chưa chọn file");
+        const txt = await f.text();
+        const data = JSON.parse(txt);
+        // naive import: persons -> relations -> events
+        if(Array.isArray(data.people) && data.people.length){
+          const people = data.people.map(p=>{
+            const copy = {...p};
+            delete copy.id; // new ids
+            copy.family_id = familyId;
+            return copy;
+          });
+          const { error } = await sb.from("persons").insert(people);
+          if(error) return toast("Lỗi import people: "+error.message);
+        }
+        toast("Import xong (tạm)"); closeModal(); await preloadAll();
+      });
+    }
+
+    // ====== MODAL ======
+    function showModal(title, html){
+      $("#mTitle").textContent = title;
+      $("#mBody").innerHTML = html;
+      show("#modal", true);
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    }
+    function closeModal(){ show("#modal", false); $("#mBody").innerHTML = ""; }
+    $("#mClose").addEventListener("click", closeModal);
+
+    // ====== NAV ======
+    function goTab(tab){
+      ["dashboard","tree","people","events","notes"].forEach(t=>{
+        $("#screen"+cap(t)).classList.toggle("hide", t!==tab);
+      });
+      document.querySelectorAll(".tab").forEach(el=>{
+        el.classList.toggle("on", el.dataset.tab===tab);
+      });
+    }
+    function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+    document.querySelectorAll(".tab").forEach(el=>{
+      el.addEventListener("click", ()=> goTab(el.dataset.tab));
+    });
+
+    // ====== WIRES ======
+    $("#btnSendOtp").addEventListener("click", ()=> sendOtp($("#email").value.trim()));
+    $("#btnMagic").addEventListener("click", ()=> sendMagic($("#email").value.trim()));
+    $("#btnVerify").addEventListener("click", ()=> verifyOtp($("#email").value.trim(), $("#otp").value.trim()));
+
+    $("#btnLogout").addEventListener("click", async ()=>{
+      await sb.auth.signOut();
+      familyId=null; family=null; role=null;
+      show("#secApp", false); show("#tabs", false);
+      await refreshSession();
+    });
+
+    $("#btnReload").addEventListener("click", loadFamilies);
+    $("#btnCreateFamily").addEventListener("click", ()=> createFamily($("#famName").value, $("#famAddr").value));
+    $("#btnOpenFamily").addEventListener("click", ()=> openFamily($("#familySelect").value));
+    $("#btnNewFamily").addEventListener("click", ()=> toast("Nhập form bên phải rồi bấm Tạo"));
+    $("#btnInvite").addEventListener("click", ()=>{
+      if(role!=="owner") return toast("Chỉ owner mới mời");
+      showModal("Mời thành viên", `
+        <div class="muted small">Supabase membership theo user_id. Bản v1: bạn gửi người kia đăng nhập email trước, rồi nhập user_id của họ.</div>
+        <div class="field"><label>User ID người được mời</label><input id="invUser" placeholder="uuid..." /></div>
+        <div class="field"><label>Quyền</label>
+          <select id="invRole"><option>editor</option><option>viewer</option></select>
+        </div>
+        <div class="row"><button class="btn good" id="btnDoInvite">Mời</button></div>
+        <div class="muted small">Tip: người kia vào app → copy user id trong profile (bản sau mình thêm nút copy).</div>
+      `);
+      $("#btnDoInvite").addEventListener("click", async ()=>{
+        const uid = $("#invUser").value.trim();
+        const r = $("#invRole").value;
+        if(!uid) return toast("Thiếu user id");
+        const { error } = await sb.from("memberships").insert({ family_id: familyId, user_id: uid, role: r });
+        if(error) return toast("Lỗi mời: "+error.message);
+        toast("Đã mời");
+        closeModal();
+      });
+    });
+
+    $("#btnAddPersonQuick").addEventListener("click", ()=> openPerson({}, true));
+    $("#btnAddPerson").addEventListener("click", ()=> openPerson({}, true));
+    $("#btnSearch").addEventListener("click", ()=>{
+      const key = $("#q").value.trim().toLowerCase();
+      if(!key) return renderPeople(cachePeople);
+      const arr = cachePeople.filter(p=>{
+        return (p.full_name||"").toLowerCase().includes(key)
+          || String(p.birth_year||"").includes(key)
+          || (p.hometown_province||"").toLowerCase().includes(key)
+          || (p.current_address||"").toLowerCase().includes(key);
+      });
+      renderPeople(arr);
+    });
+
+    $("#btnAddRelationQuick").addEventListener("click", ()=>{
+      if(!cachePeople.length) return toast("Chưa có người");
+      openRelationEditor(cachePeople[0]);
+    });
+
+    $("#btnAddEventQuick").addEventListener("click", ()=> openEvent(null));
+    $("#btnAddEvent").addEventListener("click", ()=> openEvent(null));
+    $("#btnRefreshEvents").addEventListener("click", loadEvents);
+
+    $("#btnOpenPhaky").addEventListener("click", ()=> openNote("phaky"));
+    $("#btnOpenTuduong").addEventListener("click", ()=> openNote("tuduong"));
+    $("#btnSaveNote").addEventListener("click", saveNote);
+
+    $("#btnBuildTree").addEventListener("click", ()=> buildTree($("#rootSelect").value));
+
+    $("#btnBackup").addEventListener("click", exportJson);
+    $("#btnRestore").addEventListener("click", importJson);
+
+    // ====== UTIL ======
+    function escapeHtml(s){ return (s??"").toString().replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m])); }
+    function val(x){ return escapeHtml(x??""); }
+    function opt(cur, arr){
+      const c = (cur??arr[0]??"");
+      return arr.map(x=>`<option ${x===c?"selected":""}>${escapeHtml(x)}</option>`).join("");
+    }
+    function toInt(v){ const n = parseInt(v,10); return Number.isFinite(n)?n:null; }
+    function fmtY(y){ return y?`SN ${y}`:""; }
+
+    async function compressImage(file, maxSize=512, quality=0.82){
+      const img = await new Promise((res, rej)=>{
+        const i = new Image();
+        i.onload=()=>res(i); i.onerror=rej;
+        i.src = URL.createObjectURL(file);
+      });
+      const w = img.width, h = img.height;
+      const scale = Math.min(1, maxSize / Math.max(w,h));
+      const nw = Math.round(w*scale), nh = Math.round(h*scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = nw; canvas.height = nh;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0,0,nw,nh);
+      const blob = await new Promise(res=> canvas.toBlob(res, "image/jpeg", quality));
+      return blob;
+    }
+
+    // ====== INIT ======
+    sb.auth.onAuthStateChange(()=> refreshSession());
+    refreshSession();
+  </script>
 </body>
 </html>
